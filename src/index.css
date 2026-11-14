@@ -1,0 +1,197 @@
+/*
+VOICE: lugn klinisk arbetsyta – som ett välgjort journalblad, inte en app med reklamkänsla.
+IDEA: dietistens kostformulär: tydliga fält, linjerade tabeller, en färgad energimätare.
+PICTURE: energimätaren och näringsstaplarna i resultatvyn bär bilden.
+COLOUR/TYPE: vit + djup skogsgrön, ljus salviagrön som stödfält, tomatröd för avvikelser; Source Sans 3 + Fraunces för rubriker.
+LAYOUT: klientlista till vänster, arbetsyta till höger; staplas under 760px.
+*/
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#ffffff, #0f1512);
+  --panel: light-dark(#ffffff, #151d19);
+  --ink: light-dark(#14201a, #e6eee9);
+  --muted: light-dark(#5b6b62, #9aaca2);
+  --line: light-dark(#dbe4de, #26332c);
+  --green: light-dark(#1d6040, #6fcf9b);
+  --green-ink: light-dark(#ffffff, #0b1a12);
+  --sage: light-dark(#eaf3ed, #1a2a21);
+  --red: light-dark(#c63d2b, #ff8a73);
+  --amber: light-dark(#b07a0c, #f1c35a);
+  --redbg: light-dark(#fbe9e6, #3a1c17);
+  --amberbg: light-dark(#fbf1dc, #33280f);
+  --okbg: light-dark(#e3f2e9, #173325);
+}
+:root[data-theme=light] { color-scheme: light }
+:root[data-theme=dark] { color-scheme: dark }
+* { box-sizing: border-box; min-width: 0 }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: clip }
+h1, h2, h3, h4 { font-family: Fraunces, Georgia, serif; font-weight: 600; line-height: 1.1; margin: 0 }
+h1 { font-size: clamp(28px, 4vw, 40px); text-wrap: balance }
+h2 { font-size: 20px }
+h3 { font-size: 20px; margin: 28px 0 12px }
+h4 { font-size: 16px; font-family: inherit; font-weight: 700; color: var(--green); margin: 18px 0 6px }
+button, input, select { font: inherit; color: inherit }
+button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 16px; min-height: 44px }
+button:hover:not(:disabled) { border-color: var(--green) }
+button:disabled { opacity: .45; cursor: default }
+button.primary { background: var(--green); color: var(--green-ink); border-color: var(--green); font-weight: 600 }
+button.small, .filebtn { min-height: 36px; padding: 6px 12px; font-size: 15px }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--green) 55%, transparent); outline-offset: 2px }
+input, select { font-size: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 44px; background: var(--panel); width: 100% }
+.muted, .note { color: var(--muted) }
+.note { font-size: 14px; margin: 6px 0 12px }
+
+.app { min-height: 100vh }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--green); color: var(--green-ink); flex-wrap: wrap }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px }
+.brand svg { width: 28px; height: 28px }
+.savestate { font-size: 14px; opacity: .85 }
+.savestate.warn { background: var(--redbg); color: var(--red); padding: 2px 10px; border-radius: 6px; opacity: 1 }
+
+.layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); max-width: 1320px; margin: 0 auto }
+.side { border-right: 1px solid var(--line); padding: 24px 18px; display: flex; flex-direction: column; gap: 14px; min-height: calc(100vh - 56px) }
+.sidehead { display: flex; justify-content: space-between; align-items: center; gap: 8px }
+.clients { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px }
+.clients button { width: 100%; text-align: left; display: grid; border: 1px solid transparent; background: transparent; padding: 8px 12px }
+.clients button.on { background: var(--sage); border-color: var(--line) }
+.ccode { font-weight: 600 }
+.clients small { color: var(--muted) }
+.datatools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line) }
+.filebtn { border: 1px solid var(--line); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center }
+.filebtn input { display: none }
+.source { font-size: 13px; color: var(--muted); margin: 0 }
+
+.main { padding: 28px clamp(16px, 3vw, 40px) 64px }
+.panel { padding-top: 8px }
+.lead { color: var(--muted); max-width: 62ch }
+
+.clienthead { background: var(--sage); border-radius: 14px; padding: 22px 24px; display: grid; gap: 14px }
+.facts { margin: 6px 0 0; color: var(--muted) }
+.needs { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 0 }
+.needs div { display: grid }
+.needs dt { font-size: 14px; color: var(--muted) }
+.needs dd { margin: 0; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap }
+.needs dd small { display: block; font-size: 14px; font-weight: 400; color: var(--muted) }
+.needs .goal dd { color: var(--green) }
+.goalline { margin: 0; font-size: 15px }
+.warntext { color: var(--red) }
+
+.tabs { display: flex; gap: 4px; margin: 22px 0 8px; border-bottom: 1px solid var(--line); overflow-x: auto }
+.tabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; padding: 10px 16px; font-weight: 600; color: var(--muted) }
+.tabs button.on { color: var(--ink); border-bottom-color: var(--green) }
+
+.form { display: grid; gap: 18px; max-width: 640px; margin-top: 18px }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px }
+.span2 { grid-column: 1 / -1 }
+.field { display: grid; gap: 6px; border: 0; padding: 0; margin: 0 }
+.field > span { font-weight: 600; font-size: 15px }
+.field small { color: var(--muted); font-size: 13px }
+.seg { display: flex; gap: 0; flex-wrap: wrap }
+.seg button { border-radius: 0; flex: 1 }
+.seg button:first-child { border-radius: 8px 0 0 8px }
+.seg button:last-child { border-radius: 0 8px 8px 0 }
+.seg button + button { margin-left: -1px }
+.seg button.on { background: var(--green); color: var(--green-ink); border-color: var(--green); position: relative }
+.check { display: flex; gap: 10px; align-items: center; font-weight: 600 }
+.check input { width: 22px; height: 22px; min-height: 0 }
+.goalbox { background: var(--sage); padding: 16px; border-radius: 10px }
+.error { color: var(--red); margin: 0 }
+.actions { display: flex; gap: 10px }
+
+.diary { display: grid; gap: 14px }
+.dayrow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center }
+.days { display: flex; gap: 6px; flex-wrap: wrap }
+.days button { min-height: 36px; padding: 4px 14px; border-radius: 99px }
+.days button.on { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+.inline { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--muted) }
+.inline select { width: auto }
+.adder { display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px auto; gap: 12px; align-items: end; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel) }
+.search { position: relative }
+.hits { position: absolute; z-index: 5; top: 100%; left: 0; right: 0; margin: 4px 0 0; padding: 4px; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / .14); max-height: 340px; overflow-y: auto }
+.hits button { width: 100%; display: flex; justify-content: space-between; gap: 12px; text-align: left; border: 0; min-height: 40px; padding: 8px 10px; border-radius: 6px }
+.hits button.on, .hits button:hover { background: var(--sage) }
+.hits small { color: var(--muted); white-space: nowrap }
+.empty { color: var(--muted); padding: 28px; text-align: center; border: 1px dashed var(--line); border-radius: 12px }
+.entries { width: 100%; border-collapse: collapse }
+.entries td { padding: 6px 4px; border-bottom: 1px solid var(--line) }
+.entries .name { width: 100% }
+.entries .num { white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums }
+.entries .num input { width: 80px; min-height: 36px; padding: 4px 8px; text-align: right }
+.entries .kcal { color: var(--muted); padding-left: 14px }
+.entries .del button { border: 0; background: none; font-size: 22px; line-height: 1; min-height: 36px; padding: 0 10px; color: var(--muted) }
+.entries .del button:hover { color: var(--red) }
+.daytotal { text-align: right; margin: 4px 0 0 }
+
+.energyhero { display: grid; gap: 10px; padding: 22px 24px; border-radius: 14px; border: 1px solid var(--line) }
+.big { display: grid }
+.big .lbl { color: var(--muted); font-size: 15px }
+.big .val { font-size: clamp(40px, 7vw, 56px); font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums }
+.big .val small { font-size: 22px; font-weight: 600; color: var(--muted) }
+.big .sub { color: var(--muted) }
+.meter { position: relative; height: 16px; border-radius: 99px; background: var(--sage); overflow: hidden }
+.meter .fill { height: 100%; background: var(--green); border-radius: 99px; transition: width .5s ease }
+.meter .mark { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--ink) }
+.cmp { margin: 0 }
+
+table.ref { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums }
+.ref th { text-align: left; font-size: 13px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--ink) }
+.ref td { padding: 9px 8px; border-bottom: 1px solid var(--line) }
+.ref .num { text-align: right; white-space: nowrap }
+.ref .subrow td:first-child { padding-left: 22px; color: var(--muted) }
+.ref .wide { width: 40% }
+.pill { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 99px; white-space: nowrap }
+.pill.ok { background: var(--okbg); color: var(--green) }
+.pill.low, .pill.high { background: var(--redbg); color: var(--red) }
+.pill.near { background: var(--amberbg); color: var(--amber) }
+.hbar { height: 10px; background: var(--sage); border-radius: 99px; overflow: hidden }
+.hbar div { height: 100%; background: var(--green) }
+
+.microlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px }
+.micro { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px }
+.mhead, .mfoot { display: flex; justify-content: space-between; gap: 8px; align-items: baseline }
+.mname { font-weight: 600 }
+.mval { font-variant-numeric: tabular-nums; white-space: nowrap }
+.mfoot { font-size: 13px; color: var(--muted) }
+.pct { font-weight: 700; font-variant-numeric: tabular-nums }
+.pct.ok { color: var(--green) } .pct.near { color: var(--amber) } .pct.low, .pct.high { color: var(--red) }
+.bar { position: relative; height: 8px; background: var(--sage); border-radius: 99px }
+.bar div { height: 100%; border-radius: 99px; transition: width .5s ease }
+.bar i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .55 }
+.bar.ok div { background: var(--green) } .bar.near div { background: var(--amber) } .bar.low div, .bar.high div { background: var(--red) }
+.mnote { color: var(--muted); font-size: 12.5px }
+.missing ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--muted) }
+
+.pallist { margin-top: 24px; max-width: 640px }
+.pallist summary { cursor: pointer; font-weight: 600 }
+.pallist ul { padding-left: 18px; color: var(--muted); font-size: 15px }
+.danger { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.linkbtn { border: 0; background: none; color: var(--red); padding: 0; min-height: 0; text-decoration: underline }
+.dangerbtn { background: var(--red); color: #fff; border-color: var(--red) }
+
+@media (prefers-reduced-motion: reduce) { .meter .fill, .bar div { transition: none } }
+@media (max-width: 900px) {
+  .adder { grid-template-columns: minmax(0, 1fr) 110px; }
+  .adder .search { grid-column: 1 / -1; grid-row: 1 }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr) }
+  .side { border-right: 0; border-bottom: 1px solid var(--line); min-height: 0; padding: 16px }
+  .clients { display: flex; overflow-x: auto; gap: 6px }
+  .clients button { white-space: nowrap; border-color: var(--line) }
+  .datatools { margin-top: 0 }
+  .grid2 { grid-template-columns: minmax(0, 1fr) }
+  .needs dd { font-size: 22px }
+}
+@media (max-width: 600px) {
+  .main { padding: 18px 14px 48px }
+  .clienthead { padding: 18px }
+  .adder { grid-template-columns: minmax(0, 1fr) 96px; padding: 12px }
+  .adder .meal { grid-column: 1 / -1 }
+  .adder button.primary { grid-column: 1 / -1 }
+  .stack thead { display: none }
+  .stack tr { display: grid; padding-block: 10px; border-bottom: 1px solid var(--line) }
+  .stack td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 2px 0 }
+  .stack td::before { content: attr(data-l); color: var(--muted); font-size: 13px }
+  .stack td:empty { display: none }
+  .ref .subrow td:first-child { padding-left: 0 }
+}
