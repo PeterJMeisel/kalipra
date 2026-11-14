@@ -30,14 +30,14 @@ h1 { font-size: clamp(28px, 4vw, 40px); text-wrap: balance }
 h2 { font-size: 20px }
 h3 { font-size: 20px; margin: 28px 0 12px }
 h4 { font-size: 16px; font-family: inherit; font-weight: 700; color: var(--green); margin: 18px 0 6px }
-button, input, select { font: inherit; color: inherit }
+button, input, select, textarea { font: inherit; color: inherit }
 button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 16px; min-height: 44px }
 button:hover:not(:disabled) { border-color: var(--green) }
 button:disabled { opacity: .45; cursor: default }
 button.primary { background: var(--green); color: var(--green-ink); border-color: var(--green); font-weight: 600 }
 button.small, .filebtn { min-height: 36px; padding: 6px 12px; font-size: 15px }
 :focus-visible { outline: 3px solid color-mix(in srgb, var(--green) 55%, transparent); outline-offset: 2px }
-input, select { font-size: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 44px; background: var(--panel); width: 100% }
+input, select, textarea { font-size: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 44px; background: var(--panel); width: 100% }
 .muted, .note { color: var(--muted) }
 .note { font-size: 14px; margin: 6px 0 12px }
 
@@ -59,7 +59,7 @@ input, select { font-size: 16px; border: 1px solid var(--line); border-radius: 8
 .starthero { text-align: center }
 .starthero h1 { font-size: clamp(38px, 6vw, 56px) }
 .starthero .lead { margin: 12px auto 0; font-size: 18px }
-.bigchoices { display: grid; grid-template-columns: repeat(2, minmax(0, 300px)); gap: 20px; width: 100%; justify-content: center }
+.bigchoices { display: grid; grid-template-columns: repeat(3, minmax(0, 280px)); gap: 20px; width: 100%; justify-content: center }
 .bigbtn { display: grid; justify-items: center; align-content: center; gap: 10px; min-height: 230px; padding: 28px 22px; border-radius: 18px; border: 2px solid var(--green); background: var(--panel); color: var(--green); text-align: center; box-shadow: 0 10px 30px rgb(20 60 40 / .10); transition: transform .15s ease, box-shadow .15s ease }
 .bigbtn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 16px 40px rgb(20 60 40 / .18) }
 .bigbtn svg { width: 64px; height: 64px }
@@ -216,3 +216,32 @@ table.ref { width: 100%; border-collapse: collapse; font-variant-numeric: tabula
   .stack td:empty { display: none }
   .ref .subrow td:first-child { padding-left: 0 }
 }
+
+/* Formulärflikar och hälsotillstånd */
+.formtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line) }
+.formtabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; font-weight: 600; color: var(--muted); display: inline-flex; gap: 8px; align-items: center }
+.formtabs button.on { color: var(--ink); border-bottom-color: var(--green) }
+.formtabs .count { background: var(--green); color: var(--green-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px }
+.formsection { display: grid; gap: 18px }
+.formsection[hidden] { display: none }
+.condgroups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px }
+.condgroup { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px 12px; margin: 0; display: grid; gap: 2px; align-content: start }
+.condgroup legend { font-weight: 700; color: var(--green); padding: 0 4px; font-size: 15px }
+.cond { display: flex; gap: 10px; align-items: center; min-height: 36px; cursor: pointer }
+.cond input, .check.small input { width: 20px; height: 20px; min-height: 0; flex: none }
+.subfield { margin: 0 0 6px 30px; display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); width: calc(100% - 30px) }
+.subfield select { width: auto; min-height: 36px; padding: 4px 8px }
+input.subfield { min-height: 36px; padding: 4px 10px; font-size: 15px; color: var(--ink) }
+.amputation { border: 2px solid var(--green); border-radius: 12px; padding: 14px 16px; margin: 0; display: grid; gap: 12px; background: var(--sage) }
+.amputation legend { font-weight: 700; padding: 0 6px }
+.ampgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px }
+.ampcell { display: grid; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; align-content: start }
+.check.small { font-weight: 600; font-size: 15px }
+.chips { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
+.chips li { background: var(--panel); border: 1px solid var(--line); border-radius: 99px; padding: 2px 12px; font-size: 14px }
+.needs .diff { font-size: 18px; font-weight: 600 }
+.micro.hl { border: 2px solid var(--red); background: var(--redbg); position: relative }
+.hltag { font-size: 12px; font-weight: 700; color: var(--red); text-transform: none }
+textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; background: var(--panel) }
+@media (min-width: 761px) and (max-width: 960px) { .bigchoices { grid-template-columns: repeat(2, minmax(0, 300px)) } }
+@media (max-width: 600px) { .ampgrid { grid-template-columns: minmax(0, 1fr) } .bigchoices { grid-template-columns: minmax(0, 360px) } }

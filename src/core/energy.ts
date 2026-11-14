@@ -50,9 +50,6 @@ export const PAL_OPTIONS: PalOption[] = [
   { value: 2.2, label: 'Extremt aktiv, t.ex. elitidrott' },
 ]
 
-/** Antagen energimängd per kg kroppsviktsförändring (förenklad modell). */
-export const KCAL_PER_KG_BODY_WEIGHT = 7700
-
 export type EnergyNeed = {
   bmrMJ: number
   bmrKcal: number
@@ -68,35 +65,34 @@ export function energyNeed(sex: Sex, age: number, weightKg: number, heightCm: nu
 
 export type GoalPlan = {
   direction: 'nedgång' | 'uppgång' | 'bibehåll'
+  targetWeightKg: number
   deltaKg: number
-  /** Justering per dag i kcal (negativ vid nedgång) */
-  dailyAdjustmentKcal: number
-  targetIntakeKcal: number
-  targetIntakeMJ: number
-  weeksToGoal: number | null
-  /** Beräknat energibehov för att bibehålla målvikten */
-  maintenanceAtTargetKcal: number
+  /** Energibehov vid nuvarande vikt */
+  currentNeed: EnergyNeed
+  /** Energibehov vid målvikten (samma ålder, längd och PAL) */
+  targetNeed: EnergyNeed
+  /** Energibehov vid målvikt minus nuvarande energibehov, kcal per dag (negativt = underskott) */
+  differenceKcal: number
 }
 
+/**
+ * Viktmål: energibehovet vid målvikten jämförs med energibehovet vid nuvarande vikt.
+ * Skillnaden visas som under- eller överskott per dag.
+ */
 export function goalPlan(
   sex: Sex, age: number, weightKg: number, heightCm: number, pal: number, goal: WeightGoal,
 ): GoalPlan {
-  const current = energyNeed(sex, age, weightKg, heightCm, pal)
-  const atTarget = energyNeed(sex, age, goal.targetWeightKg, heightCm, pal)
+  const currentNeed = energyNeed(sex, age, weightKg, heightCm, pal)
+  const targetNeed = energyNeed(sex, age, goal.targetWeightKg, heightCm, pal)
   const deltaKg = goal.targetWeightKg - weightKg
-  const direction = Math.abs(deltaKg) < 0.05 || goal.paceKgPerWeek <= 0
-    ? 'bibehåll' : deltaKg < 0 ? 'nedgång' : 'uppgång'
-  const perDay = direction === 'bibehåll' ? 0 : (goal.paceKgPerWeek * KCAL_PER_KG_BODY_WEIGHT) / 7
-  const dailyAdjustmentKcal = direction === 'nedgång' ? -perDay : perDay
-  const targetIntakeKcal = current.teeKcal + dailyAdjustmentKcal
+  const direction = Math.abs(deltaKg) < 0.05 ? 'bibehåll' : deltaKg < 0 ? 'nedgång' : 'uppgång'
   return {
     direction,
+    targetWeightKg: goal.targetWeightKg,
     deltaKg,
-    dailyAdjustmentKcal,
-    targetIntakeKcal,
-    targetIntakeMJ: kcalToKj(targetIntakeKcal) / 1000,
-    weeksToGoal: direction === 'bibehåll' ? null : Math.abs(deltaKg) / goal.paceKgPerWeek,
-    maintenanceAtTargetKcal: atTarget.teeKcal,
+    currentNeed,
+    targetNeed,
+    differenceKcal: targetNeed.teeKcal - currentNeed.teeKcal,
   }
 }
 

@@ -14,7 +14,7 @@ const db = new FoodDatabase(data as unknown as FoodData)
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
-type View = 'start' | 'ny' | 'ladda' | 'berakning'
+type View = 'start' | 'ny' | 'ladda' | 'berakning' | 'undernaring'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
 const now = () => new Date().toISOString()
@@ -133,6 +133,7 @@ export default function App() {
           <nav className="topnav">
             <button className={view === 'ny' ? 'on' : ''} onClick={() => go('ny')}>Ny beräkning</button>
             <button className={view === 'ladda' ? 'on' : ''} onClick={() => go('ladda')}>Ladda beräkning</button>
+            <button className={view === 'undernaring' ? 'on' : ''} onClick={() => go('undernaring')}>Bedöm undernäring</button>
           </nav>
         )}
       </header>
@@ -160,6 +161,11 @@ export default function App() {
                   : 'Hämta en beräkning från en exporterad fil'}
               </span>
             </button>
+            <button className="bigbtn" onClick={() => go('undernaring')}>
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M24 8v20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M10 18h28l-4 14H14z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><circle cx="24" cy="8" r="3" fill="currentColor" /></svg>
+              <span className="bt">Bedöm undernäring</span>
+              <span className="bs">Screening och bedömning av undernäring</span>
+            </button>
           </div>
           <p className="source center">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}. Referensvärden: NNR 2023.</p>
         </main>
@@ -170,6 +176,14 @@ export default function App() {
           <h1>Ny beräkning</h1>
           <p className="lead">Fyll i uppgifter om personen. Energibehovet beräknas med Henrys ekvationer (2005), samma som NNR 2023 använder.</p>
           <ClientForm onSave={createClient} onCancel={() => go('start')} />
+        </main>
+      )}
+
+      {view === 'undernaring' && (
+        <main className="main narrow">
+          <h1>Bedöm undernäring</h1>
+          <p className="empty">Den här delen byggs i en senare version.</p>
+          <div className="actions"><button onClick={() => go('start')}>Till startsidan</button></div>
         </main>
       )}
 
@@ -195,33 +209,33 @@ export default function App() {
                 <p className="facts">
                   {client.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {client.age} år ({AGE_GROUP_LABEL[ageGroup(client.age)]}) · {formatNumber(client.weightKg, 1)} kg · {formatNumber(client.heightCm, 0)} cm · BMI {formatNumber(bmi(client.weightKg, client.heightCm), 1)} · PAL {formatNumber(client.pal, 2)}
                 </p>
+                {conditionLabels(client).length > 0 && (
+                  <ul className="chips" aria-label="Hälsotillstånd">
+                    {conditionLabels(client).map(c => <li key={c}>{c}</li>)}
+                  </ul>
+                )}
               </div>
               <button className="small" onClick={() => exportFile([client.id], `kostberakning-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
             </div>
             {message && <p className="msg">{message}</p>}
             <dl className="needs">
-              <div><dt>BMR</dt><dd>{formatNumber(calc.need.bmrKcal, 0)} kcal<small>{formatNumber(calc.need.bmrMJ, 1)} MJ</small></dd></div>
-              <div><dt>Energibehov</dt><dd>{formatNumber(calc.need.teeKcal, 0)} kcal<small>{formatNumber(calc.need.teeMJ * 1000, 0)} kJ</small></dd></div>
-              {calc.plan && calc.plan.direction !== 'bibehåll' && (
+              <div><dt>BMR</dt><dd>{formatNumber(calc.need.bmrKcal, 0)} kcal<small>{formatNumber(calc.need.bmrMJ * 1000, 0)} kJ</small></dd></div>
+              <div><dt>Energibehov nu ({formatNumber(client.weightKg, 1)} kg)</dt><dd>{formatNumber(calc.need.teeKcal, 0)} kcal<small>{formatNumber(calc.need.teeMJ * 1000, 0)} kJ</small></dd></div>
+              {calc.plan && (
                 <div className="goal">
-                  <dt>Mål: {calc.plan.direction} till {formatNumber(client.goal!.targetWeightKg, 1)} kg</dt>
-                  <dd>{formatNumber(calc.plan.targetIntakeKcal, 0)} kcal<small>{formatNumber(kcalToKj(calc.plan.targetIntakeKcal), 0)} kJ</small></dd>
+                  <dt>Energibehov vid målvikt ({formatNumber(calc.plan.targetWeightKg, 1)} kg)</dt>
+                  <dd>
+                    {formatNumber(calc.plan.targetNeed.teeKcal, 0)} kcal{' '}
+                    <span className="diff">({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(calc.plan.differenceKcal), 0)} kcal/dag)</span>
+                    <small>{formatNumber(calc.plan.targetNeed.teeMJ * 1000, 0)} kJ ({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(kcalToKj(calc.plan.differenceKcal)), 0)} kJ/dag) · {calc.plan.direction === 'nedgång' ? 'underskott' : calc.plan.direction === 'uppgång' ? 'överskott' : 'ingen skillnad'} jämfört med nu</small>
+                  </dd>
                 </div>
               )}
             </dl>
-            {calc.plan && calc.plan.direction !== 'bibehåll' && (
-              <p className="goalline">
-                {calc.plan.dailyAdjustmentKcal < 0 ? 'Underskott' : 'Överskott'} {formatNumber(Math.abs(calc.plan.dailyAdjustmentKcal), 0)} kcal/dag
-                ({formatNumber(client.goal!.paceKgPerWeek, 2)} kg/vecka) · {formatNumber(Math.abs(calc.plan.deltaKg), 1)} kg på cirka {formatNumber(calc.plan.weeksToGoal!, 0)} veckor ·
-                behov vid målvikt {formatNumber(calc.plan.maintenanceAtTargetKcal, 0)} kcal.
-                <span className="muted"> Förenklad modell: 7 700 kcal per kg, utan hänsyn till metabol anpassning.</span>
-                {calc.plan.targetIntakeKcal < calc.need.bmrKcal && <strong className="warntext"> Målintaget ligger under BMR.</strong>}
-              </p>
-            )}
           </section>
 
           <nav className="tabs" role="tablist">
-            {([['registrering', 'Kostregistrering'], ['resultat', 'Resultat'], ['uppgifter', 'Uppgifter']] as [Tab, string][]).map(([k, l]) => (
+            {([['registrering', 'Kostregistrering'], ['resultat', 'Resultat'], ['uppgifter', 'Uppgifter och hälsa']] as [Tab, string][]).map(([k, l]) => (
               <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{l}</button>
             ))}
           </nav>
@@ -293,6 +307,19 @@ function LoadList({ clients, onOpen, onPickFile, onExportAll, message }: LoadPro
       <p className="note">Beräkningar sparas automatiskt i den här webbläsaren på den här datorn. Exportera till fil för att flytta dem till en annan dator eller spara en säkerhetskopia.</p>
     </>
   )
+}
+
+function conditionLabels(c: Client): string[] {
+  const h = c.health
+  if (!h) return []
+  return h.conditions.map(x => {
+    if (x === 'Kronisk njursjukdom' && h.ckdStage) return `${x}, stadium ${h.ckdStage}`
+    if (x === 'Födoämnesallergi' && h.allergyText) return `${x}: ${h.allergyText}`
+    if (x === 'Amputation' && h.amputations.length) {
+      return `Amputation: ${h.amputations.map(a => `${a.limb === 'arm' ? 'arm' : 'ben'} ${a.side} (${a.level.toLowerCase()})`).join(', ')}`
+    }
+    return x
+  })
 }
 
 function DeleteClient({ code, onDelete }: { code: string; onDelete: () => void }) {

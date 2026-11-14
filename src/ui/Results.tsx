@@ -35,12 +35,17 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
   const v = (k: NutrientKey) => t[k] ?? 0
   const kcal = v('ENERC|kcal')
   const kj = v('ENERC|kJ')
-  const goalKcal = plan && plan.direction !== 'bibehåll' ? plan.targetIntakeKcal : null
+  const goalKcal = plan && plan.direction !== 'bibehåll' ? plan.targetNeed.teeKcal : null
   const compareKcal = goalKcal ?? need.teeKcal
   const pctOfNeed = (kcal / compareKcal) * 100
   const e = energyDistribution(t)
   const macro = macroReferences(client.age, client.sex)
+  const conditions = client.health?.conditions ?? []
+  const highlight = new Map<NutrientKey, string>()
+  // Godkänt (rad 9 i att göra-listan): hypertoni → NNR:s maxgräns för salt, raden lyfts fram
+  if (conditions.includes('Hypertoni')) highlight.set('NACL', 'Hypertoni')
   const micro = microReferences(client.age, client.sex, need.teeMJ)
+    .sort((a, b) => Number(highlight.has(b.key)) - Number(highlight.has(a.key)))
   const intakeMJ = kj / 1000
   const fiberPerMJ = intakeMJ > 0 ? v('FIBT') / intakeMJ : 0
   const proteinPerKg = v('PROT') / client.weightKg
@@ -71,8 +76,8 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
           <div className="mark" style={{ left: `${100 / 1.5}%` }} />
         </div>
         <p className="cmp">
-          <strong>{formatNumber(pctOfNeed, 0)} %</strong> av {goalKcal ? 'målintaget' : 'beräknat energibehov'} ({formatNumber(compareKcal, 0)} kcal · {formatNumber(kcalToKj(compareKcal), 0)} kJ).
-          {goalKcal && <> Energibehov utan viktmål: {formatNumber(need.teeKcal, 0)} kcal.</>}
+          <strong>{formatNumber(pctOfNeed, 0)} %</strong> av {goalKcal ? `energibehovet vid målvikt ${formatNumber(plan!.targetWeightKg, 1)} kg` : 'beräknat energibehov'} ({formatNumber(compareKcal, 0)} kcal · {formatNumber(kcalToKj(compareKcal), 0)} kJ).
+          {goalKcal && <> Energibehov vid nuvarande vikt: {formatNumber(need.teeKcal, 0)} kcal.</>}
           {' '}Skillnad: {kcal - compareKcal >= 0 ? '+' : '−'}{formatNumber(Math.abs(kcal - compareKcal), 0)} kcal/dag.
         </p>
       </section>
@@ -122,7 +127,8 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
             const pct = m.value > 0 ? (val / m.value) * 100 : 0
             const st: Status = m.kind === 'max' ? (val > m.value ? 'high' : 'ok') : pct >= 100 ? 'ok' : pct >= 67 ? 'near' : 'low'
             return (
-              <div className="micro" key={m.key}>
+              <div className={`micro${highlight.has(m.key) ? ' hl' : ''}`} key={m.key}>
+                {highlight.has(m.key) && <span className="hltag">Viktig vid {highlight.get(m.key)!.toLowerCase()}</span>}
                 <div className="mhead">
                   <span className="mname">{d.label}</span>
                   <span className="mval">{formatNumber(val, d.decimals)} {d.unit}</span>

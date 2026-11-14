@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bmrMJ, energyNeed, goalPlan, KCAL_PER_KG_BODY_WEIGHT } from './energy'
+import { bmrMJ, energyNeed, goalPlan } from './energy'
 import type { Sex } from './types'
 
 // NNR 2023, tabell för vuxna: referensvikt (BMI 23), BEE och energibehov vid PAL 1,4/1,6/1,8 (MJ/dag).
@@ -28,27 +28,27 @@ describe('Henry 2005 mot NNR 2023:s referensvärden', () => {
 })
 
 describe('viktmål', () => {
-  it('0,5 kg/vecka nedgång ger 550 kcal underskott per dag', () => {
-    const plan = goalPlan('kvinna', 40, 80, 165, 1.6, { targetWeightKg: 70, paceKgPerWeek: 0.5 })
-    const need = energyNeed('kvinna', 40, 80, 165, 1.6)
+  it('visar energibehov nu och vid målvikt samt skillnaden per dag', () => {
+    const plan = goalPlan('kvinna', 40, 82, 168, 1.4, { targetWeightKg: 74 })
+    const now = energyNeed('kvinna', 40, 82, 168, 1.4)
+    const target = energyNeed('kvinna', 40, 74, 168, 1.4)
     expect(plan.direction).toBe('nedgång')
-    expect(plan.dailyAdjustmentKcal).toBeCloseTo(-(0.5 * KCAL_PER_KG_BODY_WEIGHT) / 7, 6)
-    expect(plan.targetIntakeKcal).toBeCloseTo(need.teeKcal - 550, 6)
-    expect(plan.weeksToGoal).toBeCloseTo(20, 6)
-    expect(plan.maintenanceAtTargetKcal).toBeLessThan(need.teeKcal)
+    expect(plan.currentNeed.teeKcal).toBeCloseTo(now.teeKcal, 6)
+    expect(plan.targetNeed.teeKcal).toBeCloseTo(target.teeKcal, 6)
+    expect(plan.differenceKcal).toBeCloseTo(target.teeKcal - now.teeKcal, 6)
+    // Henry 30–60 år kvinna: 0,0342 MJ per kg → 8 kg × 0,0342 × 1,4 PAL = 0,383 MJ ≈ 92 kcal
+    expect(plan.differenceKcal).toBeCloseTo(-(8 * 0.0342 * 1.4 * 1000) / 4.184, 6)
   })
 
   it('uppgång ger överskott', () => {
-    const plan = goalPlan('man', 30, 60, 180, 1.4, { targetWeightKg: 65, paceKgPerWeek: 0.25 })
+    const plan = goalPlan('man', 30, 60, 180, 1.4, { targetWeightKg: 65 })
     expect(plan.direction).toBe('uppgång')
-    expect(plan.dailyAdjustmentKcal).toBeCloseTo(275, 6)
-    expect(plan.weeksToGoal).toBeCloseTo(20, 6)
+    expect(plan.differenceKcal).toBeGreaterThan(0)
   })
 
-  it('målvikt = nuvarande vikt ger ingen justering', () => {
-    const plan = goalPlan('man', 30, 70, 180, 1.6, { targetWeightKg: 70, paceKgPerWeek: 0.5 })
+  it('målvikt = nuvarande vikt ger ingen skillnad', () => {
+    const plan = goalPlan('man', 30, 70, 180, 1.6, { targetWeightKg: 70 })
     expect(plan.direction).toBe('bibehåll')
-    expect(plan.dailyAdjustmentKcal).toBe(0)
-    expect(plan.weeksToGoal).toBeNull()
+    expect(plan.differenceKcal).toBeCloseTo(0, 6)
   })
 })
