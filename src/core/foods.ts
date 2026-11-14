@@ -53,8 +53,10 @@ export class FoodDatabase {
       const key = this.searchKeys[i]
       if (!words.every(w => key.includes(w))) return
       let score = key.length / 100
-      if (key.startsWith(words[0])) score -= 10
-      else if (key.includes(' ' + words[0])) score -= 5
+      const first = words[0]
+      if (key === first || key.startsWith(first + ' ')) score -= 20 // hela ordet först: "lax" → "Lax odlad"
+      else if (key.startsWith(first)) score -= 10
+      else if (key.includes(' ' + first)) score -= 5
       hits.push({ food, score })
     })
     hits.sort((a, b) => a.score - b.score)

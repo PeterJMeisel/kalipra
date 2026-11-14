@@ -18,6 +18,10 @@ describe('livsmedelsdatabasen', () => {
     expect(hits.every(f => f.name.toLowerCase().includes('mjölk'))).toBe(true)
   })
 
+  it('rankar livsmedel som börjar med hela sökordet först', () => {
+    expect(db.search('lax')[0].name.toLowerCase().startsWith('lax ')).toBe(true)
+  })
+
   it('räknar om per 100 g till portion och snitt per dag', () => {
     const food = db.foods.find(f => f.per100g['ENERC|kcal'] && f.per100g.PROT)!
     const entries: DiaryEntry[] = [

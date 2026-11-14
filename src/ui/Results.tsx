@@ -132,7 +132,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
                   <i style={{ left: '50%' }} />
                 </div>
                 <div className="mfoot">
-                  <span>{m.kind === 'max' ? 'Högst' : m.kind} {formatNumber(m.value, d.decimals)} {d.unit}</span>
+                  <span>{m.kind === 'max' ? 'Högst' : m.kind} {formatNumber(m.value, Number.isInteger(m.value * 10 ** d.decimals) ? d.decimals : 2)} {d.unit}</span>
                   <span className={`pct ${st}`}>{formatNumber(pct, 0)} %</span>
                 </div>
                 {m.note && <small className="mnote">{m.note}</small>}
