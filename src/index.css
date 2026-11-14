@@ -43,29 +43,52 @@ input, select { font-size: 16px; border: 1px solid var(--line); border-radius: 8
 
 .app { min-height: 100vh }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--green); color: var(--green-ink); flex-wrap: wrap }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; background: none; border: 0; color: inherit; padding: 4px 0; min-height: 44px }
 .brand svg { width: 28px; height: 28px }
-.savestate { font-size: 14px; opacity: .85 }
-.savestate.warn { background: var(--redbg); color: var(--red); padding: 2px 10px; border-radius: 6px; opacity: 1 }
-
-.layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); max-width: 1320px; margin: 0 auto }
-.side { border-right: 1px solid var(--line); padding: 24px 18px; display: flex; flex-direction: column; gap: 14px; min-height: calc(100vh - 56px) }
-.sidehead { display: flex; justify-content: space-between; align-items: center; gap: 8px }
-.clients { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px }
-.clients button { width: 100%; text-align: left; display: grid; border: 1px solid transparent; background: transparent; padding: 8px 12px }
-.clients button.on { background: var(--sage); border-color: var(--line) }
-.ccode { font-weight: 600 }
-.clients small { color: var(--muted) }
-.datatools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line) }
-.filebtn { border: 1px solid var(--line); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center }
-.filebtn input { display: none }
+.brand:hover:not(:disabled) { border: 0; opacity: .9 }
+.topnav { display: flex; gap: 6px; flex-wrap: wrap }
+.topnav button { background: transparent; color: inherit; border-color: color-mix(in srgb, currentColor 40%, transparent); min-height: 40px; padding: 6px 14px; font-weight: 600 }
+.topnav button:hover:not(:disabled) { border-color: currentColor }
+.topnav button.on { background: var(--green-ink); color: var(--green); border-color: var(--green-ink) }
+.savewarn { margin: 0; padding: 10px max(3vw, 16px); background: var(--redbg); color: var(--red); font-weight: 600 }
 .source { font-size: 13px; color: var(--muted); margin: 0 }
+.source.center { text-align: center; max-width: 60ch }
+.ccode { font-weight: 700 }
 
-.main { padding: 28px clamp(16px, 3vw, 40px) 64px }
+.start { min-height: calc(100vh - 68px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(28px, 5vh, 48px); padding: 40px 20px; background: radial-gradient(ellipse at 50% 0%, var(--sage), transparent 70%) }
+.starthero { text-align: center }
+.starthero h1 { font-size: clamp(38px, 6vw, 56px) }
+.starthero .lead { margin: 12px auto 0; font-size: 18px }
+.bigchoices { display: grid; grid-template-columns: repeat(2, minmax(0, 300px)); gap: 20px; width: 100%; justify-content: center }
+.bigbtn { display: grid; justify-items: center; align-content: center; gap: 10px; min-height: 230px; padding: 28px 22px; border-radius: 18px; border: 2px solid var(--green); background: var(--panel); color: var(--green); text-align: center; box-shadow: 0 10px 30px rgb(20 60 40 / .10); transition: transform .15s ease, box-shadow .15s ease }
+.bigbtn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 16px 40px rgb(20 60 40 / .18) }
+.bigbtn svg { width: 64px; height: 64px }
+.bigbtn .bt { font-family: Fraunces, Georgia, serif; font-size: 28px; font-weight: 600; line-height: 1.1; color: inherit }
+.bigbtn .bs { font-size: 15px; color: var(--muted); max-width: 26ch }
+.bigbtn.primary { background: var(--green); color: var(--green-ink) }
+.bigbtn.primary .bs { color: inherit; opacity: .85 }
+
+.narrow { max-width: 760px; margin: 0 auto }
+h2.sub { font-size: 20px; margin: 32px 0 12px }
+.loadactions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px }
+.msg { margin: 12px 0 0; padding: 10px 14px; background: var(--sage); border-radius: 8px; font-size: 15px }
+.filter { margin-bottom: 10px }
+.savedlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
+.savedlist button { width: 100%; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 14px 18px; border-radius: 12px }
+.savedlist button:hover:not(:disabled) { background: var(--sage) }
+.savedlist .ccode { font-size: 18px }
+.cmeta { grid-column: 1; color: var(--muted); font-size: 15px }
+.cdate { grid-column: 1; color: var(--muted); font-size: 13px }
+.savedlist .open { grid-column: 2; grid-row: 1 / span 3; align-self: center; color: var(--green); font-weight: 700; white-space: nowrap }
+
+.main { padding: 28px clamp(16px, 3vw, 40px) 64px; max-width: 1180px; margin: 0 auto }
+.main.narrow { max-width: 760px }
 .panel { padding-top: 8px }
 .lead { color: var(--muted); max-width: 62ch }
 
 .clienthead { background: var(--sage); border-radius: 14px; padding: 22px 24px; display: grid; gap: 14px }
+.chtop { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap }
+.chtop .small { background: var(--panel) }
 .facts { margin: 6px 0 0; color: var(--muted) }
 .needs { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 0 }
 .needs div { display: grid }
@@ -168,17 +191,15 @@ table.ref { width: 100%; border-collapse: collapse; font-variant-numeric: tabula
 .linkbtn { border: 0; background: none; color: var(--red); padding: 0; min-height: 0; text-decoration: underline }
 .dangerbtn { background: var(--red); color: #fff; border-color: var(--red) }
 
-@media (prefers-reduced-motion: reduce) { .meter .fill, .bar div { transition: none } }
+@media (prefers-reduced-motion: reduce) { .meter .fill, .bar div, .bigbtn { transition: none } }
 @media (max-width: 900px) {
   .adder { grid-template-columns: minmax(0, 1fr) 110px; }
   .adder .search { grid-column: 1 / -1; grid-row: 1 }
 }
 @media (max-width: 760px) {
-  .layout { grid-template-columns: minmax(0, 1fr) }
-  .side { border-right: 0; border-bottom: 1px solid var(--line); min-height: 0; padding: 16px }
-  .clients { display: flex; overflow-x: auto; gap: 6px }
-  .clients button { white-space: nowrap; border-color: var(--line) }
-  .datatools { margin-top: 0 }
+  .bigchoices { grid-template-columns: minmax(0, 360px) }
+  .bigbtn { min-height: 150px; padding: 20px }
+  .bigbtn svg { width: 44px; height: 44px }
   .grid2 { grid-template-columns: minmax(0, 1fr) }
   .needs dd { font-size: 22px }
 }

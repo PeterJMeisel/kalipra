@@ -18,6 +18,8 @@ export type Client = {
   pal: number
   goal: WeightGoal | null
   createdAt: string
+  /** Senast ändrad (uppgifter eller kostregistrering) */
+  updatedAt?: string
 }
 
 export const MEALS = ['Frukost', 'Mellanmål fm', 'Lunch', 'Mellanmål em', 'Middag', 'Kvällsmål', 'Övrigt'] as const

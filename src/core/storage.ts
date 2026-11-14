@@ -37,5 +37,36 @@ export function parseState(raw: string): AppState {
   return data as AppState
 }
 
+/** Lägger till importerade beräkningar. En beräkning med samma id som en befintlig ersätts. */
+export function mergeImport(current: AppState, imported: AppState): { state: AppState; added: number; replaced: number } {
+  const ids = new Set(current.clients.map(c => c.id))
+  let added = 0, replaced = 0
+  const clients = [...current.clients]
+  for (const c of imported.clients) {
+    if (ids.has(c.id)) {
+      replaced++
+      clients[clients.findIndex(x => x.id === c.id)] = c
+    } else {
+      added++
+      clients.push(c)
+    }
+  }
+  const diaries = { ...current.diaries }
+  for (const c of imported.clients) {
+    diaries[c.id] = imported.diaries[c.id] ?? { clientId: c.id, days: 1, entries: [] }
+  }
+  return { state: { ...current, clients, diaries }, added, replaced }
+}
+
+/** Plockar ut en eller flera beräkningar som en egen exportfil. */
+export function subset(state: AppState, ids: string[]): AppState {
+  const keep = new Set(ids)
+  return {
+    version: 1,
+    clients: state.clients.filter(c => keep.has(c.id)),
+    diaries: Object.fromEntries(Object.entries(state.diaries).filter(([id]) => keep.has(id))),
+  }
+}
+
 export const newId = () =>
   (globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`)

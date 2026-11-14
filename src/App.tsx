@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import data from './data/livsmedel.json'
 import { bmi, energyNeed, goalPlan, kcalToKj, PAL_OPTIONS } from './core/energy'
 import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
-import { loadState, newId, parseState, saveState, type AppState } from './core/storage'
+import { loadState, mergeImport, newId, parseState, saveState, subset, type AppState } from './core/storage'
 import type { Client, Diary } from './core/types'
 import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
@@ -14,31 +14,47 @@ const db = new FoodDatabase(data as unknown as FoodData)
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
+type View = 'start' | 'ny' | 'ladda' | 'berakning'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
+
+const now = () => new Date().toISOString()
+const dateText = (iso?: string) =>
+  iso ? new Date(iso).toLocaleString('sv-SE', { dateStyle: 'medium', timeStyle: 'short' }) : '–'
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => loadState())
-  const [selectedId, setSelectedId] = useState<string | null>(() => loadState().clients[0]?.id ?? null)
-  const [creating, setCreating] = useState(false)
+  const [view, setView] = useState<View>('start')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('registrering')
   const [saved, setSaved] = useState(true)
-  const [dataMsg, setDataMsg] = useState('')
+  const [message, setMessage] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => { setSaved(saveState(state)) }, [state])
+  useEffect(() => { window.scrollTo(0, 0) }, [view])
+
+  function go(v: View) {
+    setMessage('')
+    setView(v)
+  }
 
   const client = state.clients.find(c => c.id === selectedId) ?? null
   const diary: Diary | null = client ? state.diaries[client.id] ?? { clientId: client.id, days: 1, entries: [] } : null
 
+  function open(id: string, startTab: Tab = 'resultat') {
+    setSelectedId(id)
+    setTab(startTab)
+    go('berakning')
+  }
+
   function createClient(c: Omit<Client, 'id' | 'createdAt'>) {
-    const nc: Client = { ...c, id: newId(), createdAt: new Date().toISOString() }
+    const nc: Client = { ...c, id: newId(), createdAt: now(), updatedAt: now() }
     setState(s => ({ ...s, clients: [...s.clients, nc], diaries: { ...s.diaries, [nc.id]: { clientId: nc.id, days: 1, entries: [] } } }))
-    setSelectedId(nc.id)
-    setCreating(false)
-    setTab('registrering')
+    open(nc.id, 'registrering')
   }
   function updateClient(c: Omit<Client, 'id' | 'createdAt'>) {
     if (!client) return
-    setState(s => ({ ...s, clients: s.clients.map(x => (x.id === client.id ? { ...x, ...c } : x)) }))
+    setState(s => ({ ...s, clients: s.clients.map(x => (x.id === client.id ? { ...x, ...c, updatedAt: now() } : x)) }))
     setTab('resultat')
   }
   function deleteClient(id: string) {
@@ -47,36 +63,49 @@ export default function App() {
       delete diaries[id]
       return { ...s, clients: s.clients.filter(c => c.id !== id), diaries }
     })
-    setSelectedId(state.clients.find(c => c.id !== id)?.id ?? null)
+    setSelectedId(null)
+    go('ladda')
   }
   function setDiary(d: Diary) {
-    setState(s => ({ ...s, diaries: { ...s.diaries, [d.clientId]: d } }))
+    setState(s => ({
+      ...s,
+      diaries: { ...s.diaries, [d.clientId]: d },
+      clients: s.clients.map(c => (c.id === d.clientId ? { ...c, updatedAt: now() } : c)),
+    }))
   }
 
-  async function exportData() {
-    const json = JSON.stringify(state, null, 2)
+  async function exportFile(ids: string[], name: string) {
+    const json = JSON.stringify(subset(state, ids), null, 2)
     try {
       const a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
-      a.download = `kostberakning-${new Date().toISOString().slice(0, 10)}.json`
+      a.download = `${name}.json`
       a.click()
     } catch { /* nedladdning kan vara blockerad */ }
     try {
       await navigator.clipboard.writeText(json)
-      setDataMsg('Exporterad. Datan finns också kopierad till urklipp.')
+      setMessage('Exporterad som fil. Innehållet finns också i urklipp.')
     } catch {
-      setDataMsg('Exporten startad som nedladdning.')
+      setMessage('Exporterad som fil.')
     }
   }
-  async function importData(file: File) {
+
+  async function importFile(file: File) {
     try {
-      const next = parseState(await file.text())
+      const imported = parseState(await file.text())
+      const { state: next, added, replaced } = mergeImport(state, imported)
       setState(next)
-      setSelectedId(next.clients[0]?.id ?? null)
-      setDataMsg(`Importerade ${next.clients.length} klienter.`)
+      if (imported.clients.length === 1) {
+        open(imported.clients[0].id)
+      } else {
+        setView('ladda')
+        setMessage(`Hämtade ${imported.clients.length} beräkningar från filen (${added} nya, ${replaced} ersatta).`)
+      }
     } catch (e) {
-      setDataMsg(e instanceof Error ? e.message : 'Kunde inte läsa filen.')
+      setView('ladda')
+      setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kostberäkning.')
     }
+    if (fileRef.current) fileRef.current.value = ''
   }
 
   const calc = useMemo(() => {
@@ -87,108 +116,182 @@ export default function App() {
     return { need, plan, summary }
   }, [client, diary])
 
-  const showForm = creating || !client
+  const fileInput = (
+    <input ref={fileRef} type="file" accept="application/json,.json" hidden
+      onChange={e => e.target.files?.[0] && importFile(e.target.files[0])} />
+  )
 
   return (
     <div className="app">
+      {fileInput}
       <header className="top">
-        <div className="brand">
+        <button className="brand" onClick={() => go('start')} aria-label="Till startsidan">
           <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2.5" /><path d="M16 2a14 14 0 0 1 14 14H16z" fill="currentColor" /><path d="M16 16 6.1 25.9A14 14 0 0 1 2 16z" fill="currentColor" opacity=".45" /></svg>
           <span>Kostberäkning</span>
-        </div>
-        <span className={`savestate ${saved ? '' : 'warn'}`}>{saved ? 'Sparas i den här webbläsaren' : 'Kan inte spara lokalt – exportera för att behålla datan'}</span>
+        </button>
+        {view !== 'start' && (
+          <nav className="topnav">
+            <button className={view === 'ny' ? 'on' : ''} onClick={() => go('ny')}>Ny beräkning</button>
+            <button className={view === 'ladda' ? 'on' : ''} onClick={() => go('ladda')}>Ladda beräkning</button>
+          </nav>
+        )}
       </header>
 
-      <div className="layout">
-        <aside className="side">
-          <div className="sidehead">
-            <h2>Klienter</h2>
-            <button className="primary small" onClick={() => { setCreating(true); setSelectedId(null) }}>+ Ny klient</button>
+      {!saved && <p className="savewarn">Webbläsaren tillåter inte lokal lagring här. Exportera beräkningen till fil för att behålla den.</p>}
+
+      {view === 'start' && (
+        <main className="start">
+          <div className="starthero">
+            <h1>Kostberäkning</h1>
+            <p className="lead">Energibehov, kostregistrering och näringsintag jämfört med NNR 2023.</p>
           </div>
-          {state.clients.length === 0 ? (
-            <p className="muted">Inga klienter ännu.</p>
-          ) : (
-            <ul className="clients">
-              {state.clients.map(c => (
-                <li key={c.id}>
-                  <button className={c.id === selectedId && !creating ? 'on' : ''} onClick={() => { setSelectedId(c.id); setCreating(false) }}>
-                    <span className="ccode">{c.code}</span>
-                    <small>{c.sex === 'kvinna' ? 'K' : 'M'} · {c.age} år · {formatNumber(c.weightKg, 0)} kg</small>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="datatools">
-            <button className="small" onClick={exportData} disabled={state.clients.length === 0}>Exportera</button>
-            <label className="small filebtn">Importera<input type="file" accept="application/json,.json" onChange={e => e.target.files?.[0] && importData(e.target.files[0])} /></label>
-            {dataMsg && <small className="muted">{dataMsg}</small>}
+          <div className="bigchoices">
+            <button className="bigbtn primary" onClick={() => go('ny')}>
+              <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M24 14v20M14 24h20" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" /></svg>
+              <span className="bt">Ny beräkning</span>
+              <span className="bs">Skapa en ny person och börja registrera</span>
+            </button>
+            <button className="bigbtn" onClick={() => go('ladda')}>
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 13a4 4 0 0 1 4-4h10l4 5h16a4 4 0 0 1 4 4v19a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><path d="M24 22v11m-5-5 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              <span className="bt">Ladda beräkning</span>
+              <span className="bs">
+                {state.clients.length > 0
+                  ? `Öppna en sparad beräkning (${state.clients.length} st) eller hämta från fil`
+                  : 'Hämta en beräkning från en exporterad fil'}
+              </span>
+            </button>
           </div>
-          <p className="source">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}, {db.foods.length} livsmedel. Referensvärden: NNR 2023.</p>
-        </aside>
-
-        <main className="main">
-          {showForm ? (
-            <section className="panel">
-              <h1>Ny klient</h1>
-              <p className="lead">Fyll i grunduppgifter. Energibehovet beräknas med Henrys ekvationer (2005), samma som NNR 2023 använder.</p>
-              <ClientForm onSave={createClient} onCancel={state.clients.length ? () => { setCreating(false); setSelectedId(state.clients[0].id) } : undefined} />
-            </section>
-          ) : client && diary && calc && (
-            <>
-              <section className="clienthead">
-                <div>
-                  <h1>{client.code}</h1>
-                  <p className="facts">
-                    {client.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {client.age} år ({AGE_GROUP_LABEL[ageGroup(client.age)]}) · {formatNumber(client.weightKg, 1)} kg · {formatNumber(client.heightCm, 0)} cm · BMI {formatNumber(bmi(client.weightKg, client.heightCm), 1)} · PAL {formatNumber(client.pal, 2)}
-                  </p>
-                </div>
-                <dl className="needs">
-                  <div><dt>BMR</dt><dd>{formatNumber(calc.need.bmrKcal, 0)} kcal<small>{formatNumber(calc.need.bmrMJ, 1)} MJ</small></dd></div>
-                  <div><dt>Energibehov</dt><dd>{formatNumber(calc.need.teeKcal, 0)} kcal<small>{formatNumber(calc.need.teeMJ * 1000, 0)} kJ</small></dd></div>
-                  {calc.plan && calc.plan.direction !== 'bibehåll' && (
-                    <div className="goal">
-                      <dt>Mål: {calc.plan.direction} till {formatNumber(client.goal!.targetWeightKg, 1)} kg</dt>
-                      <dd>{formatNumber(calc.plan.targetIntakeKcal, 0)} kcal<small>{formatNumber(kcalToKj(calc.plan.targetIntakeKcal), 0)} kJ</small></dd>
-                    </div>
-                  )}
-                </dl>
-                {calc.plan && calc.plan.direction !== 'bibehåll' && (
-                  <p className="goalline">
-                    {calc.plan.dailyAdjustmentKcal < 0 ? 'Underskott' : 'Överskott'} {formatNumber(Math.abs(calc.plan.dailyAdjustmentKcal), 0)} kcal/dag
-                    ({formatNumber(client.goal!.paceKgPerWeek, 2)} kg/vecka) · {formatNumber(Math.abs(calc.plan.deltaKg), 1)} kg på cirka {formatNumber(calc.plan.weeksToGoal!, 0)} veckor ·
-                    behov vid målvikt {formatNumber(calc.plan.maintenanceAtTargetKcal, 0)} kcal.
-                    <span className="muted"> Förenklad modell: 7 700 kcal per kg, utan hänsyn till metabol anpassning.</span>
-                    {calc.plan.targetIntakeKcal < calc.need.bmrKcal && <strong className="warntext"> Målintaget ligger under BMR.</strong>}
-                  </p>
-                )}
-              </section>
-
-              <nav className="tabs" role="tablist">
-                {([['registrering', 'Kostregistrering'], ['resultat', 'Resultat'], ['uppgifter', 'Uppgifter']] as [Tab, string][]).map(([k, l]) => (
-                  <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{l}</button>
-                ))}
-              </nav>
-
-              <section className="panel">
-                {tab === 'registrering' && <DiaryEditor key={client.id} db={db} diary={diary} onChange={setDiary} />}
-                {tab === 'resultat' && <Results client={client} summary={calc.summary} need={calc.need} plan={calc.plan} hasEntries={diary.entries.length > 0} />}
-                {tab === 'uppgifter' && (
-                  <>
-                    <ClientForm key={client.id} initial={client} onSave={updateClient} />
-                    <details className="pallist">
-                      <summary>Om PAL-nivåerna</summary>
-                      <ul>{PAL_OPTIONS.map(o => <li key={o.value}><strong>{formatNumber(o.value, 1)}</strong> {o.label}{o.note ? ` – ${o.note}` : ''}</li>)}</ul>
-                    </details>
-                    <DeleteClient code={client.code} onDelete={() => deleteClient(client.id)} />
-                  </>
-                )}
-              </section>
-            </>
-          )}
+          <p className="source center">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}. Referensvärden: NNR 2023.</p>
         </main>
-      </div>
+      )}
+
+      {view === 'ny' && (
+        <main className="main narrow">
+          <h1>Ny beräkning</h1>
+          <p className="lead">Fyll i uppgifter om personen. Energibehovet beräknas med Henrys ekvationer (2005), samma som NNR 2023 använder.</p>
+          <ClientForm onSave={createClient} onCancel={() => go('start')} />
+        </main>
+      )}
+
+      {view === 'ladda' && (
+        <main className="main narrow">
+          <h1>Ladda beräkning</h1>
+          <LoadList
+            clients={state.clients}
+            onOpen={id => open(id)}
+            onPickFile={() => fileRef.current?.click()}
+            onExportAll={() => exportFile(state.clients.map(c => c.id), `kostberakning-alla-${now().slice(0, 10)}`)}
+            message={message}
+          />
+        </main>
+      )}
+
+      {view === 'berakning' && client && diary && calc && (
+        <main className="main">
+          <section className="clienthead">
+            <div className="chtop">
+              <div>
+                <h1>{client.code}</h1>
+                <p className="facts">
+                  {client.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {client.age} år ({AGE_GROUP_LABEL[ageGroup(client.age)]}) · {formatNumber(client.weightKg, 1)} kg · {formatNumber(client.heightCm, 0)} cm · BMI {formatNumber(bmi(client.weightKg, client.heightCm), 1)} · PAL {formatNumber(client.pal, 2)}
+                </p>
+              </div>
+              <button className="small" onClick={() => exportFile([client.id], `kostberakning-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
+            </div>
+            {message && <p className="msg">{message}</p>}
+            <dl className="needs">
+              <div><dt>BMR</dt><dd>{formatNumber(calc.need.bmrKcal, 0)} kcal<small>{formatNumber(calc.need.bmrMJ, 1)} MJ</small></dd></div>
+              <div><dt>Energibehov</dt><dd>{formatNumber(calc.need.teeKcal, 0)} kcal<small>{formatNumber(calc.need.teeMJ * 1000, 0)} kJ</small></dd></div>
+              {calc.plan && calc.plan.direction !== 'bibehåll' && (
+                <div className="goal">
+                  <dt>Mål: {calc.plan.direction} till {formatNumber(client.goal!.targetWeightKg, 1)} kg</dt>
+                  <dd>{formatNumber(calc.plan.targetIntakeKcal, 0)} kcal<small>{formatNumber(kcalToKj(calc.plan.targetIntakeKcal), 0)} kJ</small></dd>
+                </div>
+              )}
+            </dl>
+            {calc.plan && calc.plan.direction !== 'bibehåll' && (
+              <p className="goalline">
+                {calc.plan.dailyAdjustmentKcal < 0 ? 'Underskott' : 'Överskott'} {formatNumber(Math.abs(calc.plan.dailyAdjustmentKcal), 0)} kcal/dag
+                ({formatNumber(client.goal!.paceKgPerWeek, 2)} kg/vecka) · {formatNumber(Math.abs(calc.plan.deltaKg), 1)} kg på cirka {formatNumber(calc.plan.weeksToGoal!, 0)} veckor ·
+                behov vid målvikt {formatNumber(calc.plan.maintenanceAtTargetKcal, 0)} kcal.
+                <span className="muted"> Förenklad modell: 7 700 kcal per kg, utan hänsyn till metabol anpassning.</span>
+                {calc.plan.targetIntakeKcal < calc.need.bmrKcal && <strong className="warntext"> Målintaget ligger under BMR.</strong>}
+              </p>
+            )}
+          </section>
+
+          <nav className="tabs" role="tablist">
+            {([['registrering', 'Kostregistrering'], ['resultat', 'Resultat'], ['uppgifter', 'Uppgifter']] as [Tab, string][]).map(([k, l]) => (
+              <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{l}</button>
+            ))}
+          </nav>
+
+          <section className="panel">
+            {tab === 'registrering' && <DiaryEditor key={client.id} db={db} diary={diary} onChange={setDiary} />}
+            {tab === 'resultat' && <Results client={client} summary={calc.summary} need={calc.need} plan={calc.plan} hasEntries={diary.entries.length > 0} />}
+            {tab === 'uppgifter' && (
+              <>
+                <ClientForm key={client.id} initial={client} onSave={updateClient} />
+                <details className="pallist">
+                  <summary>Om PAL-nivåerna</summary>
+                  <ul>{PAL_OPTIONS.map(o => <li key={o.value}><strong>{formatNumber(o.value, 1)}</strong> {o.label}{o.note ? ` – ${o.note}` : ''}</li>)}</ul>
+                </details>
+                <DeleteClient code={client.code} onDelete={() => deleteClient(client.id)} />
+              </>
+            )}
+          </section>
+        </main>
+      )}
     </div>
+  )
+}
+
+type LoadProps = {
+  clients: Client[]
+  onOpen: (id: string) => void
+  onPickFile: () => void
+  onExportAll: () => void
+  message: string
+}
+
+function LoadList({ clients, onOpen, onPickFile, onExportAll, message }: LoadProps) {
+  const [q, setQ] = useState('')
+  const sorted = [...clients]
+    .sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt))
+    .filter(c => c.code.toLowerCase().includes(q.trim().toLowerCase()))
+  return (
+    <>
+      <div className="loadactions">
+        <button className="primary" onClick={onPickFile}>Hämta från fil …</button>
+        {clients.length > 0 && <button onClick={onExportAll}>Exportera alla till fil</button>}
+      </div>
+      {message && <p className="msg">{message}</p>}
+
+      <h2 className="sub">Sparade på den här datorn</h2>
+      {clients.length === 0 ? (
+        <p className="empty">Inga sparade beräkningar ännu. Skapa en ny eller hämta från en exporterad fil.</p>
+      ) : (
+        <>
+          {clients.length > 6 && (
+            <input className="filter" type="search" placeholder="Sök på kod …" value={q} onChange={e => setQ(e.target.value)} aria-label="Sök bland sparade beräkningar" />
+          )}
+          <ul className="savedlist">
+            {sorted.map(c => (
+              <li key={c.id}>
+                <button onClick={() => onOpen(c.id)}>
+                  <span className="ccode">{c.code}</span>
+                  <span className="cmeta">{c.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {c.age} år · {formatNumber(c.weightKg, 1)} kg · {formatNumber(c.heightCm, 0)} cm</span>
+                  <span className="cdate">Ändrad {dateText(c.updatedAt ?? c.createdAt)}</span>
+                  <span className="open" aria-hidden="true">Öppna →</span>
+                </button>
+              </li>
+            ))}
+            {sorted.length === 0 && <li className="muted">Ingen beräkning matchar sökningen.</li>}
+          </ul>
+        </>
+      )}
+      <p className="note">Beräkningar sparas automatiskt i den här webbläsaren på den här datorn. Exportera till fil för att flytta dem till en annan dator eller spara en säkerhetskopia.</p>
+    </>
   )
 }
 
@@ -203,9 +306,8 @@ function DeleteClient({ code, onDelete }: { code: string; onDelete: () => void }
           <button onClick={() => setAsk(false)}>Avbryt</button>
         </>
       ) : (
-        <button className="linkbtn" onClick={() => setAsk(true)}>Ta bort klient</button>
+        <button className="linkbtn" onClick={() => setAsk(true)}>Ta bort beräkning</button>
       )}
     </div>
   )
 }
-
