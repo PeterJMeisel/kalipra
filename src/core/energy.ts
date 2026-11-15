@@ -37,13 +37,12 @@ export function henryMJ(sex: Sex, age: number, weightKg: number, heightCm: numbe
   return coef.w * weightKg + coef.h * (heightCm / 100) + coef.c
 }
 
-export type BmrFormula = 'henry' | 'mifflin' | 'hb1919' | 'hb1984'
+export type BmrFormula = 'henry' | 'mifflin' | 'hb1984'
 
 export const BMR_FORMULAS: { value: BmrFormula; label: string; short: string; note: string; adultsOnly: boolean }[] = [
   { value: 'henry', label: 'Henry 2005 (NNR 2023)', short: 'Henry', note: 'Används för NNR 2023:s referensvärden. Gäller alla åldrar.', adultsOnly: false },
   { value: 'mifflin', label: 'Mifflin–St Jeor 1990', short: 'Mifflin–St Jeor', note: 'Mifflin m.fl., Am J Clin Nutr 1990;51:241–7. Utvecklad för vuxna.', adultsOnly: true },
-  { value: 'hb1919', label: 'Harris–Benedict 1919 (original)', short: 'Harris–Benedict 1919', note: 'Harris & Benedict 1919. Utvecklad för vuxna.', adultsOnly: true },
-  { value: 'hb1984', label: 'Harris–Benedict reviderad (Roza & Shizgal 1984)', short: 'Harris–Benedict 1984', note: 'Roza & Shizgal, Am J Clin Nutr 1984;40:168–82. Utvecklad för vuxna.', adultsOnly: true },
+  { value: 'hb1984', label: 'Harris–Benedict, reviderad (Roza & Shizgal 1984)', short: 'Harris–Benedict', note: 'Roza & Shizgal, Am J Clin Nutr 1984;40:168–82. Utvecklad för vuxna.', adultsOnly: true },
 ]
 
 /** BMR i kcal/dag enligt Mifflin–St Jeor och Harris–Benedict (vikt kg, längd cm, ålder år). */
@@ -52,17 +51,22 @@ function kcalFormula(formula: Exclude<BmrFormula, 'henry'>, sex: Sex, age: numbe
   switch (formula) {
     case 'mifflin':
       return 10 * w + 6.25 * h - 5 * age + (man ? 5 : -161)
-    case 'hb1919':
-      return man ? 66.473 + 13.7516 * w + 5.0033 * h - 6.755 * age
-        : 655.0955 + 9.5634 * w + 1.8496 * h - 4.6756 * age
     case 'hb1984':
       return man ? 88.362 + 13.397 * w + 4.799 * h - 5.677 * age
         : 447.593 + 9.247 * w + 3.098 * h - 4.33 * age
   }
 }
 
+/** Okända eller borttagna formler (t.ex. 'hb1919' från en tidig testversion) räknas med reviderad Harris–Benedict. */
+export function normalizeFormula(f: string | undefined): BmrFormula {
+  if (!f) return 'henry'
+  if (f === 'henry' || f === 'mifflin' || f === 'hb1984') return f
+  return 'hb1984'
+}
+
 /** BMR i MJ/dag med vald formel (standard: Henry 2005). */
 export function bmrMJ(sex: Sex, age: number, weightKg: number, heightCm: number, formula: BmrFormula = 'henry'): number {
+  formula = normalizeFormula(formula)
   if (formula === 'henry') return henryMJ(sex, age, weightKg, heightCm)
   return (kcalFormula(formula, sex, age, weightKg, heightCm) * KJ_PER_KCAL) / 1000
 }

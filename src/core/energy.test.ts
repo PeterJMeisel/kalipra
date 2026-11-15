@@ -66,15 +66,12 @@ describe('valbar BMR-formel', () => {
     // kvinna 40 år, 70 kg, 165 cm: 447,593 + 647,29 + 511,17 − 173,2 = 1432,853 kcal
     expect(energyNeed('kvinna', 40, 70, 165, 1, 'hb1984').bmrKcal).toBeCloseTo(1432.853, 6)
   })
-  it('Harris–Benedict original 1919', () => {
-    // kvinna 40 år, 70 kg, 165 cm: 655,0955 + 669,438 + 305,184 − 187,024 = 1442,6935 kcal
-    expect(energyNeed('kvinna', 40, 70, 165, 1, 'hb1919').bmrKcal).toBeCloseTo(1442.6935, 6)
-    // man 30 år, 80 kg, 180 cm: 66,473 + 1100,128 + 900,594 − 202,65 = 1864,545 kcal
-    expect(energyNeed('man', 30, 80, 180, 1, 'hb1919').bmrKcal).toBeCloseTo(1864.545, 6)
-  })
   it('PAL multipliceras på vald formel', () => {
     const b = energyNeed('kvinna', 40, 70, 165, 1, 'mifflin').bmrKcal
     expect(energyNeed('kvinna', 40, 70, 165, 1.6, 'mifflin').teeKcal).toBeCloseTo(b * 1.6, 6)
+  })
+  it('en äldre sparad 1919-formel räknas som reviderad Harris–Benedict', () => {
+    expect(energyNeed('man', 30, 80, 180, 1, 'hb1919' as never).bmrKcal).toBeCloseTo(1853.632, 6)
   })
   it('standard är Henry', () => {
     expect(energyNeed('man', 40, 75, 180, 1.6).teeMJ).toBeCloseTo(energyNeed('man', 40, 75, 180, 1.6, 'henry').teeMJ, 9)

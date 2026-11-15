@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BMR_FORMULAS, PAL_OPTIONS, type BmrFormula } from '../core/energy'
+import { BMR_FORMULAS, normalizeFormula, PAL_OPTIONS, type BmrFormula } from '../core/energy'
 import { MIN_SUPPORTED_AGE } from '../core/references'
 import {
   ARM_LEVELS, CONDITION_GROUPS, emptyHealth, LEG_LEVELS,
@@ -23,7 +23,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : '')
   const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : '')
   const [pal, setPal] = useState(String(initial?.pal ?? 1.6))
-  const [formula, setFormula] = useState<BmrFormula>(initial?.bmrFormula ?? 'henry')
+  const [formula, setFormula] = useState<BmrFormula>(normalizeFormula(initial?.bmrFormula))
   const [hasGoal, setHasGoal] = useState(!!initial?.goal)
   const [target, setTarget] = useState(initial?.goal ? String(initial.goal.targetWeightKg).replace('.', ',') : '')
   const [health, setHealth] = useState<Health>(() => ({ ...emptyHealth(), ...initial?.health }))

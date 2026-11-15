@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import data from './data/livsmedel.json'
-import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, PAL_OPTIONS } from './core/energy'
+import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PAL_OPTIONS } from './core/energy'
 import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
@@ -110,7 +110,7 @@ export default function App() {
 
   const calc = useMemo(() => {
     if (!client || !diary) return null
-    const formula = client.bmrFormula ?? 'henry'
+    const formula = normalizeFormula(client.bmrFormula)
     const need = energyNeed(client.sex, client.age, client.weightKg, client.heightCm, client.pal, formula)
     const plan = client.goal ? goalPlan(client.sex, client.age, client.weightKg, client.heightCm, client.pal, client.goal, formula) : null
     const summary = summarizeDiary(db, diary.entries, diary.days, SUMMARY_KEYS)
@@ -175,7 +175,7 @@ export default function App() {
       {view === 'ny' && (
         <main className="main narrow">
           <h1>Ny beräkning</h1>
-          <p className="lead">Fyll i uppgifter om personen. Välj formel för energibehovet – Henry 2005 (som NNR 2023 använder), Mifflin–St Jeor eller Harris–Benedict.</p>
+          <p className="lead">Fyll i uppgifter om personen. Välj formel för energibehovet – Henry 2005 (som NNR 2023 använder), Mifflin–St Jeor eller reviderad Harris–Benedict.</p>
           <ClientForm onSave={createClient} onCancel={() => go('start')} />
         </main>
       )}
@@ -223,7 +223,7 @@ export default function App() {
               bmrKcal={calc.need.bmrKcal}
               totalKcal={calc.need.teeKcal}
               pal={client.pal}
-              formula={BMR_FORMULAS.find(f => f.value === (client.bmrFormula ?? 'henry'))!.short}
+              formula={BMR_FORMULAS.find(f => f.value === normalizeFormula(client.bmrFormula))!.short}
               weightKg={client.weightKg}
             />
             {calc.plan && (
