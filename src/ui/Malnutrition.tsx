@@ -3,7 +3,7 @@ import { bmi } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
 import { newId } from '../core/storage'
 import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type WeightEntry } from '../core/types'
-import { autoField, change, changeWithin, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
+import { autoField, change, changeWithin, periodText, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { DatePicker } from './DatePicker'
 import { assessGlim, bmiLimits, INFLAMMATORY_CONDITIONS, MALABSORPTION_CONDITIONS, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
@@ -175,11 +175,20 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     </label>
   )
 
-  const periods: { label: string; c: WeightChange | null }[] = [
+  // Visa bara perioder som har en jämförelse, och hoppa över dem som ger samma jämförelse som en längre period
+  const total = totalChange(weights)
+  const periods = ([
     { label: 'Senaste 3 månaderna', c: changeWithin(weights, 3) },
     { label: 'Senaste 6 månaderna', c: changeWithin(weights, 6) },
-    { label: 'Hela perioden', c: totalChange(weights) },
-  ]
+    { label: total ? `Hela perioden (${periodText(total.fromDate, total.toDate)})` : 'Hela perioden', c: total },
+  ].filter(p => p.c) as { label: string; c: WeightChange }[])
+    .filter((p, i, all) => {
+      const isTotal = i === all.length - 1 && p.c === total
+      if (isTotal) return true
+      // Samma startvikt som hela perioden eller som en kortare period: visas redan
+      if (total && p.c.fromDate === total.fromDate) return false
+      return !all.slice(0, i).some(q => q.c.fromDate === p.c.fromDate)
+    })
 
   return (
     <div className="assess">
@@ -210,17 +219,11 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
             {weights.length >= 2 && (
               <div className="wchanges">
                 {periods.map(p => (
-                  <div key={p.label} className={`wchange${p.c && p.c.deltaKg < 0 ? ' down' : ''}`}>
+                  <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}`}>
                     <span className="wl">{p.label}</span>
-                    {p.c ? (
-                      <>
-                        <strong>{signed(p.c.deltaPct, 1)} %</strong>
-                        <span className="ws">{signed(p.c.deltaKg, 1)} kg på {p.c.days} dagar</span>
-                        <span className="ws">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
-                      </>
-                    ) : (
-                      <span className="ws">Ingen vägning inom perioden att jämföra med</span>
-                    )}
+                    <strong>{signed(p.c.deltaPct, 1)} %</strong>
+                    <span className="ws">{signed(p.c.deltaKg, 1)} kg</span>
+                    <span className="ws">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
                   </div>
                 ))}
               </div>

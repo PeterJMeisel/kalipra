@@ -58,3 +58,16 @@ describe('längd, vikt och BMI', () => {
     expect(autoField(['w', 'w', 'h'])).toBe('b')
   })
 })
+
+import { periodText } from './weights'
+
+describe('periodText', () => {
+  it('visar bara år, månader och veckor som inte är noll', () => {
+    expect(periodText('2025-05-12', '2026-10-01')).toBe('1 år, 4 månader, 2 veckor')
+    expect(periodText('2026-05-01', '2026-11-01')).toBe('6 månader')
+    expect(periodText('2025-11-01', '2026-11-01')).toBe('1 år')
+    expect(periodText('2026-10-01', '2026-10-15')).toBe('2 veckor')
+    expect(periodText('2026-10-01', '2026-10-04')).toBe('3 dagar')
+    expect(periodText('2026-01-31', '2026-03-01')).toBe('1 månad')
+  })
+})

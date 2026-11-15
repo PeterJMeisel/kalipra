@@ -78,3 +78,30 @@ export function autoField(recent: BodyField[]): BodyField | undefined {
   if (two.length < 2) return undefined
   return (['h', 'w', 'b'] as BodyField[]).find(f => !two.includes(f))
 }
+
+/**
+ * Tiden mellan två datum som text i år, månader och veckor, t.ex. "1 år, 4 månader, 2 veckor".
+ * Delar som är noll utelämnas. Kortare än en vecka visas i dagar.
+ */
+export function periodText(from: string, to: string): string {
+  const [fy, fm, fd] = from.split('-').map(Number)
+  const [ty, tm, td] = to.split('-').map(Number)
+  let months = (ty - fy) * 12 + (tm - fm)
+  if (td < fd) months--
+  if (months < 0) months = 0
+  const lastDay = new Date(Date.UTC(fy, fm + months, 0)).getUTCDate()
+  const anchor = new Date(Date.UTC(fy, fm - 1 + months, Math.min(fd, lastDay)))
+  const restDays = Math.round((Date.UTC(ty, tm - 1, td) - anchor.getTime()) / DAY_MS)
+  const years = Math.floor(months / 12)
+  const m = months % 12
+  const weeks = Math.floor(restDays / 7)
+  const parts: string[] = []
+  if (years) parts.push(`${years} år`)
+  if (m) parts.push(`${m} ${m === 1 ? 'månad' : 'månader'}`)
+  if (weeks) parts.push(`${weeks} ${weeks === 1 ? 'vecka' : 'veckor'}`)
+  if (!parts.length) {
+    const d = daysBetween(from, to)
+    parts.push(`${d} ${d === 1 ? 'dag' : 'dagar'}`)
+  }
+  return parts.join(', ')
+}
