@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import data from './data/livsmedel.json'
+import fineli from './data/fineli.json'
 import usda from './data/usda.json'
 import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PAL_OPTIONS } from './core/energy'
 import { FoodDatabase, SOURCES, summarizeDiary, type FoodData } from './core/foods'
@@ -13,7 +14,7 @@ import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
 
-const db = new FoodDatabase([data as unknown as FoodData, usda as unknown as FoodData])
+const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 

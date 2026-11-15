@@ -110,3 +110,22 @@ describe('flera livsmedelsdatabaser', () => {
     expect(Math.abs(calc - p['ENERC|kcal']!) / p['ENERC|kcal']!).toBeLessThan(0.08)
   })
 })
+
+import fineli from '../data/fineli.json'
+
+describe('Fineli', () => {
+  const all = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData])
+
+  it('läser in Fineli med svenska namn', () => {
+    expect(all.sources.map(s => s.id)).toEqual(['lmv', 'fineli', 'usda'])
+    const hits = all.search('lax gravad', 5, ['fineli'])
+    expect(hits[0].name).toBe('Lax, gravad')
+  })
+
+  it('Fineli: energin stämmer med makronutrienterna', () => {
+    const f = all.search('lax gravad', 1, ['fineli'])[0].per100g
+    const kj = f.PROT! * 17 + f.FAT! * 37 + f.CHO! * 17 + f.FIBT! * 8 + (f.ALC ?? 0) * 29
+    expect(Math.abs(kj - f['ENERC|kJ']!) / f['ENERC|kJ']!).toBeLessThan(0.03)
+    expect(f.NACL).toBeCloseTo((f.NA! * 2.5) / 1000, 1)
+  })
+})

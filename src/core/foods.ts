@@ -5,7 +5,7 @@ import type { DiaryEntry, Meal } from './types'
 export type SourceId = 'lmv' | 'fineli' | 'usda'
 export const SOURCES: Record<SourceId, { label: string; short: string; credit: string }> = {
   lmv: { label: 'Livsmedelsverket', short: 'LMV', credit: 'Livsmedelsverkets livsmedelsdatabas (CC BY 4.0)' },
-  fineli: { label: 'Fineli', short: 'Fineli', credit: 'Fineli, THL – Institutet för hälsa och välfärd, Finland (CC BY 4.0)' },
+  fineli: { label: 'Fineli', short: 'Fineli', credit: 'Fineli, THL – Institutet för hälsa och välfärd, Finland, release 20 (CC BY 4.0)' },
   usda: { label: 'USDA', short: 'USDA', credit: 'USDA FoodData Central, SR Legacy april 2018 (public domain, CC0)' },
 }
 

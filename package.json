@@ -10,6 +10,7 @@
     "test": "vitest run",
     "update-data": "node scripts/update-livsmedel.mjs",
     "convert-usda": "node scripts/convert-usda.mjs",
+    "convert-fineli": "node scripts/convert-fineli.mjs",
     "preview": "vite preview",
     "lint": "oxlint"
   },
