@@ -29,11 +29,11 @@ export default function App() {
   const [saved, setSaved] = useState(true)
   const [message, setMessage] = useState('')
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try { return localStorage.getItem('kalibra.theme') === 'dark' ? 'dark' : 'light' } catch { return 'light' }
+    try { return localStorage.getItem('kalipra.theme') === 'dark' ? 'dark' : 'light' } catch { return 'light' }
   })
   useEffect(() => {
-    document.documentElement.setAttribute('data-kalibra-theme', theme)
-    try { localStorage.setItem('kalibra.theme', theme) } catch { /* lagring kan saknas */ }
+    document.documentElement.setAttribute('data-kalipra-theme', theme)
+    try { localStorage.setItem('kalipra.theme', theme) } catch { /* lagring kan saknas */ }
   }, [theme])
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -110,7 +110,7 @@ export default function App() {
       }
     } catch (e) {
       setView('ladda')
-      setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalibra.')
+      setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalipra.')
     }
     if (fileRef.current) fileRef.current.value = ''
   }
@@ -135,7 +135,7 @@ export default function App() {
       <header className="top">
         <button className="brand" onClick={() => go('start')} aria-label="Till startsidan">
           <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg>
-          <span>Kalibra<span className="tag">Verktyg för dietister</span></span>
+          <span>Kalipra<span className="tag">Verktyg för dietister</span></span>
         </button>
         <div className="topright">
           {view !== 'start' && (
@@ -160,7 +160,7 @@ export default function App() {
         <main className="start">
           <div className="starthero">
             <div className="startlogo"><svg viewBox="0 0 64 64" aria-hidden="true" width="88" height="88"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg></div>
-            <h1>Kalibra</h1>
+            <h1>Kalipra</h1>
             <p className="lead">Verktyg för dietister</p>
           </div>
           <div className="bigchoices">
@@ -210,7 +210,7 @@ export default function App() {
             clients={state.clients}
             onOpen={id => open(id)}
             onPickFile={() => fileRef.current?.click()}
-            onExportAll={() => exportFile(state.clients.map(c => c.id), `kalibra-alla-${now().slice(0, 10)}`)}
+            onExportAll={() => exportFile(state.clients.map(c => c.id), `kalipra-alla-${now().slice(0, 10)}`)}
             message={message}
           />
         </main>
@@ -231,7 +231,7 @@ export default function App() {
                   </ul>
                 )}
               </div>
-              <button className="small" onClick={() => exportFile([client.id], `kalibra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
+              <button className="small" onClick={() => exportFile([client.id], `kalipra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
             </div>
             {message && <p className="msg">{message}</p>}
             <EnergySplit

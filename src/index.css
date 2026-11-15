@@ -1,5 +1,5 @@
 /*
-Kalibra – Verktyg för dietister
+Kalipra – Verktyg för dietister
 Färger: plommon (varumärke), mint (stödfält), saffran (accent), grafit (text), kall vit (bakgrund).
 Status: grönt = inom, amber = nära, rött = under/över. Typsnitt: Space Grotesk (rubriker) + Inter (text).
 Former: stramt, 8 px hörn, raka linjer.
@@ -25,7 +25,7 @@ Former: stramt, 8 px hörn, raka linjer.
   --amberbg: light-dark(#FBF1DC, #33280F);
   --okbg: light-dark(#E3F2E9, #173325);
 }
-:root[data-kalibra-theme=dark] { color-scheme: dark }
+:root[data-kalipra-theme=dark] { color-scheme: dark }
 * { box-sizing: border-box; min-width: 0 }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: clip }
 h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin: 0 }

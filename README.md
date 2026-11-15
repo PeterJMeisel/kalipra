@@ -1,4 +1,4 @@
-# Kalibra – Verktyg för dietister
+# Kalipra – Verktyg för dietister
 
 Kostberäkningsprogram för dietister. Version 0.1 innehåller:
 

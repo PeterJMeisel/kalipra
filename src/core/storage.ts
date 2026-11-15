@@ -32,7 +32,7 @@ export function saveState(state: AppState): boolean {
 export function parseState(raw: string): AppState {
   const data = JSON.parse(raw)
   if (!data || data.version !== 1 || !Array.isArray(data.clients) || typeof data.diaries !== 'object') {
-    throw new Error('Filen är inte en giltig export från Kalibra.')
+    throw new Error('Filen är inte en giltig export från Kalipra.')
   }
   return data as AppState
 }
