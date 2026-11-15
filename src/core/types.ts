@@ -74,3 +74,56 @@ export type Diary = {
   days: number
   entries: DiaryEntry[]
 }
+
+/** En person (klient/patient). Identifieras med kod – inga personuppgifter. */
+export type Person = {
+  id: string
+  code: string
+  age: number
+  sex: Sex
+  heightCm: number
+  health?: Health
+  /** Vägningar med datum */
+  weights?: WeightEntry[]
+  createdAt: string
+  updatedAt?: string
+}
+
+/** En beräkning (ett tillfälle) för en person: vikt och aktivitet vid tillfället samt kostregistrering. */
+export type Calculation = {
+  id: string
+  personId: string
+  createdAt: string
+  updatedAt?: string
+  weightKg: number
+  pal: number
+  bmrFormula?: import('./energy').BmrFormula
+  goal: WeightGoal | null
+  days: number
+  entries: DiaryEntry[]
+}
+
+/** Undernäringsbedömning som ännu inte är kopplad till någon person. */
+export type AssessmentDraft = {
+  weights: WeightEntry[]
+  health: Health
+  heightCm?: number
+}
+
+export const emptyDraft = (): AssessmentDraft => ({ weights: [], health: emptyHealth() })
+
+/** Slår ihop person och beräkning till den vy av en klient som beräkningar och formulär använder. */
+export function toClient(p: Person, c: Calculation): Client {
+  return {
+    id: c.id, code: p.code, age: p.age, sex: p.sex, heightCm: p.heightCm, health: p.health, weights: p.weights,
+    weightKg: c.weightKg, pal: c.pal, bmrFormula: c.bmrFormula, goal: c.goal,
+    createdAt: c.createdAt, updatedAt: c.updatedAt,
+  }
+}
+
+/** Delar upp formulärets uppgifter i det som hör till personen och det som hör till beräkningen. */
+export function splitClient(c: Omit<Client, 'id' | 'createdAt'>) {
+  const person = { code: c.code, age: c.age, sex: c.sex, heightCm: c.heightCm, health: c.health }
+  const calc = { weightKg: c.weightKg, pal: c.pal, bmrFormula: c.bmrFormula, goal: c.goal }
+  return { person, calc }
+}

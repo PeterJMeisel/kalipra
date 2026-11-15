@@ -9,21 +9,23 @@ type Props = {
   onSave: (c: Omit<Client, 'id' | 'createdAt'>) => void
   onCancel?: () => void
   submitLabel?: string
+  /** Förifyllda värden när initial saknas (t.ex. från en undernäringsbedömning) */
+  prefill?: { heightCm?: number; weightKg?: number; health?: Health }
 }
 
-export function ClientForm({ initial, onSave, onCancel, submitLabel }: Props) {
+export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: Props) {
   const [healthOpen, setHealthOpen] = useState(false)
   const [code, setCode] = useState(initial?.code ?? '')
   const [age, setAge] = useState(String(initial?.age ?? ''))
   const [sex, setSex] = useState<Sex>(initial?.sex ?? 'kvinna')
-  const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : '')
-  const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : '')
+  const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : prefill?.weightKg ? String(prefill.weightKg).replace('.', ',') : '')
+  const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : prefill?.heightCm ? String(prefill.heightCm).replace('.', ',') : '')
   const [pal, setPal] = useState(String(initial?.pal ?? 1.2))
   const [formula, setFormula] = useState<BmrFormula>(normalizeFormula(initial?.bmrFormula))
   const [hasGoal, setHasGoal] = useState(!!initial?.goal)
   const [target, setTarget] = useState(initial?.goal ? String(initial.goal.targetWeightKg).replace('.', ',') : '')
   const [health, setHealth] = useState<Health>(() => {
-    const h = { ...emptyHealth(), ...initial?.health }
+    const h = { ...emptyHealth(), ...(initial?.health ?? prefill?.health) }
     return { ...h, conditions: h.conditions.filter(c => KNOWN_CONDITIONS.includes(c)) }
   })
   const [error, setError] = useState('')
@@ -36,7 +38,7 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel }: Props) {
     e.preventDefault()
     const a = num(age), w = num(weight), h = num(height), p = num(pal)
     const fail = (msg: string, health = false) => { if (health) setHealthOpen(true); setError(msg) }
-    if (!code.trim()) return fail('Ange en kod eller ett alias för personen.')
+    if (!code.trim()) return fail('Ange en kod eller ett alias för patienten.')
     if (!Number.isFinite(a) || a < MIN_SUPPORTED_AGE || a > 120) return fail(`Ålder måste vara mellan ${MIN_SUPPORTED_AGE} och 120 år.`)
     if (!(w >= 8 && w <= 400)) return fail('Ange nuvarande vikt i kg (8–400).')
     if (!(h >= 70 && h <= 250)) return fail('Ange längd i cm (70–250).')

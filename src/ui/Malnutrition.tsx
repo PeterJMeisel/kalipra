@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { bmi } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
 import { newId } from '../core/storage'
-import { emptyHealth, KNOWN_CONDITIONS, type Client, type Health, type WeightEntry } from '../core/types'
+import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type WeightEntry } from '../core/types'
 import { change, changeWithin, sortWeights, totalChange, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 
@@ -10,75 +10,71 @@ const today = () => new Date().toLocaleDateString('sv-SE')
 const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })
 const signed = (n: number, d: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${formatNumber(Math.abs(n), d)}`
 
-/* ---------- Välj person ---------- */
+/* ---------- Lista för att välja person ---------- */
 
 type PickerProps = {
-  clients: Client[]
+  persons: Person[]
+  /** Kort rad per person, t.ex. antal beräkningar */
+  detail: (p: Person) => string
+  actionLabel: string
   onPick: (id: string) => void
-  onNew: () => void
 }
 
-export function PersonPicker({ clients, onPick, onNew }: PickerProps) {
+export function PersonPicker({ persons, detail, actionLabel, onPick }: PickerProps) {
   const [q, setQ] = useState('')
-  const list = [...clients]
+  const list = [...persons]
     .sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt))
-    .filter(c => c.code.toLowerCase().includes(q.trim().toLowerCase()))
+    .filter(p => p.code.toLowerCase().includes(q.trim().toLowerCase()))
+  if (persons.length === 0) return <p className="empty">Det finns inga sparade patienter ännu.</p>
   return (
     <>
-      <p className="lead">Koppla bedömningen till en person. Personens kostregistrering och hälsotillstånd följer med åt båda hållen.</p>
-      <div className="loadactions">
-        <button className="primary" onClick={onNew}>+ Ny person</button>
-      </div>
-      <h2 className="sub">Välj befintlig person</h2>
-      {clients.length === 0 ? (
-        <p className="empty">Inga personer ännu. Skapa en ny person för att börja.</p>
-      ) : (
-        <>
-          {clients.length > 6 && (
-            <input className="filter" type="search" placeholder="Sök på kod …" value={q} onChange={e => setQ(e.target.value)} aria-label="Sök person" />
-          )}
-          <ul className="savedlist">
-            {list.map(c => {
-              const n = c.weights?.length ?? 0
-              return (
-                <li key={c.id}>
-                  <button onClick={() => onPick(c.id)}>
-                    <span className="ccode">{c.code}</span>
-                    <span className="cmeta">{c.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {c.age} år · {formatNumber(c.weightKg, 1)} kg · {formatNumber(c.heightCm, 0)} cm</span>
-                    <span className="cdate">{n === 0 ? 'Inga vägningar' : `${n} vägning${n === 1 ? '' : 'ar'}`}</span>
-                    <span className="open" aria-hidden="true">Bedöm →</span>
-                  </button>
-                </li>
-              )
-            })}
-            {list.length === 0 && <li className="muted">Ingen person matchar sökningen.</li>}
-          </ul>
-        </>
+      {persons.length > 6 && (
+        <input className="filter" type="search" placeholder="Sök på kod …" value={q} onChange={e => setQ(e.target.value)} aria-label="Sök patient" />
       )}
+      <ul className="savedlist">
+        {list.map(p => (
+          <li key={p.id}>
+            <button onClick={() => onPick(p.id)}>
+              <span className="ccode">{p.code}</span>
+              <span className="cmeta">{p.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {p.age} år · {formatNumber(p.heightCm, 0)} cm</span>
+              <span className="cdate">{detail(p)}</span>
+              <span className="open" aria-hidden="true">{actionLabel} →</span>
+            </button>
+          </li>
+        ))}
+        {list.length === 0 && <li className="muted">Ingen patient matchar sökningen.</li>}
+      </ul>
     </>
   )
 }
 
-/* ---------- Bedömning för en person ---------- */
+/* ---------- Själva bedömningen: vikter och hälsotillstånd ---------- */
+
+export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm?: number }
 
 type AssessmentProps = {
-  client: Client
-  onUpdate: (patch: Partial<Client>) => void
-  onOpenDiary: () => void
-  onChangePerson: () => void
+  data: AssessmentData
+  onChange: (patch: Partial<AssessmentData>) => void
+  /** Visa fält för längd (när bedömningen inte är kopplad till en person) */
+  askHeight?: boolean
+  /** Vikt i personens senaste beräkning, för jämförelse med senaste vägningen */
+  calcWeightKg?: number
+  onUseLatestWeight?: (kg: number) => void
 }
 
-export function Assessment({ client, onUpdate, onOpenDiary, onChangePerson }: AssessmentProps) {
+export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLatestWeight }: AssessmentProps) {
   const [date, setDate] = useState(today())
   const [kg, setKg] = useState('')
   const [error, setError] = useState('')
   const [healthOpen, setHealthOpen] = useState(false)
+  const [height, setHeight] = useState(data.heightCm ? String(data.heightCm).replace('.', ',') : '')
 
-  const weights = sortWeights(client.weights ?? [])
+  const weights = sortWeights(data.weights)
   const newestFirst = [...weights].reverse()
   const latest = weights[weights.length - 1]
+  const heightCm = data.heightCm
   const health: Health = (() => {
-    const h = { ...emptyHealth(), ...client.health }
+    const h = { ...emptyHealth(), ...data.health }
     return { ...h, conditions: h.conditions.filter(c => KNOWN_CONDITIONS.includes(c)) }
   })()
 
@@ -89,36 +85,25 @@ export function Assessment({ client, onUpdate, onOpenDiary, onChangePerson }: As
     if (date > today()) return setError('Datumet kan inte vara i framtiden.')
     if (!(v >= 8 && v <= 400)) return setError('Ange vikt i kg (8–400).')
     if (weights.some(w => w.date === date)) return setError('Det finns redan en vikt för det datumet. Ta bort den först om du vill ändra.')
-    const entry: WeightEntry = { id: newId(), date, kg: v }
-    onUpdate({ weights: [...weights, entry] })
+    onChange({ weights: [...weights, { id: newId(), date, kg: v }] })
     setKg('')
     setError('')
   }
 
-  const total = totalChange(weights)
+  function setHeightText(t: string) {
+    setHeight(t)
+    const v = Number(t.replace(',', '.'))
+    onChange({ heightCm: v >= 70 && v <= 250 ? v : undefined })
+  }
+
   const periods: { label: string; c: WeightChange | null }[] = [
     { label: 'Senaste 3 månaderna', c: changeWithin(weights, 3) },
     { label: 'Senaste 6 månaderna', c: changeWithin(weights, 6) },
-    { label: 'Hela perioden', c: total },
+    { label: 'Hela perioden', c: totalChange(weights) },
   ]
 
   return (
     <div className="assess">
-      <section className="clienthead">
-        <div className="chtop">
-          <div>
-            <h1>{client.code}</h1>
-            <p className="facts">
-              {client.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {client.age} år · {formatNumber(client.heightCm, 0)} cm · nuvarande vikt i beräkningen {formatNumber(client.weightKg, 1)} kg
-            </p>
-          </div>
-          <div className="actions">
-            <button className="small primary" onClick={onOpenDiary}>Kostregistrering →</button>
-            <button className="small" onClick={onChangePerson}>Byt person</button>
-          </div>
-        </div>
-      </section>
-
       <section>
         <h3>Vikter</h3>
         <form className="weightadd" onSubmit={add} noValidate>
@@ -131,6 +116,12 @@ export function Assessment({ client, onUpdate, onOpenDiary, onChangePerson }: As
             <input id="w-kg" inputMode="decimal" value={kg} onChange={e => setKg(e.target.value)} placeholder="t.ex. 72,4" />
           </label>
           <button type="submit" className="primary">Lägg till vikt</button>
+          {askHeight && (
+            <label className="field heightfield">
+              <span>Längd (cm), för BMI</span>
+              <input id="w-height" inputMode="decimal" value={height} onChange={e => setHeightText(e.target.value)} placeholder="valfritt" />
+            </label>
+          )}
         </form>
         {error && <p className="error" role="alert">{error}</p>}
 
@@ -166,18 +157,18 @@ export function Assessment({ client, onUpdate, onOpenDiary, onChangePerson }: As
                     <tr key={w.id}>
                       <td data-l="Datum">{dateText(w.date)}</td>
                       <td data-l="Vikt" className="num"><strong>{formatNumber(w.kg, 1)} kg</strong></td>
-                      <td data-l="BMI" className="num">{formatNumber(bmi(w.kg, client.heightCm), 1)}</td>
+                      <td data-l="BMI" className="num">{heightCm ? formatNumber(bmi(w.kg, heightCm), 1) : '–'}</td>
                       <td data-l="Sedan föregående" className="num">{c ? `${signed(c.deltaKg, 1)} kg (${signed(c.deltaPct, 1)} %)` : '–'}</td>
-                      <td className="del"><button type="button" className="linkbtn" aria-label={`Ta bort vikten ${dateText(w.date)}`} onClick={() => onUpdate({ weights: weights.filter(x => x.id !== w.id) })}>Ta bort</button></td>
+                      <td className="del"><button type="button" className="linkbtn" aria-label={`Ta bort vikten ${dateText(w.date)}`} onClick={() => onChange({ weights: weights.filter(x => x.id !== w.id) })}>Ta bort</button></td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
-            {latest && Math.abs(latest.kg - client.weightKg) >= 0.05 && (
+            {latest && calcWeightKg !== undefined && onUseLatestWeight && Math.abs(latest.kg - calcWeightKg) >= 0.05 && (
               <p className="msg">
-                Senaste vägningen ({formatNumber(latest.kg, 1)} kg, {dateText(latest.date)}) skiljer sig från vikten i beräkningen ({formatNumber(client.weightKg, 1)} kg).{' '}
-                <button type="button" className="small" onClick={() => onUpdate({ weightKg: latest.kg })}>Använd {formatNumber(latest.kg, 1)} kg i beräkningen</button>
+                Senaste vägningen ({formatNumber(latest.kg, 1)} kg, {dateText(latest.date)}) skiljer sig från vikten i senaste beräkningen ({formatNumber(calcWeightKg, 1)} kg).{' '}
+                <button type="button" className="small" onClick={() => onUseLatestWeight(latest.kg)}>Använd {formatNumber(latest.kg, 1)} kg i beräkningen</button>
               </p>
             )}
             <p className="note">Bedömningskriterier för undernäring läggs till i ett senare steg.</p>
@@ -186,8 +177,7 @@ export function Assessment({ client, onUpdate, onOpenDiary, onChangePerson }: As
       </section>
 
       <section className="assesshealth">
-        <HealthSection health={health} onChange={h => onUpdate({ health: h })} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
-        <p className="note">Ändringar sparas direkt och gäller även personens kostberäkning.</p>
+        <HealthSection health={health} onChange={h => onChange({ health: h })} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
       </section>
     </div>
   )

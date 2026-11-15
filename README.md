@@ -2,7 +2,8 @@
 
 Kostberäkningsprogram för dietister. Version 0.1 innehåller:
 
-- **Klienter** med kod/alias, ålder, kön, vikt, längd och fysisk aktivitetsnivå (PAL). Inga personuppgifter behövs.
+- **Patienter** med kod/alias, ålder, kön, längd och hälsotillstånd. Inga personuppgifter behövs. En patient kan ha flera beräkningar (t.ex. en per besök) med vikt, PAL och kostregistrering.
+- **Bedöm undernäring**: vikter med datum och viktförändring över tid. Kan göras utan patient och kopplas till en befintlig eller ny patient i efterhand.
 - **Energibehov**: BMR gånger PAL. Formeln väljs per beräkning: Henry 2005 (standard, används av NNR 2023), Mifflin–St Jeor 1990 eller reviderad Harris–Benedict (Roza & Shizgal 1984).
 - **Viktmål**: målvikt och takt (kg/vecka) ger ett justerat energiintag, beräknad tid till mål och energibehov vid målvikt. Förenklad modell med 7 700 kcal per kg.
 - **Kostregistrering** över 1–14 dagar, per måltid, med livsmedel och mängd i gram från Livsmedelsverkets livsmedelsdatabas.

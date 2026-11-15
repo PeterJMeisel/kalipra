@@ -311,3 +311,10 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 @media (max-width: 760px) { .wchanges { grid-template-columns: minmax(0, 1fr) } }
 @media (max-width: 600px) { .weightadd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .weightadd button { grid-column: 1 / -1 } }
 .assesshealth { margin-top: 24px }
+
+.nyseg { max-width: 420px; margin: 18px 0 4px }
+.calcpick { font-size: 15px; color: var(--muted) }
+.calcpick label { display: inline-flex; gap: 10px; align-items: center }
+.calcpick select { width: auto; min-height: 40px }
+.linkpicker { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px }
+.heightfield { grid-column: 1 / -1; max-width: 240px }
