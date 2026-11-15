@@ -14,7 +14,7 @@ export const CONDITION_GROUPS = [
   { group: 'Njure', items: ['Kronisk njursjukdom'] },
   { group: 'Mag–tarm', items: ['IBS', 'IBD (Crohns sjukdom / ulcerös kolit)', 'Stomi / kort tarm', 'Exokrin pankreasinsufficiens', 'Gastropares'] },
   { group: 'Nutritionsrisk', items: ['Sarkopeni', 'Trycksår / svårläkta sår', 'Cancer under behandling', 'KOL', 'Demens', 'Parkinson', 'ALS'] },
-  { group: 'Övrigt', items: ['Osteoporos', 'Näringsbrist', 'Lågt albumin', 'Ryggmärgsskada', 'Amputation'] },
+  { group: 'Övrigt', items: ['Osteoporos', 'Näringsbrist', 'Lågt albumin', 'Inflammation (CRP)', 'Ryggmärgsskada', 'Amputation'] },
 ] as const
 
 export type WeightEntry = { id: string; date: string; kg: number; /** Längd vid vägningen, om den angavs */ heightCm?: number }
@@ -114,6 +114,7 @@ export type AssessmentDraft = {
   heightCm?: number
   /** Ålder, behövs för BMI-gränsen i GLIM */
   age?: number
+  sex?: Sex
   glim?: import('./glim').GlimAnswers
 }
 

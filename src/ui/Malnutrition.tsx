@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { bmi } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
 import { newId } from '../core/storage'
-import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type WeightEntry } from '../core/types'
+import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type Sex, type WeightEntry } from '../core/types'
 import { autoField, change, changeWithin, periodText, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { DatePicker } from './DatePicker'
-import { assessGlim, bmiLimits, INFLAMMATORY_CONDITIONS, MALABSORPTION_CONDITIONS, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
+import { assessGlim, bmiLimits, estimateDeficit, glimJournal, suggestEtiology, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
 const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -72,7 +72,7 @@ export function PersonPicker({ persons, detail, actionLabel, onPick, selected, o
 
 /* ---------- Själva bedömningen: vikter och hälsotillstånd ---------- */
 
-export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm?: number; age?: number; glim?: GlimAnswers }
+export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm?: number; age?: number; sex?: Sex; glim?: GlimAnswers }
 
 type AssessmentProps = {
   data: AssessmentData
@@ -101,20 +101,21 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   const hasHeight = weights.some(w => w.heightCm) || !!data.heightCm
   const glimMissing = {
     age: data.age === undefined,
+    sex: data.sex === undefined,
     weight: weights.length === 0,
     height: !hasHeight,
   }
-  const glimBlocked = glimMissing.age || glimMissing.weight || glimMissing.height
-  const [glimOpen, setGlimOpen] = useState(!!data.glim && !glimBlocked)
-  // Visa vad som saknas efter att användaren försökt öppna GLIM-bedömningen
+  const glimBlocked = glimMissing.age || glimMissing.sex || glimMissing.weight || glimMissing.height
+  // Visa vad som saknas efter att användaren bett om ett förslag på diagnos
   const [showMissing, setShowMissing] = useState(false)
+  const [showJournal, setShowJournal] = useState(false)
   const flag = (missing: boolean) => (showMissing && missing ? ' missing' : '')
 
-  function openGlim() {
-    if (glimOpen) return setGlimOpen(false)
+  function suggestDiagnosis() {
+    setShowMissing(glimBlocked || weights.length < 2)
     if (glimBlocked) {
-      setShowMissing(true)
-      const first = glimMissing.age ? 'a-age' : glimMissing.height ? 'w-height' : 'w-kg'
+      setShowJournal(false)
+      const first = glimMissing.age ? 'a-age' : glimMissing.sex ? 'a-sex' : glimMissing.height ? 'w-height' : 'w-kg'
       setTimeout(() => {
         const el = document.getElementById(first)
         el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -122,8 +123,8 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
       }, 0)
       return
     }
-    setShowMissing(weights.length < 2)
-    setGlimOpen(true)
+    setShowJournal(true)
+    setTimeout(() => document.getElementById('glim-journal')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0)
   }
   const [ageText, setAgeText] = useState(data.age ? String(data.age) : '')
   const age = data.age
@@ -194,6 +195,14 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     <div className="assess">
       <section>
         <div className="agerow">
+          <div className={`field${flag(glimMissing.sex)}`}>
+            <span id="a-sex-label">Kön <abbr title="obligatoriskt">*</abbr></span>
+            <div className="seg" role="radiogroup" aria-labelledby="a-sex-label">
+              {(['kvinna', 'man'] as Sex[]).map((v, i) => (
+                <button key={v} id={i === 0 ? 'a-sex' : undefined} type="button" role="radio" aria-checked={data.sex === v} className={data.sex === v ? 'on' : ''} onClick={() => onChange({ sex: v })}>{v === 'kvinna' ? 'Kvinna' : 'Man'}</button>
+              ))}
+            </div>
+          </div>
           <label className={`field${flag(glimMissing.age)}`}>
             <span>Nuvarande ålder (år) <abbr title="obligatoriskt">*</abbr></span>
             <input id="a-age" inputMode="numeric" value={ageText} onChange={e => setAge(e.target.value)} aria-required="true" aria-invalid={age === undefined && ageText.trim() !== ''} placeholder="t.ex. 72" />
@@ -261,31 +270,30 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         <HealthSection health={health} onChange={h => onChange({ health: h })} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
       </section>
 
+      <GlimPanel
+        weights={weights}
+        heightCm={heightCm}
+        age={age}
+        sex={data.sex}
+        health={health}
+        answers={data.glim ?? {}}
+        onAnswers={glim => onChange({ glim })}
+        showJournal={showJournal && !glimBlocked}
+      />
       <div className="glimstart">
-        <button type="button" className="primary big" aria-expanded={glimOpen} onClick={openGlim}>
-          {glimOpen ? 'Dölj GLIM-bedömningen' : 'Bedöm enligt GLIM'}
-        </button>
+        <button type="button" className="primary big" onClick={suggestDiagnosis}>Ge förslag på GLIM-diagnos</button>
       </div>
       {showMissing && (glimBlocked || weights.length < 2) && (
         <div className={`missingbox${glimBlocked ? '' : ' soft'}`} role="alert">
-          <strong>{glimBlocked ? 'Det här saknas för en GLIM-bedömning:' : 'Viktförlusten kan inte bedömas:'}</strong>
+          <strong>{glimBlocked ? 'Det här saknas för en GLIM-diagnos:' : 'Viktförlusten kan inte bedömas:'}</strong>
           <ul>
+            {glimMissing.sex && <li><a href="#a-sex">Kön</a></li>}
             {glimMissing.age && <li><a href="#a-age">Nuvarande ålder</a></li>}
             {glimMissing.height && <li><a href="#w-height">Längd</a></li>}
             {glimMissing.weight && <li><a href="#w-kg">Vikt med datum</a></li>}
             {weights.length < 2 && <li><a href="#w-kg">Vikthistorik – minst två vägningar med datum</a></li>}
           </ul>
         </div>
-      )}
-      {glimOpen && !glimBlocked && age !== undefined && (
-        <GlimPanel
-          weights={weights}
-          heightCm={heightCm}
-          age={age}
-          health={health}
-          answers={data.glim ?? {}}
-          onAnswers={glim => onChange({ glim })}
-        />
       )}
     </div>
   )
@@ -304,25 +312,60 @@ function numText(v: number, decimals: number): string {
 
 const STAGE_TEXT: Record<Stage, string> = { 0: 'Uppfylls inte', 1: 'Steg 1 – måttlig', 2: 'Steg 2 – svår' }
 
-function GlimPanel({ weights, heightCm, age, health, answers, onAnswers }: {
+function GlimPanel({ weights, heightCm, age, sex, health, answers, onAnswers, showJournal }: {
   weights: WeightEntry[]
   heightCm?: number
-  age: number
+  age?: number
+  sex?: Sex
   health: Health
   answers: GlimAnswers
   onAnswers: (a: GlimAnswers) => void
+  showJournal: boolean
 }) {
+  const [copied, setCopied] = useState(false)
   const r = assessGlim({ weights, heightCm, age, answers })
+  const deficit = estimateDeficit({ weights, sex, age, heightCm: weights[weights.length - 1]?.heightCm ?? heightCm })
+  const sug = suggestEtiology(health.conditions, deficit)
   const set = (patch: Partial<GlimAnswers>) => onAnswers({ ...answers, ...patch })
-  const inflam = health.conditions.filter(c => INFLAMMATORY_CONDITIONS.includes(c))
-  const malabs = health.conditions.filter(c => MALABSORPTION_CONDITIONS.includes(c))
-  const limits = bmiLimits(age, answers.asian)
+  const limits = age !== undefined ? bmiLimits(age, answers.asian) : null
   const mark = (on: boolean) => <span className={`gmark${on ? ' on' : ''}`} aria-hidden="true">{on ? '✓' : '–'}</span>
+  const journal = showJournal && age !== undefined
+    ? glimJournal({ result: r, answers, age, deficit, conditions: health.conditions, date: today() })
+    : ''
+
+  async function copy() {
+    try { await navigator.clipboard.writeText(journal); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { setCopied(false) }
+  }
+
+  const reasons = (list: string[], checked: boolean) => list.length > 0 && (
+    <div className={`gsuggest${checked ? ' used' : ''}`}>
+      <span className="gsl">{checked ? 'Underlag' : 'Förslag: kryssa i'}</span>
+      <ul>{list.map(t => <li key={t}>{t}</li>)}</ul>
+    </div>
+  )
 
   return (
     <section className="glim" aria-labelledby="glim-h">
-      <h3 id="glim-h">GLIM – diagnos av undernäring</h3>
+      {deficit && deficit.deficitKcal > 0 && (
+        <div className="deficit" aria-label="Uppskattat energiunderskott">
+          <div>
+            <span className="gl">Uppskattat energiunderskott</span>
+            <strong>ca {formatNumber(deficit.deficitKcal, 0)} kcal/dag</strong>
+            <span className="gs">{formatNumber(deficit.lossKg, 1)} kg viktnedgång på {periodText(deficit.fromDate, deficit.toDate)} ({dateText(deficit.fromDate)} → {dateText(deficit.toDate)}), 7 700 kcal/kg</span>
+          </div>
+          <div>
+            <span className="gl">Beräknat behov</span>
+            <strong>{formatNumber(deficit.needKcal, 0)} kcal/dag</strong>
+            <span className="gs">Henry, PAL 1,2</span>
+          </div>
+          <div>
+            <span className="gl">Uppskattat intag</span>
+            <strong>ca {formatNumber(Math.max(0, deficit.intakePct), 0)} % av behovet</strong>
+          </div>
+        </div>
+      )}
 
+      <h3 id="glim-h">GLIM – diagnos av undernäring</h3>
 
       <div className="glimcols">
         <fieldset>
@@ -336,18 +379,20 @@ function GlimPanel({ weights, heightCm, age, health, answers, onAnswers }: {
                 <span className="gval gneed">Saknas: minst två vägningar med datum</span>
               ) : (
                 <span className="gval">
-                  Senaste 6 mån: {r.loss6 ? `${formatNumber(r.loss6.pct, 1)} % (från ${formatNumber(r.loss6.fromKg, 1)} kg)` : 'ingen vägning att jämföra med'}
-                  {' · '}Längre tillbaka: {r.lossLong ? `${formatNumber(r.lossLong.pct, 1)} % (från ${formatNumber(r.lossLong.fromKg, 1)} kg)` : '–'}
+                  {[
+                    r.loss6 && r.loss6.pct > 0 ? `Senaste 6 mån: ${formatNumber(r.loss6.pct, 1)} % (från ${formatNumber(r.loss6.fromKg, 1)} kg)` : null,
+                    r.lossLong && r.lossLong.pct > 0 ? `Längre tillbaka: ${formatNumber(r.lossLong.pct, 1)} % (från ${formatNumber(r.lossLong.fromKg, 1)} kg)` : null,
+                  ].filter(Boolean).join(' · ') || 'Ingen viktförlust'}
                 </span>
               )}
             </div>
           </div>
-          <div className={`gcrit${r.bmiCriterion ? ' met' : ''}`}>
+          <div className={`gcrit${r.bmiCriterion ? ' met' : ''}${limits && r.bmi !== null ? '' : ' gmissing'}`}>
             {mark(r.bmiCriterion > 0)}
             <div>
               <strong>Lågt BMI</strong>
-              <span>{`< ${formatNumber(limits[0], 1)} (${age >= 70 ? '≥ 70 år' : 'under 70 år'}, patienten är ${age} år)`}</span>
-              <span className="gval">BMI: {r.bmi !== null ? formatNumber(r.bmi, 1) : 'saknas – ange vikt och längd'}</span>
+              {limits ? <span>{`< ${formatNumber(limits[0], 1)} (${age! >= 70 ? '≥ 70 år' : 'under 70 år'})`}</span> : <span className="gval gneed">Saknas: ålder</span>}
+              {r.bmi !== null ? <span className="gval">BMI {formatNumber(r.bmi, 1)}</span> : <span className="gval gneed">Saknas: vikt och längd</span>}
             </div>
           </div>
           <div className={`gcrit${r.muscleCriterion ? ' met' : ''}`}>
@@ -370,20 +415,20 @@ function GlimPanel({ weights, heightCm, age, health, answers, onAnswers }: {
 
         <fieldset>
           <legend>Etiologiska kriterier</legend>
-          <label className={`gcrit check${answers.intake ? ' met' : ''}`}>
+          <label className={`gcrit check${answers.intake ? ' met' : ''}${!answers.intake && sug.intake.length ? ' suggested' : ''}`}>
             <input type="checkbox" checked={!!answers.intake} onChange={e => set({ intake: e.target.checked })} />
             <div>
               <strong>Minskat intag eller upptag</strong>
               <span>≤ 50 % av energibehovet &gt; 1 vecka, minskat intag &gt; 2 veckor, eller kroniskt tillstånd i mag–tarmkanalen som påverkar digestion/absorption</span>
-              {malabs.length > 0 && <span className="gval">Bland hälsotillstånden: {malabs.join(', ')}</span>}
+              {reasons(sug.intake, !!answers.intake)}
             </div>
           </label>
-          <label className={`gcrit check${answers.inflammation ? ' met' : ''}`}>
+          <label className={`gcrit check${answers.inflammation ? ' met' : ''}${!answers.inflammation && sug.inflammation.length ? ' suggested' : ''}`}>
             <input type="checkbox" checked={!!answers.inflammation} onChange={e => set({ inflammation: e.target.checked })} />
             <div>
-              <strong>Inflammation</strong>
-              <span>Akut sjukdom eller skada (t.ex. stor infektion, brännskada, trauma) eller kronisk sjukdom (t.ex. hjärtsvikt, KOL, njur- eller leversjukdom, cancer). CRP kan stödja bedömningen.</span>
-              {inflam.length > 0 && <span className="gval">Bland hälsotillstånden: {inflam.join(', ')}</span>}
+              <strong>Inflammation/kronisk sjukdom</strong>
+              <span>Akut sjukdom eller skada (t.ex. stor infektion, brännskada, trauma) eller kronisk sjukdom (t.ex. hjärtsvikt, KOL, njur- eller leversjukdom, cancer)</span>
+              {reasons(sug.inflammation, !!answers.inflammation)}
             </div>
           </label>
         </fieldset>
@@ -407,6 +452,16 @@ function GlimPanel({ weights, heightCm, age, health, answers, onAnswers }: {
           </ul>
         )}
       </div>
+
+      {journal && (
+        <div className="journal" id="glim-journal">
+          <div className="jhead">
+            <h4>Förslag på journaltext</h4>
+            <button type="button" className="small" onClick={copy}>{copied ? 'Kopierat' : 'Kopiera'}</button>
+          </div>
+          <textarea readOnly value={journal} rows={journal.split('\n').reduce((n, l) => n + Math.ceil((l.length || 1) / 80), 1)} aria-label="Förslag på journaltext" onFocus={e => e.currentTarget.select()} />
+        </div>
+      )}
       <p className="note">Kriterier enligt GLIM (Cederholm m.fl. 2018), Karolinska Universitetssjukhusets flödesschema 2020-04-21.</p>
     </section>
   )

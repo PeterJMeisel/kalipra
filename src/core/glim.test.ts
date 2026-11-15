@@ -44,3 +44,36 @@ describe('GLIM', () => {
     expect(r.malnutrition).toBe(false)
   })
 })
+
+import { estimateDeficit, glimJournal, suggestEtiology } from './glim'
+import { energyNeed } from './energy'
+
+describe('GLIM: förslag och journaltext', () => {
+  const weights = [w('2026-08-01', 74, 165), w('2026-11-01', 68, 165)] // 6 kg på 92 dagar
+
+  it('uppskattar underskott med 7 700 kcal/kg och behov vid PAL 1,2', () => {
+    const d = estimateDeficit({ weights, sex: 'man', age: 72, heightCm: 165 })!
+    expect(d.days).toBe(92)
+    expect(d.deficitKcal).toBeCloseTo((6 * 7700) / 92, 5)
+    expect(d.needKcal).toBeCloseTo(energyNeed('man', 72, 68, 165, 1.2).teeKcal, 5)
+    expect(d.intakePct).toBeCloseTo(((d.needKcal - d.deficitKcal) / d.needKcal) * 100, 5)
+    expect(estimateDeficit({ weights, age: 72, heightCm: 165 })).toBeNull()
+  })
+
+  it('föreslår kriterier utifrån Crohns och viktnedgång', () => {
+    const d = estimateDeficit({ weights, sex: 'man', age: 72, heightCm: 165 })
+    const s = suggestEtiology(['IBD (Crohns sjukdom / ulcerös kolit)', 'Hypertoni'], d)
+    expect(s.intake.length).toBe(2)
+    expect(s.intake[0]).toMatch(/kcal\/dag/)
+    expect(s.inflammation[0]).toMatch(/^IBD/)
+  })
+
+  it('skriver journaltext med grad och underlag', () => {
+    const answers = { muscle: 'nej' as const, intake: true }
+    const r = assessGlim({ weights, age: 72, answers })
+    const t = glimJournal({ result: r, answers, age: 72, deficit: null, conditions: [], date: '2026-11-15' })
+    expect(t).toMatch(/^GLIM-bedömning 2026-11-15: Måttlig undernäring \(steg 1\)/)
+    expect(t).toMatch(/viktförlust 8,1 % senaste 6 månaderna/)
+    expect(t).toMatch(/Svårighetsgraden baseras på viktförlust/)
+  })
+})

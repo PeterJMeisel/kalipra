@@ -344,8 +344,8 @@ export default function App() {
           {assessPerson ? (
             <Assessment
               key={assessPerson.id}
-              data={{ weights: assessPerson.weights ?? [], health: assessPerson.health, heightCm: assessPerson.heightCm, age: assessPerson.age, glim: assessPerson.glim }}
-              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}), ...(patch.heightCm ? { heightCm: patch.heightCm } : {}), ...(patch.glim ? { glim: patch.glim } : {}), ...(patch.age ? { age: patch.age } : {}) })}
+              data={{ weights: assessPerson.weights ?? [], health: assessPerson.health, heightCm: assessPerson.heightCm, age: assessPerson.age, sex: assessPerson.sex, glim: assessPerson.glim }}
+              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}), ...(patch.heightCm ? { heightCm: patch.heightCm } : {}), ...(patch.glim ? { glim: patch.glim } : {}), ...(patch.age ? { age: patch.age } : {}), ...(patch.sex ? { sex: patch.sex } : {}) })}
               calcWeightKg={assessLatestCalc?.weightKg}
               onUseLatestWeight={kg => assessLatestCalc && patchCalc(assessLatestCalc.id, { weightKg: kg })}
             />
@@ -363,7 +363,7 @@ export default function App() {
         <main className="main narrow">
           <h1>Koppla till ny patient</h1>
           <ClientForm submitLabel="Skapa patient och koppla" onSave={linkToNew} onCancel={() => go('undernaring')}
-            prefill={{ age: state.draft.age, heightCm: state.draft.heightCm, weightKg: sortWeights(state.draft.weights).at(-1)?.kg, health: state.draft.health }} />
+            prefill={{ age: state.draft.age, sex: state.draft.sex, heightCm: state.draft.heightCm, weightKg: sortWeights(state.draft.weights).at(-1)?.kg, health: state.draft.health }} />
         </main>
       )}
 

@@ -411,3 +411,23 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .gcrit.gmissing { outline: 2px dashed var(--amber); outline-offset: -2px }
 .gcrit .gneed { color: var(--amber); font-weight: 600 }
 .gcrit .seg.unanswered button { border-style: dashed }
+
+/* GLIM: underskott, förslag och journaltext */
+.agerow .field:has(.seg) { width: auto }
+.agerow .seg button { min-width: 100px }
+.field.missing .seg button { border: 2px solid var(--red); background: var(--redbg) }
+.deficit { display: flex; flex-wrap: wrap; gap: 12px 32px; padding: 16px 18px; margin-bottom: 18px; border-radius: 10px; background: var(--tint) }
+.deficit > div { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+.deficit > div:first-child { flex: 1 1 280px }
+.deficit .gl { font-size: 13px; font-weight: 600; color: var(--muted) }
+.deficit strong { font-size: 20px }
+.deficit .gs { font-size: 14px; color: var(--muted) }
+.gcrit.suggested { outline: 2px solid var(--saffron); outline-offset: -2px }
+.gsuggest { margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: var(--bg); font-size: 14px }
+.gsuggest .gsl { font-weight: 700; color: var(--amber) }
+.gsuggest.used .gsl { color: var(--ok) }
+.gsuggest ul { margin: 4px 0 0; padding-left: 18px; color: var(--ink) }
+.journal { margin-top: 16px; border: 2px solid var(--brand); border-radius: 10px; padding: 14px 16px }
+.jhead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px }
+.jhead h4 { margin: 0; font-size: 17px }
+.journal textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); font: 15px/1.5 Inter, system-ui, sans-serif; resize: vertical }
