@@ -5,7 +5,7 @@ Status: grönt = inom, amber = nära, rött = under/över. Typsnitt: Space Grote
 Former: stramt, 8 px hörn, raka linjer.
 */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: light-dark(#F7F7F5, #141018);
   --panel: light-dark(#FFFFFF, #1D1724);
   --ink: light-dark(#1C1622, #ECE8F0);
@@ -13,6 +13,8 @@ Former: stramt, 8 px hörn, raka linjer.
   --line: light-dark(#E2DFE5, #2F2738);
   --brand: light-dark(#3B2A4A, #CDB6E3);
   --brand-ink: light-dark(#FFFFFF, #1C1622);
+  --top: light-dark(#3B2A4A, #2A1F35);
+  --top-ink: #FFFFFF;
   --tint: light-dark(#E8F6EF, #1E2A26);
   --mint: light-dark(#C9EEDD, #2C4A3E);
   --saffron: light-dark(#E8A33D, #F0B95E);
@@ -23,8 +25,7 @@ Former: stramt, 8 px hörn, raka linjer.
   --amberbg: light-dark(#FBF1DC, #33280F);
   --okbg: light-dark(#E3F2E9, #173325);
 }
-:root[data-theme=light] { color-scheme: light }
-:root[data-theme=dark] { color-scheme: dark }
+:root[data-kalibra-theme=dark] { color-scheme: dark }
 * { box-sizing: border-box; min-width: 0 }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: clip }
 h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin: 0 }
@@ -44,7 +45,7 @@ input, select, textarea { font-size: 16px; border: 1px solid var(--line); border
 .note { font-size: 14px; margin: 6px 0 12px }
 
 .app { min-height: 100vh }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--brand); color: var(--brand-ink); flex-wrap: wrap }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--top); color: var(--top-ink); flex-wrap: wrap }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; background: none; border: 0; color: inherit; padding: 4px 0; min-height: 44px }
 .brand svg { width: 30px; height: 30px }
 .brand .tag { font-weight: 400; font-size: 14px; opacity: .8; margin-left: 4px }
@@ -53,7 +54,7 @@ input, select, textarea { font-size: 16px; border: 1px solid var(--line); border
 .topnav { display: flex; gap: 6px; flex-wrap: wrap }
 .topnav button { background: transparent; color: inherit; border-color: color-mix(in srgb, currentColor 40%, transparent); min-height: 40px; padding: 6px 14px; font-weight: 600 }
 .topnav button:hover:not(:disabled) { border-color: currentColor }
-.topnav button.on { background: var(--brand-ink); color: var(--brand); border-color: var(--brand-ink) }
+.topnav button.on { background: var(--top-ink); color: #3B2A4A; border-color: var(--top-ink) }
 .savewarn { margin: 0; padding: 10px max(3vw, 16px); background: var(--redbg); color: var(--red); font-weight: 600 }
 .source { font-size: 13px; color: var(--muted); margin: 0 }
 .source.center { text-align: center; max-width: 60ch }
@@ -280,3 +281,9 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 
 .startlogo { color: var(--brand); display: flex; justify-content: center; margin-bottom: 14px }
 .starthero .lead { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 20px; font-weight: 500 }
+
+/* Ljust/mörkt läge – ljust är standard */
+.topright { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end }
+.themebtn { background: transparent; color: inherit; border: 1px solid color-mix(in srgb, currentColor 40%, transparent); min-height: 40px; width: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px }
+.themebtn:hover:not(:disabled) { border-color: currentColor }
+.themebtn svg { width: 20px; height: 20px }

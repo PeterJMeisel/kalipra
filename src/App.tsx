@@ -28,6 +28,13 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('registrering')
   const [saved, setSaved] = useState(true)
   const [message, setMessage] = useState('')
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try { return localStorage.getItem('kalibra.theme') === 'dark' ? 'dark' : 'light' } catch { return 'light' }
+  })
+  useEffect(() => {
+    document.documentElement.setAttribute('data-kalibra-theme', theme)
+    try { localStorage.setItem('kalibra.theme', theme) } catch { /* lagring kan saknas */ }
+  }, [theme])
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => { setSaved(saveState(state)) }, [state])
@@ -130,13 +137,21 @@ export default function App() {
           <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg>
           <span>Kalibra<span className="tag">Verktyg för dietister</span></span>
         </button>
-        {view !== 'start' && (
-          <nav className="topnav">
-            <button className={view === 'ny' ? 'on' : ''} onClick={() => go('ny')}>Ny beräkning</button>
-            <button className={view === 'ladda' ? 'on' : ''} onClick={() => go('ladda')}>Ladda beräkning</button>
-            <button className={view === 'undernaring' ? 'on' : ''} onClick={() => go('undernaring')}>Bedöm undernäring</button>
-          </nav>
-        )}
+        <div className="topright">
+          {view !== 'start' && (
+            <nav className="topnav">
+              <button className={view === 'ny' ? 'on' : ''} onClick={() => go('ny')}>Ny beräkning</button>
+              <button className={view === 'ladda' ? 'on' : ''} onClick={() => go('ladda')}>Ladda beräkning</button>
+              <button className={view === 'undernaring' ? 'on' : ''} onClick={() => go('undernaring')}>Bedöm undernäring</button>
+            </nav>
+          )}
+          <button className="themebtn" onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
+            aria-label={theme === 'dark' ? 'Byt till ljust läge' : 'Byt till mörkt läge'} title={theme === 'dark' ? 'Ljust läge' : 'Mörkt läge'}>
+            {theme === 'dark'
+              ? <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+              : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>}
+          </button>
+        </div>
       </header>
 
       {!saved && <p className="savewarn">Webbläsaren tillåter inte lokal lagring här. Exportera beräkningen till fil för att behålla den.</p>}
