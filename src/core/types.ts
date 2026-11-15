@@ -14,7 +14,7 @@ export const CONDITION_GROUPS = [
   { group: 'Njure', items: ['Kronisk njursjukdom'] },
   { group: 'Mag–tarm', items: ['IBS', 'IBD (Crohns sjukdom / ulcerös kolit)', 'Stomi / kort tarm', 'Exokrin pankreasinsufficiens', 'Gastropares'] },
   { group: 'Nutritionsrisk', items: ['Sarkopeni', 'Trycksår / svårläkta sår', 'Cancer under behandling', 'KOL', 'Demens', 'Parkinson', 'ALS'] },
-  { group: 'Övrigt', items: ['Osteoporos', 'Ryggmärgsskada', 'Amputation'] },
+  { group: 'Övrigt', items: ['Osteoporos', 'Näringsbrist', 'Lågt albumin', 'Ryggmärgsskada', 'Amputation'] },
 ] as const
 
 export type WeightEntry = { id: string; date: string; kg: number; /** Längd vid vägningen, om den angavs */ heightCm?: number }
