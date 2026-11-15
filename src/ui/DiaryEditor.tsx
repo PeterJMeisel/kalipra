@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import type { Food, FoodDatabase } from '../core/foods'
+import { SOURCES, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { formatNumber } from '../core/nutrients'
 import { MEALS, type Diary, type DiaryEntry, type Meal } from '../core/types'
 import { newId } from '../core/storage'
@@ -10,7 +10,26 @@ type Props = {
   onChange: (d: Diary) => void
 }
 
+const SOURCE_KEY = 'kalipra.sources'
+
+function loadSources(available: SourceId[]): SourceId[] {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SOURCE_KEY) ?? 'null')
+    if (Array.isArray(saved)) {
+      const ok = saved.filter((s): s is SourceId => available.includes(s))
+      if (ok.length) return ok
+    }
+  } catch { /* ignorera */ }
+  return available
+}
+
+export function SourceTag({ source }: { source: SourceId }) {
+  return <span className={`srctag src-${source}`} title={SOURCES[source].credit}>{SOURCES[source].short}</span>
+}
+
 export function DiaryEditor({ db, diary, onChange }: Props) {
+  const available = useMemo(() => db.sources.map(s => s.id), [db])
+  const [sources, setSources] = useState<SourceId[]>(() => loadSources(available))
   const [day, setDay] = useState(1)
   const [meal, setMeal] = useState<Meal>('Frukost')
   const [query, setQuery] = useState('')
@@ -20,7 +39,16 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
   const gramsRef = useRef<HTMLInputElement>(null)
   const queryRef = useRef<HTMLInputElement>(null)
 
-  const hits = useMemo(() => (picked ? [] : db.search(query, 30)), [db, query, picked])
+  const hits = useMemo(() => (picked ? [] : db.search(query, 30, sources)), [db, query, picked, sources])
+  const multi = available.length > 1
+
+  function toggleSource(id: SourceId) {
+    const next = sources.includes(id) ? sources.filter(s => s !== id) : available.filter(s => s === id || sources.includes(s))
+    if (next.length === 0) return
+    setSources(next)
+    setActive(0)
+    try { localStorage.setItem(SOURCE_KEY, JSON.stringify(next)) } catch { /* ignorera */ }
+  }
   const currentDay = Math.min(day, diary.days)
   const dayEntries = diary.entries.filter(e => e.day === currentDay)
 
@@ -40,7 +68,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
     e.preventDefault()
     const g = Number(grams.replace(',', '.'))
     if (!picked || !(g > 0)) return
-    const entry: DiaryEntry = { id: newId(), day: currentDay, meal, foodNumber: picked.number, grams: g }
+    const entry: DiaryEntry = { id: newId(), day: currentDay, meal, foodNumber: picked.number, ...(picked.source !== 'lmv' ? { source: picked.source } : {}), grams: g }
     onChange({ ...diary, entries: [...diary.entries, entry] })
     setPicked(null)
     setQuery('')
@@ -55,7 +83,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
     onChange({ ...diary, entries: diary.entries.filter(e => e.id !== id) })
   }
 
-  const dayKcal = dayEntries.reduce((s, e) => s + ((db.get(e.foodNumber)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
+  const dayKcal = dayEntries.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
   return (
     <div className="diary">
@@ -75,6 +103,18 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
         </label>
       </div>
 
+      {multi && (
+        <fieldset className="sources">
+          <legend>Sök i</legend>
+          {available.map(id => (
+            <label key={id} className="check">
+              <input type="checkbox" checked={sources.includes(id)} disabled={sources.length === 1 && sources[0] === id} title={sources.length === 1 && sources[0] === id ? 'Minst en databas måste vara vald' : undefined} onChange={() => toggleSource(id)} />
+              {SOURCES[id].label}
+              <small className="muted">{db.sources.find(s => s.id === id)?.count.toLocaleString('sv-SE')} livsmedel</small>
+            </label>
+          ))}
+        </fieldset>
+      )}
       <form className="adder" onSubmit={add}>
         <label className="field meal">
           <span>Måltid</span>
@@ -105,9 +145,9 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
           {hits.length > 0 && (
             <ul className="hits" id="food-hits" role="listbox">
               {hits.map((f, i) => (
-                <li key={f.number} role="option" aria-selected={i === active}>
+                <li key={`${f.source}:${f.number}`} role="option" aria-selected={i === active}>
                   <button type="button" className={i === active ? 'on' : ''} onMouseDown={e => e.preventDefault()} onClick={() => pick(f)}>
-                    <span>{f.name}</span>
+                    <span>{multi && <SourceTag source={f.source} />}{f.name}</span>
                     <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 g</small>
                   </button>
                 </li>
@@ -132,11 +172,11 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
             <table className="entries">
               <tbody>
                 {dayEntries.filter(e => e.meal === m).map(e => {
-                  const f = db.get(e.foodNumber)
+                  const f = db.get(e.foodNumber, e.source)
                   const kcal = ((f?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100
                   return (
                     <tr key={e.id}>
-                      <td className="name">{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
+                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
                         <input
                           aria-label={`Mängd i gram för ${f?.name}`}

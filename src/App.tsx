@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import data from './data/livsmedel.json'
+import usda from './data/usda.json'
 import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PAL_OPTIONS } from './core/energy'
-import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
+import { FoodDatabase, SOURCES, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
 import { calculationsFor, currentWeight, linkDraft, loadState, mergeImport, newId, parseState, saveState, subsetPersons, type AppState } from './core/storage'
@@ -12,7 +13,7 @@ import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
 
-const db = new FoodDatabase(data as unknown as FoodData)
+const db = new FoodDatabase([data as unknown as FoodData, usda as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
@@ -245,7 +246,7 @@ export default function App() {
               <span className="bt">Bedöm undernäring</span>
             </button>
           </div>
-          <p className="source center">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}. Referensvärden: NNR 2023.</p>
+          <p className="source center">Livsmedelsdata: {db.sources.map(s => `${SOURCES[s.id].credit}, hämtad ${new Date(s.fetched).toLocaleDateString('sv-SE')}`).join(' · ')}. Referensvärden: NNR 2023.</p>
         </main>
       )}
 

@@ -1,3 +1,4 @@
+import type { SourceId } from './foods'
 export type Sex = 'kvinna' | 'man'
 
 export type WeightGoal = {
@@ -66,6 +67,8 @@ export type DiaryEntry = {
   day: number
   meal: Meal
   foodNumber: number
+  /** Livsmedelsdatabas; saknas = Livsmedelsverket. */
+  source?: SourceId
   grams: number
 }
 

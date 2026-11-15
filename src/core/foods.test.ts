@@ -67,3 +67,46 @@ describe('referensvärden', () => {
     expect(r.FE).toBe(7)
   })
 })
+
+import usda from '../data/usda.json'
+
+describe('flera livsmedelsdatabaser', () => {
+  const multi = new FoodDatabase([data as unknown as FoodData, usda as unknown as FoodData])
+
+  it('läser in både Livsmedelsverket och USDA', () => {
+    expect(multi.sources.map(s => s.id)).toEqual(['lmv', 'usda'])
+    expect(multi.sources[1].count).toBeGreaterThan(7000)
+  })
+
+  it('söker bara i valda källor', () => {
+    expect(multi.search('salmon', 20, ['lmv'])).toHaveLength(0)
+    const us = multi.search('salmon', 20, ['usda'])
+    expect(us.length).toBeGreaterThan(0)
+    expect(us.every(f => f.source === 'usda')).toBe(true)
+    expect(multi.search('lax', 20, ['lmv', 'usda']).every(f => f.source === 'lmv')).toBe(true)
+  })
+
+  it('håller isär livsmedel med samma nummer i olika källor', () => {
+    const us = multi.search('salmon', 1, ['usda'])[0]
+    expect(multi.get(us.number, 'usda')).toBe(us)
+    expect(multi.get(us.number)?.source ?? 'lmv').toBe('lmv')
+  })
+
+  it('räknar dagbok med blandade källor', () => {
+    const lmv = multi.search('havregryn', 1, ['lmv'])[0]
+    const us = multi.search('bread whole wheat', 1, ['usda'])[0]
+    const entries: DiaryEntry[] = [
+      { id: 'a', day: 1, meal: 'Frukost', foodNumber: lmv.number, grams: 100 },
+      { id: 'b', day: 1, meal: 'Frukost', foodNumber: us.number, source: 'usda', grams: 100 },
+    ]
+    const s = summarizeDiary(multi, entries, 1, ['ENERC|kcal'])
+    expect(s.perDay['ENERC|kcal']).toBeCloseTo((lmv.per100g['ENERC|kcal'] ?? 0) + (us.per100g['ENERC|kcal'] ?? 0), 5)
+  })
+
+  it('USDA: kolhydrater är tillgängliga (exkl. fiber) och energin stämmer ungefär', () => {
+    const bread = multi.foods.find(f => f.source === 'usda' && f.name === 'Bread, whole-wheat, commercially prepared')!
+    const p = bread.per100g
+    const calc = (p.PROT! * 17 + p.FAT! * 37 + p.CHO! * 17 + p.FIBT! * 8) / 4.184
+    expect(Math.abs(calc - p['ENERC|kcal']!) / p['ENERC|kcal']!).toBeLessThan(0.08)
+  })
+})

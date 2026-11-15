@@ -9,6 +9,7 @@
     "build:single": "tsc -b && vite build --mode single",
     "test": "vitest run",
     "update-data": "node scripts/update-livsmedel.mjs",
+    "convert-usda": "node scripts/convert-usda.mjs",
     "preview": "vite preview",
     "lint": "oxlint"
   },

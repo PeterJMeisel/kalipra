@@ -1,7 +1,17 @@
 import type { NutrientKey, NutrientTotals } from './nutrients'
 import type { DiaryEntry, Meal } from './types'
 
+/** Livsmedelsdatabaser som kan sökas i. */
+export type SourceId = 'lmv' | 'fineli' | 'usda'
+export const SOURCES: Record<SourceId, { label: string; short: string; credit: string }> = {
+  lmv: { label: 'Livsmedelsverket', short: 'LMV', credit: 'Livsmedelsverkets livsmedelsdatabas (CC BY 4.0)' },
+  fineli: { label: 'Fineli', short: 'Fineli', credit: 'Fineli, THL – Institutet för hälsa och välfärd, Finland (CC BY 4.0)' },
+  usda: { label: 'USDA', short: 'USDA', credit: 'USDA FoodData Central, SR Legacy april 2018 (public domain, CC0)' },
+}
+
 export type FoodData = {
+  /** Källa; saknas i äldre Livsmedelsverket-filer och betyder då 'lmv'. */
+  id?: SourceId
   source: string
   fetched: string
   keys: NutrientKey[]
@@ -11,6 +21,7 @@ export type FoodData = {
 }
 
 export type Food = {
+  source: SourceId
   number: number
   name: string
   analysed: boolean
@@ -18,38 +29,52 @@ export type Food = {
   per100g: NutrientTotals
 }
 
+export type SourceInfo = { id: SourceId; fetched: string; count: number }
+
 export class FoodDatabase {
-  readonly foods: Food[]
-  readonly fetched: string
-  readonly source: string
-  private byNumber = new Map<number, Food>()
-  private searchKeys: string[]
+  readonly foods: Food[] = []
+  readonly sources: SourceInfo[] = []
+  private byKey = new Map<string, Food>()
+  private searchKeys: string[] = []
 
-  constructor(data: FoodData) {
-    this.fetched = data.fetched
-    this.source = data.source
-    this.foods = data.foods.map(([number, name, analysed, values]) => {
-      const per100g: NutrientTotals = {}
-      data.keys.forEach((k, i) => {
-        const v = values[i]
-        if (v != null) per100g[k] = v
-      })
-      return { number, name, analysed: analysed === 1, per100g }
-    })
-    this.foods.forEach(f => this.byNumber.set(f.number, f))
-    this.searchKeys = this.foods.map(f => normalize(f.name))
+  constructor(data: FoodData | FoodData[]) {
+    for (const d of Array.isArray(data) ? data : [data]) {
+      const source: SourceId = d.id ?? 'lmv'
+      for (const [number, name, analysed, values] of d.foods) {
+        const per100g: NutrientTotals = {}
+        d.keys.forEach((k, i) => {
+          const v = values[i]
+          if (v != null) per100g[k] = v
+        })
+        const food: Food = { source, number, name, analysed: analysed === 1, per100g }
+        this.foods.push(food)
+        this.byKey.set(`${source}:${number}`, food)
+        this.searchKeys.push(normalize(name))
+      }
+      this.sources.push({ id: source, fetched: d.fetched, count: d.foods.length })
+    }
   }
 
-  get(number: number): Food | undefined {
-    return this.byNumber.get(number)
+  /** Datum då Livsmedelsverket-datan hämtades (bakåtkompatibelt). */
+  get fetched(): string {
+    return (this.sources.find(s => s.id === 'lmv') ?? this.sources[0])?.fetched ?? ''
   }
 
-  /** Sök på alla ord i frågan. Träffar där namnet börjar med första ordet rankas högst. */
-  search(query: string, limit = 40): Food[] {
+  get(number: number, source: SourceId = 'lmv'): Food | undefined {
+    return this.byKey.get(`${source}:${number}`)
+  }
+
+  /**
+   * Sök på alla ord i frågan, i de valda källorna (alla om inget anges).
+   * Träffar där namnet börjar med första ordet rankas högst.
+   */
+  search(query: string, limit = 40, sources?: SourceId[]): Food[] {
     const words = normalize(query).split(' ').filter(Boolean)
     if (words.length === 0) return []
+    const allowed = sources ? new Set(sources) : null
     const hits: { food: Food; score: number }[] = []
     this.foods.forEach((food, i) => {
+      if (allowed && !allowed.has(food.source)) return
       const key = this.searchKeys[i]
       if (!words.every(w => key.includes(w))) return
       let score = key.length / 100
@@ -110,7 +135,7 @@ export function summarizeDiary(db: FoodDatabase, entries: DiaryEntry[], days: nu
   const perMeal: Partial<Record<Meal, NutrientTotals>> = {}
   const missing: Partial<Record<NutrientKey, string[]>> = {}
   for (const e of entries) {
-    const food = db.get(e.foodNumber)
+    const food = db.get(e.foodNumber, e.source)
     if (!food) continue
     const n = nutrientsFor(food, e.grams)
     total = addTotals(total, n)
