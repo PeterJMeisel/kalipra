@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BMR_FORMULAS, normalizeFormula, PAL_OPTIONS, type BmrFormula } from '../core/energy'
 import { MIN_SUPPORTED_AGE } from '../core/references'
 import {
-  ARM_LEVELS, CONDITION_GROUPS, emptyHealth, LEG_LEVELS,
+  ARM_LEVELS, CONDITION_GROUPS, emptyHealth, KNOWN_CONDITIONS, LEG_LEVELS,
   type Amputation, type Client, type Health, type LimbSide, type Sex,
 } from '../core/types'
 
@@ -25,7 +25,10 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   const [formula, setFormula] = useState<BmrFormula>(normalizeFormula(initial?.bmrFormula))
   const [hasGoal, setHasGoal] = useState(!!initial?.goal)
   const [target, setTarget] = useState(initial?.goal ? String(initial.goal.targetWeightKg).replace('.', ',') : '')
-  const [health, setHealth] = useState<Health>(() => ({ ...emptyHealth(), ...initial?.health }))
+  const [health, setHealth] = useState<Health>(() => {
+    const h = { ...emptyHealth(), ...initial?.health }
+    return { ...h, conditions: h.conditions.filter(c => KNOWN_CONDITIONS.includes(c)) }
+  })
   const [error, setError] = useState('')
 
   const num = (s: string) => Number(s.replace(',', '.'))
@@ -75,7 +78,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
       health: {
         ...health,
         ckdStage: has('Kronisk njursjukdom') ? health.ckdStage : undefined,
-        allergyText: has('Födoämnesallergi') ? health.allergyText?.trim() || undefined : undefined,
       },
     })
   }
@@ -180,10 +182,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
                         {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
                     </label>
-                  )}
-                  {c === 'Födoämnesallergi' && has(c) && (
-                    <input className="subfield" placeholder="Vilka? t.ex. jordnöt, ägg" value={health.allergyText ?? ''}
-                      onChange={e => setHealth(h => ({ ...h, allergyText: e.target.value }))} aria-label="Vilka födoämnesallergier" />
                   )}
                 </div>
               ))}

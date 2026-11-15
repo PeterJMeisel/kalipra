@@ -14,7 +14,7 @@ export const CONDITION_GROUPS = [
   { group: 'Mag–tarm', items: ['IBS', 'IBD (Crohns sjukdom / ulcerös kolit)', 'Stomi / kort tarm', 'Exokrin pankreasinsufficiens', 'Gastropares'] },
   { group: 'Nutritionsrisk', items: ['Undernäring / risk för undernäring', 'Sarkopeni', 'Trycksår / svårläkta sår', 'Cancer under behandling', 'KOL', 'Demens', 'Parkinson', 'ALS'] },
   { group: 'Brister och skelett', items: ['Järnbristanemi', 'B12-brist', 'Osteoporos'] },
-  { group: 'Övrigt', items: ['Födoämnesallergi', 'Ätstörning', 'Ryggmärgsskada', 'Amputation'] },
+  { group: 'Övrigt', items: ['Ryggmärgsskada', 'Amputation'] },
 ] as const
 
 export type LimbSide = 'vänster' | 'höger'
@@ -26,11 +26,12 @@ export type Health = {
   conditions: string[]
   /** Stadium 1–5 vid kronisk njursjukdom */
   ckdStage?: number
-  /** Fritext, t.ex. vilka födoämnesallergier */
-  allergyText?: string
   amputations: Amputation[]
   notes?: string
 }
+
+/** Diagnoser som finns i listan just nu. Borttagna diagnoser i äldre beräkningar ignoreras. */
+export const KNOWN_CONDITIONS: string[] = CONDITION_GROUPS.flatMap(g => [...g.items])
 
 export const emptyHealth = (): Health => ({ conditions: [], amputations: [] })
 

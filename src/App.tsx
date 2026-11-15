@@ -5,7 +5,7 @@ import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
 import { loadState, mergeImport, newId, parseState, saveState, subset, type AppState } from './core/storage'
-import type { Client, Diary } from './core/types'
+import { KNOWN_CONDITIONS, type Client, type Diary } from './core/types'
 import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
@@ -375,9 +375,8 @@ function EnergySplit({ bmrKcal, totalKcal, pal, formula, weightKg }: {
 function conditionLabels(c: Client): string[] {
   const h = c.health
   if (!h) return []
-  return h.conditions.map(x => {
+  return h.conditions.filter(x => KNOWN_CONDITIONS.includes(x)).map(x => {
     if (x === 'Kronisk njursjukdom' && h.ckdStage) return `${x}, stadium ${h.ckdStage}`
-    if (x === 'Födoämnesallergi' && h.allergyText) return `${x}: ${h.allergyText}`
     if (x === 'Amputation' && h.amputations.length) {
       return `Amputation: ${h.amputations.map(a => `${a.limb === 'arm' ? 'arm' : 'ben'} ${a.side} (${a.level.toLowerCase()})`).join(', ')}`
     }
