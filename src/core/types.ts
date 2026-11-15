@@ -17,6 +17,8 @@ export const CONDITION_GROUPS = [
   { group: 'Övrigt', items: ['Ryggmärgsskada', 'Amputation'] },
 ] as const
 
+export type WeightEntry = { id: string; date: string; kg: number }
+
 export type LimbSide = 'vänster' | 'höger'
 export const ARM_LEVELS = ['Hand', 'Underarm med hand', 'Hela armen'] as const
 export const LEG_LEVELS = ['Fot', 'Under knä (underben med fot)', 'Ovan knä', 'Hela benet'] as const
@@ -49,6 +51,8 @@ export type Client = {
   goal: WeightGoal | null
   /** Saknas i beräkningar från version 0.1 */
   health?: Health
+  /** Vägningar med datum (undernäringsbedömning) */
+  weights?: WeightEntry[]
   createdAt: string
   /** Senast ändrad (uppgifter eller kostregistrering) */
   updatedAt?: string

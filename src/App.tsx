@@ -9,12 +9,13 @@ import { KNOWN_CONDITIONS, type Client, type Diary } from './core/types'
 import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
+import { Assessment, PersonPicker } from './ui/Malnutrition'
 
 const db = new FoodDatabase(data as unknown as FoodData)
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
-type View = 'start' | 'ny' | 'ladda' | 'berakning' | 'undernaring'
+type View = 'start' | 'ny' | 'ladda' | 'berakning' | 'undernaring' | 'ny-person' | 'bedomning'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
 const now = () => new Date().toISOString()
@@ -54,10 +55,13 @@ export default function App() {
     go('berakning')
   }
 
-  function createClient(c: Omit<Client, 'id' | 'createdAt'>) {
+  function createClient(c: Omit<Client, 'id' | 'createdAt'>, then: 'berakning' | 'bedomning' = 'berakning') {
     const nc: Client = { ...c, id: newId(), createdAt: now(), updatedAt: now() }
     setState(s => ({ ...s, clients: [...s.clients, nc], diaries: { ...s.diaries, [nc.id]: { clientId: nc.id, days: 1, entries: [] } } }))
-    open(nc.id, 'registrering')
+    if (then === 'bedomning') { setSelectedId(nc.id); go('bedomning') } else open(nc.id, 'registrering')
+  }
+  function patchClient(id: string, patch: Partial<Client>) {
+    setState(s => ({ ...s, clients: s.clients.map(x => (x.id === id ? { ...x, ...patch, updatedAt: now() } : x)) }))
   }
   function updateClient(c: Omit<Client, 'id' | 'createdAt'>) {
     if (!client) return
@@ -142,7 +146,7 @@ export default function App() {
             <nav className="topnav">
               <button className={view === 'ny' ? 'on' : ''} onClick={() => go('ny')}>Ny beräkning</button>
               <button className={view === 'ladda' ? 'on' : ''} onClick={() => go('ladda')}>Ladda beräkning</button>
-              <button className={view === 'undernaring' ? 'on' : ''} onClick={() => go('undernaring')}>Bedöm undernäring</button>
+              <button className={view === 'undernaring' || view === 'ny-person' || view === 'bedomning' ? 'on' : ''} onClick={() => go('undernaring')}>Bedöm undernäring</button>
             </nav>
           )}
           <button type="button" className="themeswitch" role="switch" aria-checked={theme === 'dark'} aria-label="Mörkt läge"
@@ -181,7 +185,7 @@ export default function App() {
             <button className="bigbtn" onClick={() => go('undernaring')}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M24 8v20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M10 18h28l-4 14H14z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><circle cx="24" cy="8" r="3" fill="currentColor" /></svg>
               <span className="bt">Bedöm undernäring</span>
-              <span className="bs">Screening och bedömning av undernäring</span>
+              <span className="bs">Vikter över tid och hälsotillstånd, kopplat till en person</span>
             </button>
           </div>
           <p className="source center">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}. Referensvärden: NNR 2023.</p>
@@ -198,8 +202,26 @@ export default function App() {
       {view === 'undernaring' && (
         <main className="main narrow">
           <h1>Bedöm undernäring</h1>
-          <p className="empty">Den här delen byggs i en senare version.</p>
-          <div className="actions"><button onClick={() => go('start')}>Till startsidan</button></div>
+          <PersonPicker clients={state.clients} onPick={id => { setSelectedId(id); go('bedomning') }} onNew={() => go('ny-person')} />
+        </main>
+      )}
+
+      {view === 'ny-person' && (
+        <main className="main narrow">
+          <h1>Ny person</h1>
+          <p className="lead">Personen sparas med en kostberäkning, så du kan lägga in kostregistrering senare.</p>
+          <ClientForm submitLabel="Skapa person" onSave={c => createClient(c, 'bedomning')} onCancel={() => go('undernaring')} />
+        </main>
+      )}
+
+      {view === 'bedomning' && client && (
+        <main className="main">
+          <Assessment
+            client={client}
+            onUpdate={patch => patchClient(client.id, patch)}
+            onOpenDiary={() => open(client.id, 'registrering')}
+            onChangePerson={() => go('undernaring')}
+          />
         </main>
       )}
 
@@ -231,7 +253,10 @@ export default function App() {
                   </ul>
                 )}
               </div>
-              <button className="small" onClick={() => exportFile([client.id], `kalipra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
+              <div className="actions">
+                <button className="small" onClick={() => go('bedomning')}>Bedöm undernäring</button>
+                <button className="small" onClick={() => exportFile([client.id], `kalipra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
+              </div>
             </div>
             {message && <p className="msg">{message}</p>}
             <EnergySplit

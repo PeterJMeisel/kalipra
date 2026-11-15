@@ -1,20 +1,17 @@
 import { useState } from 'react'
 import { BMR_FORMULAS, normalizeFormula, PAL_OPTIONS, type BmrFormula } from '../core/energy'
 import { MIN_SUPPORTED_AGE } from '../core/references'
-import {
-  ARM_LEVELS, CONDITION_GROUPS, emptyHealth, KNOWN_CONDITIONS, LEG_LEVELS,
-  type Amputation, type Client, type Health, type LimbSide, type Sex,
-} from '../core/types'
+import { emptyHealth, KNOWN_CONDITIONS, type Client, type Health, type Sex } from '../core/types'
+import { HealthSection } from './HealthSection'
 
 type Props = {
   initial?: Client
   onSave: (c: Omit<Client, 'id' | 'createdAt'>) => void
   onCancel?: () => void
+  submitLabel?: string
 }
 
-const SIDES: LimbSide[] = ['vänster', 'höger']
-
-export function ClientForm({ initial, onSave, onCancel }: Props) {
+export function ClientForm({ initial, onSave, onCancel, submitLabel }: Props) {
   const [healthOpen, setHealthOpen] = useState(false)
   const [code, setCode] = useState(initial?.code ?? '')
   const [age, setAge] = useState(String(initial?.age ?? ''))
@@ -34,26 +31,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   const num = (s: string) => Number(s.replace(',', '.'))
   const palIsPreset = PAL_OPTIONS.some(o => String(o.value) === pal)
   const has = (c: string) => health.conditions.includes(c)
-
-  function toggle(c: string) {
-    setHealth(h => {
-      const on = h.conditions.includes(c)
-      const next = { ...h, conditions: on ? h.conditions.filter(x => x !== c) : [...h.conditions, c] }
-      if (c === 'Amputation' && on) next.amputations = []
-      if (c === 'Kronisk njursjukdom' && !on && !next.ckdStage) next.ckdStage = 3
-      return next
-    })
-  }
-
-  function amputation(limb: 'arm' | 'ben', side: LimbSide): Amputation | undefined {
-    return health.amputations.find(a => a.limb === limb && a.side === side)
-  }
-  function setAmputation(limb: 'arm' | 'ben', side: LimbSide, level: string | null) {
-    setHealth(h => {
-      const rest = h.amputations.filter(a => !(a.limb === limb && a.side === side))
-      return { ...h, amputations: level ? [...rest, { limb, side, level }] : rest }
-    })
-  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -81,8 +58,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
       },
     })
   }
-
-  const count = health.conditions.length
 
   return (
     <form className="form" onSubmit={submit} noValidate>
@@ -157,70 +132,11 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
         )}
       </div>
 
-      <div className="healthpanel">
-        <button type="button" className="healthtoggle" aria-expanded={healthOpen} aria-controls="halsotillstand" onClick={() => setHealthOpen(o => !o)}>
-          <span>Hälsotillstånd{count > 0 && <span className="count">{count}</span>}</span>
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        {count > 0 && !healthOpen && <p className="healthsummary">{health.conditions.join(', ')}</p>}
-      <div id="halsotillstand" hidden={!healthOpen} className="formsection healthbody">
-        <p className="note">Kryssa i diagnoser och tillstånd som kan påverka nutritionen. Vissa ändrar hur resultatet visas, t.ex. lyfts saltraden fram vid hypertoni.</p>
-        <div className="condgroups">
-          {CONDITION_GROUPS.map(g => (
-            <fieldset key={g.group} className="condgroup">
-              <legend>{g.group}</legend>
-              {g.items.map(c => (
-                <div key={c}>
-                  <label className="cond">
-                    <input type="checkbox" checked={has(c)} onChange={() => toggle(c)} />
-                    <span>{c}</span>
-                  </label>
-                  {c === 'Kronisk njursjukdom' && has(c) && (
-                    <label className="subfield">
-                      Stadium
-                      <select value={health.ckdStage ?? 3} onChange={e => setHealth(h => ({ ...h, ckdStage: Number(e.target.value) }))}>
-                        {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
-                      </select>
-                    </label>
-                  )}
-                </div>
-              ))}
-            </fieldset>
-          ))}
-        </div>
-
-        {has('Amputation') && (
-          <fieldset className="amputation">
-            <legend>Amputation – välj de kroppsdelar som är amputerade</legend>
-            <div className="ampgrid">
-              {(['arm', 'ben'] as const).map(limb => SIDES.map(side => {
-                const current = amputation(limb, side)
-                const levels = limb === 'arm' ? ARM_LEVELS : LEG_LEVELS
-                return (
-                  <div className="ampcell" key={limb + side}>
-                    <label className="check small">
-                      <input type="checkbox" checked={!!current} onChange={e => setAmputation(limb, side, e.target.checked ? levels[0] : null)} />
-                      <span>{limb === 'arm' ? 'Arm' : 'Ben'}, {side}</span>
-                    </label>
-                    {current && (
-                      <select aria-label={`Nivå, ${limb} ${side}`} value={current.level} onChange={e => setAmputation(limb, side, e.target.value)}>
-                        {levels.map(l => <option key={l}>{l}</option>)}
-                      </select>
-                    )}
-                  </div>
-                )
-              }))}
-            </div>
-            <small className="muted">Energibehovet räknas på faktisk vikt. Korrigerat BMI läggs till när procentsatserna per kroppsdel och längd före amputation är bedömda.</small>
-          </fieldset>
-        )}
-
-      </div>
-      </div>
+      <HealthSection health={health} onChange={setHealth} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
 
       {error && <p className="error" role="alert">{error}</p>}
       <div className="actions">
-        <button type="submit" className="primary">{initial ? 'Spara ändringar' : 'Skapa beräkning'}</button>
+        <button type="submit" className="primary">{submitLabel ?? (initial ? 'Spara ändringar' : 'Skapa beräkning')}</button>
         {onCancel && <button type="button" onClick={onCancel}>Avbryt</button>}
       </div>
     </form>

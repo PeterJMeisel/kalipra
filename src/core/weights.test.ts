@@ -1,0 +1,41 @@
+import { describe, expect, it } from 'vitest'
+import { changeWithin, daysBetween, sortWeights, totalChange } from './weights'
+
+const w = (date: string, kg: number) => ({ id: date, date, kg })
+
+describe('viktförändring', () => {
+  const list = [w('2026-11-01', 68), w('2026-05-01', 80), w('2026-08-01', 74), w('2025-11-01', 82)]
+
+  it('sorterar äldst först', () => {
+    expect(sortWeights(list).map(x => x.date)).toEqual(['2025-11-01', '2026-05-01', '2026-08-01', '2026-11-01'])
+  })
+
+  it('räknar dagar', () => {
+    expect(daysBetween('2026-05-01', '2026-11-01')).toBe(184)
+  })
+
+  it('total förändring från första till senaste vikt', () => {
+    const c = totalChange(list)!
+    expect(c.deltaKg).toBeCloseTo(-14, 9)
+    expect(c.deltaPct).toBeCloseTo((-14 / 82) * 100, 9)
+    expect(c.days).toBe(365)
+  })
+
+  it('förändring senaste 6 månaderna utgår från äldsta vikten inom perioden', () => {
+    const c = changeWithin(list, 6)!
+    expect(c.fromDate).toBe('2026-05-01')
+    expect(c.deltaKg).toBeCloseTo(-12, 9)
+    expect(c.deltaPct).toBeCloseTo(-15, 9)
+  })
+
+  it('förändring senaste 3 månaderna', () => {
+    const c = changeWithin(list, 3)!
+    expect(c.fromDate).toBe('2026-08-01')
+    expect(c.deltaPct).toBeCloseTo((-6 / 74) * 100, 9)
+  })
+
+  it('null om det inte finns två vikter', () => {
+    expect(totalChange([w('2026-01-01', 70)])).toBeNull()
+    expect(changeWithin([w('2026-01-01', 70), w('2026-11-01', 69)], 3)).toBeNull()
+  })
+})
