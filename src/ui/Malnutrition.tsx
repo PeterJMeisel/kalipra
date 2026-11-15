@@ -18,9 +18,18 @@ type PickerProps = {
   detail: (p: Person) => string
   actionLabel: string
   onPick: (id: string) => void
+  /** Markeringsläge: kryssrutor i stället för att öppna patienten */
+  selected?: Set<string>
+  onToggle?: (id: string) => void
+  /** Aktuell vikt i kg att visa per patient */
+  weightOf?: (p: Person) => number | undefined
 }
 
-export function PersonPicker({ persons, detail, actionLabel, onPick }: PickerProps) {
+export function PersonPicker({ persons, detail, actionLabel, onPick, selected, onToggle, weightOf }: PickerProps) {
+  const meta = (p: Person) => {
+    const kg = weightOf?.(p)
+    return `${p.sex === 'kvinna' ? 'Kvinna' : 'Man'}, ${p.age} år · ${kg !== undefined ? `${formatNumber(kg, 1)} kg · ` : ''}${formatNumber(p.heightCm, 0)} cm`
+  }
   const [q, setQ] = useState('')
   const list = [...persons]
     .sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt))
@@ -34,12 +43,23 @@ export function PersonPicker({ persons, detail, actionLabel, onPick }: PickerPro
       <ul className="savedlist">
         {list.map(p => (
           <li key={p.id}>
-            <button onClick={() => onPick(p.id)}>
-              <span className="ccode">{p.code}</span>
-              <span className="cmeta">{p.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {p.age} år · {formatNumber(p.heightCm, 0)} cm</span>
-              <span className="cdate">{detail(p)}</span>
-              <span className="open" aria-hidden="true">{actionLabel} →</span>
-            </button>
+            {selected && onToggle ? (
+              <label className={`selrow${selected.has(p.id) ? ' on' : ''}`}>
+                <input type="checkbox" checked={selected.has(p.id)} onChange={() => onToggle(p.id)} />
+                <span className="selbody">
+                  <span className="ccode">{p.code}</span>
+                  <span className="cmeta">{meta(p)}</span>
+                  <span className="cdate">{detail(p)}</span>
+                </span>
+              </label>
+            ) : (
+              <button onClick={() => onPick(p.id)}>
+                <span className="ccode">{p.code}</span>
+                <span className="cmeta">{meta(p)}</span>
+                <span className="cdate">{detail(p)}</span>
+                <span className="open" aria-hidden="true">{actionLabel} →</span>
+              </button>
+            )}
           </li>
         ))}
         {list.length === 0 && <li className="muted">Ingen patient matchar sökningen.</li>}

@@ -91,9 +91,34 @@ export function subset(state: AppState, calcIds: string[]): AppState {
   return { version: 2, persons: state.persons.filter(p => personIds.has(p.id)), calculations, draft: emptyDraft() }
 }
 
+/** Plockar ut patienter med alla deras beräkningar och vikter som en egen exportfil (patientfil). */
+export function subsetPersons(state: AppState, personIds: string[]): AppState {
+  const keep = new Set(personIds)
+  return {
+    version: 2,
+    persons: state.persons.filter(p => keep.has(p.id)),
+    calculations: state.calculations.filter(c => keep.has(c.personId)),
+    draft: emptyDraft(),
+  }
+}
+
 /** Beräkningar för en person, senaste först. */
 export function calculationsFor(state: AppState, personId: string): Calculation[] {
   return state.calculations.filter(c => c.personId === personId).sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+/**
+ * Patientens aktuella vikt: den senaste av senaste vägningen och vikten i senaste beräkningen
+ * (jämförs på datum; vid samma datum vinner vägningen).
+ */
+export function currentWeight(state: AppState, personId: string): { kg: number; date: string } | null {
+  const p = state.persons.find(x => x.id === personId)
+  const w = [...(p?.weights ?? [])].sort((a, b) => a.date.localeCompare(b.date)).at(-1)
+  const c = calculationsFor(state, personId)[0]
+  const fromCalc = c ? { kg: c.weightKg, date: c.createdAt.slice(0, 10) } : null
+  const fromWeighing = w ? { kg: w.kg, date: w.date } : null
+  if (fromWeighing && (!fromCalc || fromWeighing.date >= fromCalc.date)) return fromWeighing
+  return fromCalc
 }
 
 /** Slår ihop hälsotillstånd: alla diagnoser från båda, amputationer per kroppsdel (det nya vinner). */

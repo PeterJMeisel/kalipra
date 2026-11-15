@@ -4,7 +4,7 @@ import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PA
 import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
-import { calculationsFor, linkDraft, loadState, mergeImport, newId, parseState, saveState, subset, type AppState } from './core/storage'
+import { calculationsFor, currentWeight, linkDraft, loadState, mergeImport, newId, parseState, saveState, subsetPersons, type AppState } from './core/storage'
 import { KNOWN_CONDITIONS, splitClient, toClient, type Calculation, type Client, type Diary, type Person } from './core/types'
 import { sortWeights } from './core/weights'
 import { ClientForm } from './ui/ClientForm'
@@ -36,6 +36,8 @@ export default function App() {
   /** Undernäringsbedömning: null = okopplad bedömning */
   const [assessPersonId, setAssessPersonId] = useState<string | null>(null)
   const [linking, setLinking] = useState(false)
+  /** Exportläge i patientlistan: valda patienter */
+  const [exportSel, setExportSel] = useState<Set<string> | null>(null)
   const [saved, setSaved] = useState(true)
   const [message, setMessage] = useState('')
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -53,6 +55,7 @@ export default function App() {
   function go(v: View) {
     setMessage('')
     setLinking(false)
+    setExportSel(null)
     setView(v)
   }
 
@@ -115,8 +118,12 @@ export default function App() {
     patchCalc(d.clientId, { days: d.days, entries: d.entries })
   }
 
-  async function exportFile(ids: string[], name: string) {
-    const json = JSON.stringify(subset(state, ids), null, 2)
+  async function exportPatients(personIds: string[]) {
+    const ps = state.persons.filter(p => personIds.includes(p.id))
+    const name = ps.length === 1
+      ? `kalipra-${ps[0].code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}-${now().slice(0, 10)}`
+      : `kalipra-${ps.length}-patienter-${now().slice(0, 10)}`
+    const json = JSON.stringify(subsetPersons(state, personIds), null, 2)
     try {
       const a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
@@ -125,23 +132,22 @@ export default function App() {
     } catch { /* nedladdning kan vara blockerad */ }
     try {
       await navigator.clipboard.writeText(json)
-      setMessage('Exporterad som fil. Innehållet finns också i urklipp.')
+      setMessage(`${plural(ps.length, 'patient', 'patienter')} exporterad${ps.length === 1 ? '' : 'e'} till fil. Innehållet finns också i urklipp.`)
     } catch {
-      setMessage('Exporterad som fil.')
+      setMessage(`${plural(ps.length, 'patient', 'patienter')} exporterad${ps.length === 1 ? '' : 'e'} till fil.`)
     }
   }
 
   async function importFile(file: File) {
     try {
       const imported = parseState(await file.text())
-      const { state: next, added, replaced } = mergeImport(state, imported)
+      const existing = new Set(state.persons.map(p => p.id))
+      const newPatients = imported.persons.filter(p => !existing.has(p.id)).length
+      const { state: next } = mergeImport(state, imported)
       setState(next)
-      if (imported.calculations.length === 1) {
-        open(imported.calculations[0].id)
-      } else {
-        setNyMode('lista'); setNyPersonId(null); setView('ny')
-        setMessage(`Hämtade ${plural(imported.calculations.length, 'beräkning', 'beräkningar')} från filen (${added} nya, ${replaced} ersatta).`)
-      }
+      setNyMode('lista'); setNyPersonId(null); setView('ny')
+      setMessage(`Hämtade ${plural(imported.persons.length, 'patient', 'patienter')} med ${plural(imported.calculations.length, 'beräkning', 'beräkningar')} från filen`
+        + ` (${newPatients} nya, ${imported.persons.length - newPatients} uppdaterade).`)
     } catch (e) {
       setNyMode('lista'); setNyPersonId(null); setView('ny')
       setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalipra.')
@@ -255,18 +261,35 @@ export default function App() {
           )}
           {nyMode === 'lista' && !nyPerson && (
             <>
+              <button className="newpatient" onClick={() => { setMessage(''); setExportSel(null); setNyMode('ny') }}>
+                <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M24 14v20M14 24h20" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" /></svg>
+                <span>Ny patient</span>
+              </button>
               <div className="loadactions">
-                <button className="primary" onClick={() => { setMessage(''); setNyMode('ny') }}>+ Ny patient</button>
-                <button onClick={() => fileRef.current?.click()}>Hämta från fil …</button>
-                {state.calculations.length > 0 && <button onClick={() => exportFile(state.calculations.map(c => c.id), `kalipra-alla-${now().slice(0, 10)}`)}>Exportera alla till fil</button>}
+                <button onClick={() => fileRef.current?.click()}>Hämta patient från fil …</button>
+                {state.persons.length > 0 && !exportSel && <button onClick={() => { setMessage(''); setExportSel(new Set()) }}>Exportera patient …</button>}
               </div>
+              {exportSel && (
+                <div className="exportbar">
+                  <span>Kryssa i de patienter du vill exportera.</span>
+                  <button className="small" onClick={() => setExportSel(exportSel.size === state.persons.length ? new Set() : new Set(state.persons.map(p => p.id)))}>
+                    {exportSel.size === state.persons.length ? 'Avmarkera alla' : 'Markera alla'}
+                  </button>
+                  <button className="small primary" disabled={exportSel.size === 0} onClick={() => { exportPatients([...exportSel]); setExportSel(null) }}>
+                    Exportera {exportSel.size > 0 ? `(${exportSel.size})` : ''}
+                  </button>
+                  <button className="small" onClick={() => setExportSel(null)}>Avbryt</button>
+                </div>
+              )}
               {message && <p className="msg">{message}</p>}
               <h2 className="sub">Mina patienter</h2>
               {state.persons.length === 0
-                ? <p className="empty">Inga patienter ännu. Börja med <strong>+ Ny patient</strong>.</p>
-                : <PersonPicker persons={state.persons} actionLabel="Välj"
-                    detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'beräkning', 'beräkningar')}
-                    onPick={id => { setMessage(''); setNyPersonId(id) }} />}
+                ? <p className="empty">Inga patienter ännu. Börja med <strong>Ny patient</strong>.</p>
+                : <PersonPicker weightOf={p => currentWeight(state, p.id)?.kg} persons={state.persons} actionLabel="Välj"
+                    detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'kostberäkning', 'kostberäkningar')}
+                    onPick={id => { setMessage(''); setNyPersonId(id) }}
+                    selected={exportSel ?? undefined}
+                    onToggle={id => setExportSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })} />}
             </>
           )}
           {nyMode === 'lista' && nyPerson && nyPrefill && (
@@ -310,7 +333,7 @@ export default function App() {
             {message && <p className="msg">{message}</p>}
             {linking && !assessPerson && (
               <div className="linkpicker">
-                <PersonPicker persons={state.persons} actionLabel="Koppla"
+                <PersonPicker weightOf={p => currentWeight(state, p.id)?.kg} persons={state.persons} actionLabel="Koppla"
                   detail={p => plural(p.weights?.length ?? 0, 'vägning', 'vägningar')}
                   onPick={linkToExisting} />
               </div>
@@ -371,7 +394,7 @@ export default function App() {
               <div className="actions">
                 <button className="small" onClick={() => startNewCalc(calcPerson.id)}>+ Ny beräkning</button>
                 <button className="small" onClick={() => { setAssessPersonId(calcPerson.id); go('undernaring') }}>Bedöm undernäring</button>
-                <button className="small" onClick={() => exportFile([calculation.id], `kalipra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}-${calculation.createdAt.slice(0, 10)}`)}>Exportera till fil</button>
+                <button className="small" onClick={() => exportPatients([calcPerson.id])}>Exportera patient</button>
               </div>
             </div>
             <div className="calcpick">

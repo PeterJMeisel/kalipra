@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculationsFor, emptyState, linkDraft, mergeImport, parseState, subset, type AppState } from './storage'
+import { calculationsFor, currentWeight, emptyState, linkDraft, mergeImport, parseState, subset, subsetPersons, type AppState } from './storage'
 import type { Calculation, Client, Person } from './types'
 
 const person = (id: string, code: string): Person => ({ id, code, age: 40, sex: 'kvinna', heightCm: 165, createdAt: '2026-01-01T00:00:00Z' })
@@ -37,6 +37,13 @@ describe('import och export', () => {
     expect(one.calculations.map(c => c.id)).toEqual(['c2'])
   })
 
+  it('exporterar valda patienter med alla deras beräkningar', () => {
+    const s = state([person('p1', 'A'), person('p2', 'B'), person('p3', 'C')], [calc('c1', 'p1'), calc('c2', 'p1'), calc('c3', 'p2'), calc('c4', 'p3')])
+    const out = parseState(JSON.stringify(subsetPersons(s, ['p1', 'p3'])))
+    expect(out.persons.map(p => p.code)).toEqual(['A', 'C'])
+    expect(out.calculations.map(c => c.id)).toEqual(['c1', 'c2', 'c4'])
+  })
+
   it('avvisar filer som inte är exporter', () => {
     expect(() => parseState('{"foo":1}')).toThrow()
   })
@@ -67,5 +74,16 @@ describe('koppla bedömning till person', () => {
     expect(out.health!.conditions).toEqual(['Hypertoni', 'KOL'])
     expect(out.health!.amputations).toHaveLength(1)
     expect(r.state.draft.weights).toEqual([])
+  })
+})
+
+describe('aktuell vikt', () => {
+  it('tar senaste av vägning och beräkning', () => {
+    const p: Person = { ...person('p1', 'A'), weights: [{ id: 'w', date: '2026-03-01', kg: 75 }] }
+    const s = state([p], [calc('c1', 'p1', '2026-02-01T09:00:00Z')])
+    expect(currentWeight(s, 'p1')).toEqual({ kg: 75, date: '2026-03-01' })
+    const s2 = state([p], [{ ...calc('c2', 'p1', '2026-04-01T09:00:00Z'), weightKg: 73 }])
+    expect(currentWeight(s2, 'p1')).toEqual({ kg: 73, date: '2026-04-01' })
+    expect(currentWeight(state([person('p9', 'X')], []), 'p9')).toBeNull()
   })
 })

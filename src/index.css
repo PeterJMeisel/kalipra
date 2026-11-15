@@ -320,3 +320,15 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .heightfield { grid-column: 1 / -1; max-width: 240px }
 .linkback { border: 0; background: none; padding: 0; min-height: 36px; color: var(--brand); font-weight: 600 }
 .linkback:hover:not(:disabled) { border: 0; text-decoration: underline }
+
+/* Patientlistan */
+.newpatient { display: flex; align-items: center; gap: 16px; width: 100%; margin: 18px 0 14px; padding: 22px 26px; min-height: 88px; border-radius: 12px; border: 0; background: var(--brand); color: var(--brand-ink); font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 26px; font-weight: 700; box-shadow: 0 10px 30px rgb(59 42 74 / .18); transition: transform .15s ease, box-shadow .15s ease }
+.newpatient:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 36px rgb(59 42 74 / .25) }
+.newpatient svg { width: 44px; height: 44px; flex: none }
+.exportbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-top: 12px; padding: 12px 14px; border: 2px solid var(--saffron); border-radius: 8px; background: var(--panel) }
+.exportbar > span { flex: 1 1 220px; font-weight: 600 }
+.selrow { display: flex; gap: 14px; align-items: center; padding: 14px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer }
+.selrow.on { border-color: var(--brand); background: var(--tint) }
+.selrow input { width: 22px; height: 22px; min-height: 0; flex: none }
+.selbody { display: grid; gap: 2px }
+@media (prefers-reduced-motion: reduce) { .newpatient { transition: none } }
