@@ -52,3 +52,29 @@ export function changeWithin(weights: WeightEntry[], months: number): WeightChan
   const first = s.find(w => w.date >= limitStr && w.date < last.date)
   return first ? change(first, last) : null
 }
+
+/** Fälten längd, vikt och BMI i en vägning. */
+export type BodyField = 'h' | 'w' | 'b'
+
+/**
+ * Räknar ut det tredje värdet av längd (cm), vikt (kg) och BMI när två är kända.
+ * `target` är fältet som ska räknas fram. Returnerar undefined om underlaget saknas eller är orimligt.
+ */
+export function solveBody(target: BodyField, v: { h?: number; w?: number; b?: number }): number | undefined {
+  const ok = (x: number | undefined): x is number => x !== undefined && Number.isFinite(x) && x > 0
+  const m = v.h !== undefined ? v.h / 100 : undefined
+  if (target === 'b' && ok(v.w) && ok(m)) return v.w / (m * m)
+  if (target === 'w' && ok(v.b) && ok(m)) return v.b * m * m
+  if (target === 'h' && ok(v.w) && ok(v.b)) return Math.sqrt(v.w / v.b) * 100
+  return undefined
+}
+
+/**
+ * Vilket fält som ska räknas fram, givet i vilken ordning användaren senast ändrat fälten
+ * (senast först). Det fält som inte är bland de två senast ändrade räknas fram.
+ */
+export function autoField(recent: BodyField[]): BodyField | undefined {
+  const two = [...new Set(recent)].slice(0, 2)
+  if (two.length < 2) return undefined
+  return (['h', 'w', 'b'] as BodyField[]).find(f => !two.includes(f))
+}

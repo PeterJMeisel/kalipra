@@ -18,7 +18,7 @@ export const CONDITION_GROUPS = [
   { group: 'Övrigt', items: ['Ryggmärgsskada', 'Amputation'] },
 ] as const
 
-export type WeightEntry = { id: string; date: string; kg: number }
+export type WeightEntry = { id: string; date: string; kg: number; /** Längd vid vägningen, om den angavs */ heightCm?: number }
 
 export type LimbSide = 'vänster' | 'höger'
 export const ARM_LEVELS = ['Hand', 'Underarm med hand', 'Hela armen'] as const

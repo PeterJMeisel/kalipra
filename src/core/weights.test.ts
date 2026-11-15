@@ -39,3 +39,22 @@ describe('viktförändring', () => {
     expect(changeWithin([w('2026-01-01', 70), w('2026-11-01', 69)], 3)).toBeNull()
   })
 })
+
+import { autoField, solveBody } from './weights'
+
+describe('längd, vikt och BMI', () => {
+  it('räknar ut det tredje värdet', () => {
+    expect(solveBody('b', { h: 165, w: 68 })).toBeCloseTo(24.98, 2)
+    expect(solveBody('w', { h: 165, b: 25 })).toBeCloseTo(68.06, 2)
+    expect(solveBody('h', { w: 68, b: 24.98 })).toBeCloseTo(165, 1)
+    expect(solveBody('b', { w: 68 })).toBeUndefined()
+  })
+
+  it('räknar fram fältet som inte är bland de två senast ändrade', () => {
+    expect(autoField(['w', 'h'])).toBe('b')
+    expect(autoField(['b', 'w', 'h'])).toBe('h')
+    expect(autoField(['b', 'h', 'w'])).toBe('w')
+    expect(autoField(['h'])).toBeUndefined()
+    expect(autoField(['w', 'w', 'h'])).toBe('b')
+  })
+})

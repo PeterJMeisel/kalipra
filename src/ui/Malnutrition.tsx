@@ -3,7 +3,7 @@ import { bmi } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
 import { newId } from '../core/storage'
 import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type WeightEntry } from '../core/types'
-import { change, changeWithin, sortWeights, totalChange, type WeightChange } from '../core/weights'
+import { autoField, change, changeWithin, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
@@ -75,46 +75,67 @@ export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm
 type AssessmentProps = {
   data: AssessmentData
   onChange: (patch: Partial<AssessmentData>) => void
-  /** Visa fält för längd (när bedömningen inte är kopplad till en person) */
-  askHeight?: boolean
   /** Vikt i personens senaste beräkning, för jämförelse med senaste vägningen */
   calcWeightKg?: number
   onUseLatestWeight?: (kg: number) => void
 }
 
-export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLatestWeight }: AssessmentProps) {
-  const [date, setDate] = useState(today())
-  const [kg, setKg] = useState('')
-  const [error, setError] = useState('')
-  const [healthOpen, setHealthOpen] = useState(false)
-  const [height, setHeight] = useState(data.heightCm ? String(data.heightCm).replace('.', ',') : '')
-
+export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: AssessmentProps) {
   const weights = sortWeights(data.weights)
   const newestFirst = [...weights].reverse()
   const latest = weights[weights.length - 1]
-  const heightCm = data.heightCm
+  const heightCm = latest?.heightCm ?? data.heightCm
   const health: Health = (() => {
     const h = { ...emptyHealth(), ...data.health }
     return { ...h, conditions: h.conditions.filter(c => KNOWN_CONDITIONS.includes(c)) }
   })()
 
+  const [date, setDate] = useState(today())
+  const [vals, setVals] = useState<Record<BodyField, string>>({ h: heightCm ? numText(heightCm, 1) : '', w: '', b: '' })
+  // Fälten i den ordning de senast ändrats (senast först). En förifylld längd räknas som ifylld.
+  const [recent, setRecent] = useState<BodyField[]>(heightCm ? ['h'] : [])
+  const [error, setError] = useState('')
+  const [healthOpen, setHealthOpen] = useState(false)
+  const auto = autoField(recent)
+
+  function edit(field: BodyField, text: string) {
+    const order = [field, ...recent.filter(f => f !== field)]
+    const next = { ...vals, [field]: text }
+    const target = autoField(order)
+    if (target) {
+      const v = solveBody(target, { h: parse(next.h), w: parse(next.w), b: parse(next.b) })
+      next[target] = v === undefined ? '' : numText(v, 1)
+    }
+    setRecent(order)
+    setVals(next)
+  }
+
   function add(e: React.FormEvent) {
     e.preventDefault()
-    const v = Number(kg.replace(',', '.'))
+    const h = parse(vals.h)
+    const w = parse(vals.w) ?? solveBody('w', { h, b: parse(vals.b) })
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return setError('Ange datum.')
     if (date > today()) return setError('Datumet kan inte vara i framtiden.')
-    if (!(v >= 8 && v <= 400)) return setError('Ange vikt i kg (8–400).')
-    if (weights.some(w => w.date === date)) return setError('Det finns redan en vikt för det datumet. Ta bort den först om du vill ändra.')
-    onChange({ weights: [...weights, { id: newId(), date, kg: v }] })
-    setKg('')
+    if (h !== undefined && !(h >= 70 && h <= 250)) return setError('Ange längd i cm (70–250).')
+    if (w === undefined) return setError('Ange vikt, eller längd och BMI så räknas vikten ut.')
+    if (!(w >= 8 && w <= 400)) return setError('Vikten ska vara 8–400 kg.')
+    if (weights.some(x => x.date === date)) return setError('Det finns redan en vikt för det datumet. Ta bort den först om du vill ändra.')
+    const kg = Math.round(w * 10) / 10
+    const entry = { id: newId(), date, kg, ...(h !== undefined ? { heightCm: Math.round(h * 10) / 10 } : {}) }
+    const nextWeights = sortWeights([...weights, entry])
+    const newest = nextWeights[nextWeights.length - 1]
+    onChange({ weights: nextWeights, ...(newest.id === entry.id && entry.heightCm ? { heightCm: entry.heightCm } : {}) })
+    setVals({ h: vals.h, w: '', b: '' })
+    setRecent(h !== undefined ? ['h'] : [])
     setError('')
   }
 
-  function setHeightText(t: string) {
-    setHeight(t)
-    const v = Number(t.replace(',', '.'))
-    onChange({ heightCm: v >= 70 && v <= 250 ? v : undefined })
-  }
+  const field = (f: BodyField, id: string, label: string, placeholder: string) => (
+    <label className={`field${auto === f && vals[f] ? ' autocalc' : ''}`}>
+      <span>{label}{auto === f && vals[f] ? <em> · beräknad</em> : null}</span>
+      <input id={id} inputMode="decimal" value={vals[f]} onChange={e => edit(f, e.target.value)} placeholder={placeholder} />
+    </label>
+  )
 
   const periods: { label: string; c: WeightChange | null }[] = [
     { label: 'Senaste 3 månaderna', c: changeWithin(weights, 3) },
@@ -131,18 +152,12 @@ export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLates
             <span>Datum</span>
             <input id="w-date" type="date" value={date} max={today()} onChange={e => setDate(e.target.value)} />
           </label>
-          <label className="field">
-            <span>Vikt (kg)</span>
-            <input id="w-kg" inputMode="decimal" value={kg} onChange={e => setKg(e.target.value)} placeholder="t.ex. 72,4" />
-          </label>
-          <button type="submit" className="primary">Lägg till vikt</button>
-          {askHeight && (
-            <label className="field heightfield">
-              <span>Längd (cm), för BMI</span>
-              <input id="w-height" inputMode="decimal" value={height} onChange={e => setHeightText(e.target.value)} placeholder="valfritt" />
-            </label>
-          )}
+          {field('h', 'w-height', 'Längd (cm)', 't.ex. 168')}
+          {field('w', 'w-kg', 'Vikt (kg)', 't.ex. 72,4')}
+          {field('b', 'w-bmi', 'BMI', 't.ex. 24,5')}
+          <button type="submit" className="primary">Lägg till</button>
         </form>
+        <p className="hint">Fyll i två av längd, vikt och BMI – det tredje räknas ut.</p>
         {error && <p className="error" role="alert">{error}</p>}
 
         {weights.length === 0 ? (
@@ -168,7 +183,7 @@ export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLates
               </div>
             )}
             <table className="ref stack wtable">
-              <thead><tr><th>Datum</th><th className="num">Vikt</th><th className="num">BMI</th><th className="num">Sedan föregående</th><th></th></tr></thead>
+              <thead><tr><th>Datum</th><th className="num">Längd</th><th className="num">Vikt</th><th className="num">BMI</th><th className="num">Sedan föregående</th><th></th></tr></thead>
               <tbody>
                 {newestFirst.map((w, i) => {
                   const prev = newestFirst[i + 1]
@@ -176,8 +191,9 @@ export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLates
                   return (
                     <tr key={w.id}>
                       <td data-l="Datum">{dateText(w.date)}</td>
+                      <td data-l="Längd" className="num">{w.heightCm ? `${formatNumber(w.heightCm, 1)} cm` : '–'}</td>
                       <td data-l="Vikt" className="num"><strong>{formatNumber(w.kg, 1)} kg</strong></td>
-                      <td data-l="BMI" className="num">{heightCm ? formatNumber(bmi(w.kg, heightCm), 1) : '–'}</td>
+                      <td data-l="BMI" className="num">{(w.heightCm ?? heightCm) ? formatNumber(bmi(w.kg, (w.heightCm ?? heightCm)!), 1) : '–'}</td>
                       <td data-l="Sedan föregående" className="num">{c ? `${signed(c.deltaKg, 1)} kg (${signed(c.deltaPct, 1)} %)` : '–'}</td>
                       <td className="del"><button type="button" className="linkbtn" aria-label={`Ta bort vikten ${dateText(w.date)}`} onClick={() => onChange({ weights: weights.filter(x => x.id !== w.id) })}>Ta bort</button></td>
                     </tr>
@@ -201,4 +217,13 @@ export function Assessment({ data, onChange, askHeight, calcWeightKg, onUseLates
       </section>
     </div>
   )
+}
+
+function parse(t: string): number | undefined {
+  const v = Number(t.trim().replace(',', '.'))
+  return t.trim() && Number.isFinite(v) && v > 0 ? v : undefined
+}
+
+function numText(v: number, decimals: number): string {
+  return String(Math.round(v * 10 ** decimals) / 10 ** decimals).replace('.', ',')
 }

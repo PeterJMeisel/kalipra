@@ -345,7 +345,7 @@ export default function App() {
             <Assessment
               key={assessPerson.id}
               data={{ weights: assessPerson.weights ?? [], health: assessPerson.health, heightCm: assessPerson.heightCm }}
-              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}) })}
+              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}), ...(patch.heightCm ? { heightCm: patch.heightCm } : {}) })}
               calcWeightKg={assessLatestCalc?.weightKg}
               onUseLatestWeight={kg => assessLatestCalc && patchCalc(assessLatestCalc.id, { weightKg: kg })}
             />
@@ -353,7 +353,6 @@ export default function App() {
             <Assessment
               key="draft"
               data={state.draft}
-              askHeight
               onChange={patch => setState(s => ({ ...s, draft: { ...s.draft, ...patch, health: patch.health ?? s.draft.health } }))}
             />
           )}
