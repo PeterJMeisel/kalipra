@@ -55,7 +55,7 @@ describe('GLIM: underlag och journaltext', () => {
     expect(s.intake[0]).toBe('Viktnedgången under 3 månader kan tyda på minskat intag')
     expect(s.intake).toContain('Lågt albumin: kan tyda på minskat intag')
     expect(s.intake).toContain('Näringsbrist: kan tyda på minskat intag')
-    expect(s.inflammation).toEqual(['IBD (Crohns sjukdom / ulcerös kolit): kronisk inflammatorisk tarmsjukdom kan innebära inflammation'])
+    expect(s.inflammation).toEqual(['IBD (Crohns sjukdom / ulcerös kolit): kronisk inflammatorisk tarmsjukdom'])
   })
 
   it('skriver journaltext med grad och underlag', () => {

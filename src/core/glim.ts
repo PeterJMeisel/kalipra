@@ -118,22 +118,25 @@ export function assessGlim(input: {
   return { loss6: within, lossLong: longer, bmi: b, weightCriterion, bmiCriterion, muscleCriterion, phenotypic, etiologic, malnutrition, stage, missing }
 }
 
-/** Hälsotillstånd som kan tala för inflammation/kronisk sjukdom, med underlag. */
+/**
+ * Hälsotillstånd som visar på inflammation/kronisk sjukdom, med underlag. Diagnoser och CRP är
+ * konkreta och formuleras därför bestämt. "kan" används bara där det kan finnas andra orsaker.
+ */
 export const INFLAMMATION_REASONS: Record<string, string> = {
-  'Inflammation (CRP)': 'förhöjt CRP kan tyda på inflammation',
-  'Hjärtsvikt': 'kronisk organsjukdom kan innebära kronisk eller återkommande inflammation',
-  'KOL': 'kronisk organsjukdom kan innebära kronisk eller återkommande inflammation',
-  'Kronisk njursjukdom': 'kronisk organsjukdom kan innebära kronisk eller återkommande inflammation',
-  'Cancer under behandling': 'cancer kan innebära kronisk eller återkommande inflammation',
-  'IBD (Crohns sjukdom / ulcerös kolit)': 'kronisk inflammatorisk tarmsjukdom kan innebära inflammation',
+  'Inflammation (CRP)': 'förhöjt CRP tyder på inflammation',
+  'Hjärtsvikt': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
+  'KOL': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
+  'Kronisk njursjukdom': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
+  'Cancer under behandling': 'cancer med kronisk eller återkommande inflammation',
+  'IBD (Crohns sjukdom / ulcerös kolit)': 'kronisk inflammatorisk tarmsjukdom',
 }
 
 /** Hälsotillstånd som kan tala för minskat intag eller upptag, med underlag. */
 export const INTAKE_REASONS: Record<string, string> = {
-  'IBD (Crohns sjukdom / ulcerös kolit)': 'kan påverka digestion och absorption',
-  'Stomi / kort tarm': 'kan ge malabsorption och ökade förluster',
-  'Exokrin pankreasinsufficiens': 'kan ge nedsatt matspjälkning',
-  'Gastropares': 'kan påverka intag och digestion',
+  'IBD (Crohns sjukdom / ulcerös kolit)': 'kroniskt tillstånd i mag–tarmkanalen som påverkar digestion och absorption',
+  'Stomi / kort tarm': 'påverkar absorptionen och ger ökade förluster',
+  'Exokrin pankreasinsufficiens': 'nedsatt matspjälkning',
+  'Gastropares': 'försämrad magsäckstömning som påverkar intag och digestion',
   'Lågt albumin': 'kan tyda på minskat intag',
   'Näringsbrist': 'kan tyda på minskat intag',
 }

@@ -101,11 +101,10 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   const hasHeight = weights.some(w => w.heightCm) || !!data.heightCm
   const glimMissing = {
     age: data.age === undefined,
-    sex: data.sex === undefined,
     weight: weights.length === 0,
     height: !hasHeight,
   }
-  const glimBlocked = glimMissing.age || glimMissing.sex || glimMissing.weight || glimMissing.height
+  const glimBlocked = glimMissing.age || glimMissing.weight || glimMissing.height
   // Visa vad som saknas efter att användaren bett om ett förslag på diagnos
   const [showMissing, setShowMissing] = useState(false)
   const [showJournal, setShowJournal] = useState(false)
@@ -115,7 +114,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     setShowMissing(glimBlocked || weights.length < 2)
     if (glimBlocked) {
       setShowJournal(false)
-      const first = glimMissing.age ? 'a-age' : glimMissing.sex ? 'a-sex' : glimMissing.height ? 'w-height' : 'w-kg'
+      const first = glimMissing.age ? 'a-age' : glimMissing.height ? 'w-height' : 'w-kg'
       setTimeout(() => {
         const el = document.getElementById(first)
         el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -195,14 +194,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     <div className="assess">
       <section>
         <div className="agerow">
-          <div className={`field${flag(glimMissing.sex)}`}>
-            <span id="a-sex-label">Kön <abbr title="obligatoriskt">*</abbr></span>
-            <div className="seg" role="radiogroup" aria-labelledby="a-sex-label">
-              {(['kvinna', 'man'] as Sex[]).map((v, i) => (
-                <button key={v} id={i === 0 ? 'a-sex' : undefined} type="button" role="radio" aria-checked={data.sex === v} className={data.sex === v ? 'on' : ''} onClick={() => onChange({ sex: v })}>{v === 'kvinna' ? 'Kvinna' : 'Man'}</button>
-              ))}
-            </div>
-          </div>
           <label className={`field${flag(glimMissing.age)}`}>
             <span>Nuvarande ålder (år) <abbr title="obligatoriskt">*</abbr></span>
             <input id="a-age" inputMode="numeric" value={ageText} onChange={e => setAge(e.target.value)} aria-required="true" aria-invalid={age === undefined && ageText.trim() !== ''} placeholder="t.ex. 72" />
@@ -286,7 +277,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         <div className={`missingbox${glimBlocked ? '' : ' soft'}`} role="alert">
           <strong>{glimBlocked ? 'Det här saknas för en GLIM-diagnos:' : 'Viktförlusten kan inte bedömas:'}</strong>
           <ul>
-            {glimMissing.sex && <li><a href="#a-sex">Kön</a></li>}
             {glimMissing.age && <li><a href="#a-age">Nuvarande ålder</a></li>}
             {glimMissing.height && <li><a href="#w-height">Längd</a></li>}
             {glimMissing.weight && <li><a href="#w-kg">Vikt med datum</a></li>}
