@@ -121,6 +121,7 @@ export function assessGlim(input: {
 /** Hälsotillstånd som talar för inflammation (kronisk sjukdom) enligt underlaget. */
 export const INFLAMMATORY_CONDITIONS = [
   'Hjärtsvikt', 'KOL', 'Kronisk njursjukdom', 'Cancer under behandling', 'IBD (Crohns sjukdom / ulcerös kolit)',
+  'Lågt albumin',
 ]
 
 /** Hälsotillstånd som talar för minskad digestion/absorption. */
