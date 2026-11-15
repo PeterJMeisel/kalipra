@@ -233,12 +233,10 @@ export default function App() {
             <button className="bigbtn" onClick={() => go('oversikt')}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M5 40c1.5-8 6.5-12 13-12s11.5 4 13 12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M32 14h11M32 22h11M36 30h7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
               <span className="bt">Patientöversikt</span>
-              <span className="bs">Alla patienter och deras beräkningar</span>
             </button>
             <button className="bigbtn" onClick={() => go('undernaring')}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M24 8v20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M10 18h28l-4 14H14z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><circle cx="24" cy="8" r="3" fill="currentColor" /></svg>
               <span className="bt">Bedöm undernäring</span>
-              <span className="bs">Vikter över tid och hälsotillstånd</span>
             </button>
           </div>
           <p className="source center">Livsmedelsdata: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0), hämtad {new Date(db.fetched).toLocaleDateString('sv-SE')}. Referensvärden: NNR 2023.</p>
