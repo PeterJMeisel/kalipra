@@ -6,7 +6,7 @@ import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type Sex, type
 import { autoField, change, changeWithin, periodText, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { DatePicker } from './DatePicker'
-import { assessGlim, bmiLimits, estimateDeficit, glimJournal, suggestEtiology, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
+import { assessGlim, bmiLimits, glimJournal, suggestEtiology, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
 const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -274,7 +274,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         weights={weights}
         heightCm={heightCm}
         age={age}
-        sex={data.sex}
         health={health}
         answers={data.glim ?? {}}
         onAnswers={glim => onChange({ glim })}
@@ -312,11 +311,10 @@ function numText(v: number, decimals: number): string {
 
 const STAGE_TEXT: Record<Stage, string> = { 0: 'Uppfylls inte', 1: 'Steg 1 – måttlig', 2: 'Steg 2 – svår' }
 
-function GlimPanel({ weights, heightCm, age, sex, health, answers, onAnswers, showJournal }: {
+function GlimPanel({ weights, heightCm, age, health, answers, onAnswers, showJournal }: {
   weights: WeightEntry[]
   heightCm?: number
   age?: number
-  sex?: Sex
   health: Health
   answers: GlimAnswers
   onAnswers: (a: GlimAnswers) => void
@@ -324,47 +322,27 @@ function GlimPanel({ weights, heightCm, age, sex, health, answers, onAnswers, sh
 }) {
   const [copied, setCopied] = useState(false)
   const r = assessGlim({ weights, heightCm, age, answers })
-  const deficit = estimateDeficit({ weights, sex, age, heightCm: weights[weights.length - 1]?.heightCm ?? heightCm })
-  const sug = suggestEtiology(health.conditions, deficit)
+  const sug = suggestEtiology(health.conditions, weights)
   const set = (patch: Partial<GlimAnswers>) => onAnswers({ ...answers, ...patch })
   const limits = age !== undefined ? bmiLimits(age, answers.asian) : null
   const mark = (on: boolean) => <span className={`gmark${on ? ' on' : ''}`} aria-hidden="true">{on ? '✓' : '–'}</span>
   const journal = showJournal && age !== undefined
-    ? glimJournal({ result: r, answers, age, deficit, conditions: health.conditions, date: today() })
+    ? glimJournal({ result: r, answers, age, conditions: health.conditions, date: today() })
     : ''
 
   async function copy() {
     try { await navigator.clipboard.writeText(journal); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { setCopied(false) }
   }
 
-  const reasons = (list: string[], checked: boolean) => list.length > 0 && (
-    <div className={`gsuggest${checked ? ' used' : ''}`}>
-      <span className="gsl">{checked ? 'Underlag' : 'Förslag: kryssa i'}</span>
+  const reasons = (list: string[]) => list.length > 0 && (
+    <div className="gsuggest">
+      <span className="gsl">Underlag</span>
       <ul>{list.map(t => <li key={t}>{t}</li>)}</ul>
     </div>
   )
 
   return (
     <section className="glim" aria-labelledby="glim-h">
-      {deficit && deficit.deficitKcal > 0 && (
-        <div className="deficit" aria-label="Uppskattat energiunderskott">
-          <div>
-            <span className="gl">Uppskattat energiunderskott</span>
-            <strong>ca {formatNumber(deficit.deficitKcal, 0)} kcal/dag</strong>
-            <span className="gs">{formatNumber(deficit.lossKg, 1)} kg viktnedgång på {periodText(deficit.fromDate, deficit.toDate)} ({dateText(deficit.fromDate)} → {dateText(deficit.toDate)}), 7 700 kcal/kg</span>
-          </div>
-          <div>
-            <span className="gl">Beräknat behov</span>
-            <strong>{formatNumber(deficit.needKcal, 0)} kcal/dag</strong>
-            <span className="gs">Henry, PAL 1,2</span>
-          </div>
-          <div>
-            <span className="gl">Uppskattat intag</span>
-            <strong>ca {formatNumber(Math.max(0, deficit.intakePct), 0)} % av behovet</strong>
-          </div>
-        </div>
-      )}
-
       <h3 id="glim-h">GLIM – diagnos av undernäring</h3>
 
       <div className="glimcols">
@@ -420,7 +398,7 @@ function GlimPanel({ weights, heightCm, age, sex, health, answers, onAnswers, sh
             <div>
               <strong>Minskat intag eller upptag</strong>
               <span>≤ 50 % av energibehovet &gt; 1 vecka, minskat intag &gt; 2 veckor, eller kroniskt tillstånd i mag–tarmkanalen som påverkar digestion/absorption</span>
-              {reasons(sug.intake, !!answers.intake)}
+              {reasons(sug.intake)}
             </div>
           </label>
           <label className={`gcrit check${answers.inflammation ? ' met' : ''}${!answers.inflammation && sug.inflammation.length ? ' suggested' : ''}`}>
@@ -428,7 +406,7 @@ function GlimPanel({ weights, heightCm, age, sex, health, answers, onAnswers, sh
             <div>
               <strong>Inflammation/kronisk sjukdom</strong>
               <span>Akut sjukdom eller skada (t.ex. stor infektion, brännskada, trauma) eller kronisk sjukdom (t.ex. hjärtsvikt, KOL, njur- eller leversjukdom, cancer)</span>
-              {reasons(sug.inflammation, !!answers.inflammation)}
+              {reasons(sug.inflammation)}
             </div>
           </label>
         </fieldset>
