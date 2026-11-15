@@ -5,6 +5,8 @@ import { newId } from '../core/storage'
 import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type WeightEntry } from '../core/types'
 import { autoField, change, changeWithin, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
+import { DatePicker } from './DatePicker'
+import { assessGlim, bmiLimits, INFLAMMATORY_CONDITIONS, MALABSORPTION_CONDITIONS, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
 const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -70,7 +72,7 @@ export function PersonPicker({ persons, detail, actionLabel, onPick, selected, o
 
 /* ---------- Själva bedömningen: vikter och hälsotillstånd ---------- */
 
-export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm?: number }
+export type AssessmentData = { weights: WeightEntry[]; health?: Health; heightCm?: number; age?: number; glim?: GlimAnswers }
 
 type AssessmentProps = {
   data: AssessmentData
@@ -96,6 +98,15 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   const [recent, setRecent] = useState<BodyField[]>(heightCm ? ['h'] : [])
   const [error, setError] = useState('')
   const [healthOpen, setHealthOpen] = useState(false)
+  const [glimOpen, setGlimOpen] = useState(!!data.glim && !!data.age)
+  const [ageText, setAgeText] = useState(data.age ? String(data.age) : '')
+  const age = data.age
+
+  function setAge(t: string) {
+    setAgeText(t)
+    const v = Number(t.trim())
+    onChange({ age: t.trim() && Number.isInteger(v) && v >= 18 && v <= 120 ? v : undefined })
+  }
   const auto = autoField(recent)
 
   function edit(field: BodyField, text: string) {
@@ -114,6 +125,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     e.preventDefault()
     const h = parse(vals.h)
     const w = parse(vals.w) ?? solveBody('w', { h, b: parse(vals.b) })
+    if (age === undefined) return setError('Ange patientens nuvarande ålder (18–120 år).')
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return setError('Ange datum.')
     if (date > today()) return setError('Datumet kan inte vara i framtiden.')
     if (h !== undefined && !(h >= 70 && h <= 250)) return setError('Ange längd i cm (70–250).')
@@ -146,18 +158,24 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   return (
     <div className="assess">
       <section>
+        <div className="agerow">
+          <label className="field">
+            <span>Nuvarande ålder (år) <abbr title="obligatoriskt">*</abbr></span>
+            <input id="a-age" inputMode="numeric" value={ageText} onChange={e => setAge(e.target.value)} aria-required="true" aria-invalid={age === undefined && ageText.trim() !== ''} placeholder="t.ex. 72" />
+          </label>
+          <p className="note">Åldern behövs för bedömningen, bland annat för BMI-gränsen vid 70 år.</p>
+        </div>
         <h3>Vikter</h3>
         <form className="weightadd" onSubmit={add} noValidate>
-          <label className="field">
-            <span>Datum</span>
-            <input id="w-date" type="date" value={date} max={today()} onChange={e => setDate(e.target.value)} />
-          </label>
+          <div className="field">
+            <span id="w-date-label">Datum</span>
+            <DatePicker id="w-date" value={date} onChange={setDate} max={today()} />
+          </div>
           {field('h', 'w-height', 'Längd (cm)', 't.ex. 168')}
           {field('w', 'w-kg', 'Vikt (kg)', 't.ex. 72,4')}
           {field('b', 'w-bmi', 'BMI', 't.ex. 24,5')}
           <button type="submit" className="primary">Lägg till</button>
         </form>
-        <p className="hint">Fyll i två av längd, vikt och BMI – det tredje räknas ut.</p>
         {error && <p className="error" role="alert">{error}</p>}
 
         {weights.length === 0 ? (
@@ -207,7 +225,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                 <button type="button" className="small" onClick={() => onUseLatestWeight(latest.kg)}>Använd {formatNumber(latest.kg, 1)} kg i beräkningen</button>
               </p>
             )}
-            <p className="note">Bedömningskriterier för undernäring läggs till i ett senare steg.</p>
           </>
         )}
       </section>
@@ -215,6 +232,23 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
       <section className="assesshealth">
         <HealthSection health={health} onChange={h => onChange({ health: h })} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
       </section>
+
+      <div className="glimstart">
+        <button type="button" className="primary big" aria-expanded={glimOpen && age !== undefined} disabled={age === undefined} onClick={() => setGlimOpen(o => !o)}>
+          {glimOpen && age !== undefined ? 'Dölj GLIM-bedömningen' : 'Bedöm enligt GLIM'}
+        </button>
+        {age === undefined && <p className="note">Ange patientens nuvarande ålder överst för att kunna bedöma enligt GLIM.</p>}
+      </div>
+      {glimOpen && age !== undefined && (
+        <GlimPanel
+          weights={weights}
+          heightCm={heightCm}
+          age={age}
+          health={health}
+          answers={data.glim ?? {}}
+          onAnswers={glim => onChange({ glim })}
+        />
+      )}
     </div>
   )
 }
@@ -226,4 +260,114 @@ function parse(t: string): number | undefined {
 
 function numText(v: number, decimals: number): string {
   return String(Math.round(v * 10 ** decimals) / 10 ** decimals).replace('.', ',')
+}
+
+/* ---------- GLIM ---------- */
+
+const STAGE_TEXT: Record<Stage, string> = { 0: 'Uppfylls inte', 1: 'Steg 1 – måttlig', 2: 'Steg 2 – svår' }
+
+function GlimPanel({ weights, heightCm, age, health, answers, onAnswers }: {
+  weights: WeightEntry[]
+  heightCm?: number
+  age: number
+  health: Health
+  answers: GlimAnswers
+  onAnswers: (a: GlimAnswers) => void
+}) {
+  const r = assessGlim({ weights, heightCm, age, answers })
+  const set = (patch: Partial<GlimAnswers>) => onAnswers({ ...answers, ...patch })
+  const inflam = health.conditions.filter(c => INFLAMMATORY_CONDITIONS.includes(c))
+  const malabs = health.conditions.filter(c => MALABSORPTION_CONDITIONS.includes(c))
+  const limits = bmiLimits(age, answers.asian)
+  const mark = (on: boolean) => <span className={`gmark${on ? ' on' : ''}`} aria-hidden="true">{on ? '✓' : '–'}</span>
+
+  return (
+    <section className="glim" aria-labelledby="glim-h">
+      <h3 id="glim-h">GLIM – diagnos av undernäring</h3>
+      <p className="note">Gör först en riskbedömning med ett validerat screeninginstrument. Undernäring enligt GLIM kräver minst ett fenotypiskt och ett etiologiskt kriterium.</p>
+
+
+      <div className="glimcols">
+        <fieldset>
+          <legend>Fenotypiska kriterier</legend>
+          <div className={`gcrit${r.weightCriterion ? ' met' : ''}`}>
+            {mark(r.weightCriterion > 0)}
+            <div>
+              <strong>Ofrivillig viktförlust</strong>
+              <span>&gt; 5 % senaste 6 mån eller &gt; 10 % längre tillbaka</span>
+              <span className="gval">
+                Senaste 6 mån: {r.loss6 ? `${formatNumber(r.loss6.pct, 1)} % (från ${formatNumber(r.loss6.fromKg, 1)} kg)` : 'ingen vägning att jämföra med'}
+                {' · '}Längre tillbaka: {r.lossLong ? `${formatNumber(r.lossLong.pct, 1)} % (från ${formatNumber(r.lossLong.fromKg, 1)} kg)` : '–'}
+              </span>
+            </div>
+          </div>
+          <div className={`gcrit${r.bmiCriterion ? ' met' : ''}`}>
+            {mark(r.bmiCriterion > 0)}
+            <div>
+              <strong>Lågt BMI</strong>
+              <span>{`< ${formatNumber(limits[0], 1)} (${age >= 70 ? '≥ 70 år' : 'under 70 år'}, patienten är ${age} år)`}</span>
+              <span className="gval">BMI: {r.bmi !== null ? formatNumber(r.bmi, 1) : 'saknas – ange vikt och längd'}</span>
+            </div>
+          </div>
+          <div className={`gcrit${r.muscleCriterion ? ' met' : ''}`}>
+            {mark(r.muscleCriterion > 0)}
+            <div>
+              <strong>Minskad muskelmassa</strong>
+              <span>Uppmätt med validerad metod, jämfört med referensvärden</span>
+              <div className="seg" role="radiogroup" aria-label="Minskad muskelmassa">
+                {([['nej', 'Nej / ej mätt'], ['mild', 'Mild–måttlig'], ['svar', 'Svår']] as [MuscleLoss, string][]).map(([v, l]) => (
+                  <button key={v} type="button" role="radio" aria-checked={answers.muscle === v} className={answers.muscle === v ? 'on' : ''} onClick={() => set({ muscle: v })}>{l}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <label className="check small">
+            <input type="checkbox" checked={!!answers.asian} onChange={e => set({ asian: e.target.checked })} />
+            Använd asiatiska gränsvärden för BMI
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Etiologiska kriterier</legend>
+          <label className={`gcrit check${answers.intake ? ' met' : ''}`}>
+            <input type="checkbox" checked={!!answers.intake} onChange={e => set({ intake: e.target.checked })} />
+            <div>
+              <strong>Minskat intag eller upptag</strong>
+              <span>≤ 50 % av energibehovet &gt; 1 vecka, minskat intag &gt; 2 veckor, eller kroniskt tillstånd i mag–tarmkanalen som påverkar digestion/absorption</span>
+              {malabs.length > 0 && <span className="gval">Bland hälsotillstånden: {malabs.join(', ')}</span>}
+            </div>
+          </label>
+          <label className={`gcrit check${answers.inflammation ? ' met' : ''}`}>
+            <input type="checkbox" checked={!!answers.inflammation} onChange={e => set({ inflammation: e.target.checked })} />
+            <div>
+              <strong>Inflammation</strong>
+              <span>Akut sjukdom eller skada (t.ex. stor infektion, brännskada, trauma) eller kronisk sjukdom (t.ex. hjärtsvikt, KOL, njur- eller leversjukdom, cancer). CRP kan stödja bedömningen.</span>
+              {inflam.length > 0 && <span className="gval">Bland hälsotillstånden: {inflam.join(', ')}</span>}
+            </div>
+          </label>
+        </fieldset>
+      </div>
+
+      <div className={`glimresult s${r.stage}${r.malnutrition ? ' yes' : ''}`} role="status">
+        <div>
+          <span className="gl">Resultat</span>
+          <strong>{r.malnutrition ? (r.stage === 2 ? 'Svår undernäring (steg 2)' : 'Måttlig undernäring (steg 1)') : 'Kriterierna för undernäring är inte uppfyllda'}</strong>
+          {!r.malnutrition && (
+            <span className="gs">
+              {r.phenotypic ? 'Fenotypiskt kriterium uppfyllt' : 'Inget fenotypiskt kriterium'} · {r.etiologic ? 'etiologiskt kriterium uppfyllt' : 'inget etiologiskt kriterium'}
+            </span>
+          )}
+        </div>
+        {r.malnutrition && (
+          <ul className="gs">
+            <li>Viktförlust: {STAGE_TEXT[r.weightCriterion]}</li>
+            <li>BMI: {STAGE_TEXT[r.bmiCriterion]}</li>
+            <li>Muskelmassa: {STAGE_TEXT[r.muscleCriterion]}</li>
+          </ul>
+        )}
+      </div>
+      {r.missing.length > 0 && <p className="note">Underlag som saknas: {r.missing.join(', ')}.</p>}
+      <p className="note">Kriterier enligt GLIM (Cederholm m.fl. 2018), Karolinska Universitetssjukhusets flödesschema 2020-04-21.</p>
+    </section>
+  )
 }

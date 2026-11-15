@@ -344,8 +344,8 @@ export default function App() {
           {assessPerson ? (
             <Assessment
               key={assessPerson.id}
-              data={{ weights: assessPerson.weights ?? [], health: assessPerson.health, heightCm: assessPerson.heightCm }}
-              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}), ...(patch.heightCm ? { heightCm: patch.heightCm } : {}) })}
+              data={{ weights: assessPerson.weights ?? [], health: assessPerson.health, heightCm: assessPerson.heightCm, age: assessPerson.age, glim: assessPerson.glim }}
+              onChange={patch => patchPerson(assessPerson.id, { ...(patch.weights ? { weights: patch.weights } : {}), ...(patch.health ? { health: patch.health } : {}), ...(patch.heightCm ? { heightCm: patch.heightCm } : {}), ...(patch.glim ? { glim: patch.glim } : {}), ...(patch.age ? { age: patch.age } : {}) })}
               calcWeightKg={assessLatestCalc?.weightKg}
               onUseLatestWeight={kg => assessLatestCalc && patchCalc(assessLatestCalc.id, { weightKg: kg })}
             />
@@ -365,7 +365,7 @@ export default function App() {
           <h1>Koppla till ny patient</h1>
           <p className="lead">Vikterna och hälsotillstånden från bedömningen följer med. Patienten sparas med en beräkning, så du kan lägga in kostregistrering senare.</p>
           <ClientForm submitLabel="Skapa patient och koppla" onSave={linkToNew} onCancel={() => go('undernaring')}
-            prefill={{ heightCm: state.draft.heightCm, weightKg: sortWeights(state.draft.weights).at(-1)?.kg, health: state.draft.health }} />
+            prefill={{ age: state.draft.age, heightCm: state.draft.heightCm, weightKg: sortWeights(state.draft.weights).at(-1)?.kg, health: state.draft.health }} />
         </main>
       )}
 

@@ -143,6 +143,7 @@ export function linkDraft(state: AppState, personId: string): { state: AppState;
     weights: [...existing, ...fresh],
     health: mergeHealth(person.health, state.draft.health),
     heightCm: person.heightCm,
+    glim: { ...state.draft.glim, ...person.glim },
     updatedAt: new Date().toISOString(),
   }
   return {

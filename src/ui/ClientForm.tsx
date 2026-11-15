@@ -10,13 +10,13 @@ type Props = {
   onCancel?: () => void
   submitLabel?: string
   /** Förifyllda värden när initial saknas (t.ex. från en undernäringsbedömning) */
-  prefill?: { heightCm?: number; weightKg?: number; health?: Health }
+  prefill?: { heightCm?: number; weightKg?: number; health?: Health; age?: number }
 }
 
 export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: Props) {
   const [healthOpen, setHealthOpen] = useState(false)
   const [code, setCode] = useState(initial?.code ?? '')
-  const [age, setAge] = useState(String(initial?.age ?? ''))
+  const [age, setAge] = useState(initial ? String(initial.age) : prefill?.age ? String(prefill.age) : '')
   const [sex, setSex] = useState<Sex>(initial?.sex ?? 'kvinna')
   const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : prefill?.weightKg ? String(prefill.weightKg).replace('.', ',') : '')
   const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : prefill?.heightCm ? String(prefill.heightCm).replace('.', ',') : '')

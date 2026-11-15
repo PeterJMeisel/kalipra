@@ -299,7 +299,7 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 /* Bedöm undernäring */
 .assess { display: grid; gap: 8px }
 .chtop .actions { flex-wrap: wrap }
-.weightadd { display: grid; grid-template-columns: 180px repeat(3, minmax(90px, 130px)) auto; gap: 12px; align-items: end; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); max-width: 820px }
+.weightadd { display: grid; grid-template-columns: 210px repeat(3, minmax(90px, 130px)) auto; gap: 12px; align-items: end; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); max-width: 860px }
 .wchanges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 16px 0 }
 .wchange { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 2px; background: var(--panel) }
 .wchange .wl { font-size: 14px; color: var(--muted) }
@@ -347,3 +347,55 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .weightadd .autocalc input { background: var(--tint); border-style: dashed }
 .weightadd .field em { font-style: normal; font-weight: 500; color: var(--muted); font-size: 13px }
 .assess .hint { margin: 6px 0 12px; font-size: 14px; color: var(--muted) }
+
+/* Datumväljare */
+.datepicker { position: relative }
+.datebtn { width: 100%; white-space: nowrap; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; background: var(--panel); min-height: 44px }
+.calendar { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; width: 300px; padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 40px rgb(0 0 0 / .18) }
+.calhead { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px }
+.calnav { min-height: 40px; width: 40px; padding: 0; font-size: 22px; line-height: 1 }
+.caltitle { flex: 1; min-height: 40px; border-color: transparent; font-weight: 600; text-transform: capitalize }
+.caltitle.static { text-align: center; padding: 8px }
+.calgrid { display: grid; gap: 2px }
+.calgrid.days { grid-template-columns: repeat(7, minmax(0, 1fr)) }
+.calgrid.months { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px }
+.calgrid .wd { text-align: center; font-size: 12px; color: var(--muted); padding: 4px 0 }
+.calgrid button { min-height: 36px; padding: 0; border-color: transparent; border-radius: 8px }
+.calgrid.months button { min-height: 52px; text-transform: capitalize }
+.calgrid button.today { border-color: var(--line) }
+.calgrid button.sel { background: var(--brand); color: var(--brand-ink); font-weight: 600 }
+.calfoot { display: flex; justify-content: flex-end; margin-top: 6px }
+
+/* GLIM */
+.glimstart { display: flex; justify-content: center; margin: 28px 0 8px }
+.glimstart .big { min-height: 56px; padding: 12px 32px; font-size: 18px; border-radius: 10px }
+.glim { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); padding: 20px; margin-top: 12px }
+.glim h3 { margin: 0 0 4px }
+.glimage { max-width: 220px; margin: 12px 0 }
+.glimcols { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0 }
+.glimcols fieldset { flex: 1 1 360px; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px }
+.glimcols legend { font-weight: 700; padding: 0 6px }
+.gcrit { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 8px }
+.gcrit.met { background: var(--amberbg) }
+.gcrit > div { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+.gcrit span { font-size: 14px; color: var(--muted) }
+.gcrit .gval { color: var(--ink); font-weight: 500 }
+.gcrit.check input { width: 22px; height: 22px; min-height: 0; flex: none; margin-top: 2px }
+.gcrit .seg { margin-top: 6px }
+.gcrit .seg button { min-height: 38px; font-size: 14px; padding: 4px 10px }
+.gcrit .seg button.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand) }
+.gmark { flex: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; background: var(--bg); color: var(--muted) }
+.gmark.on { background: var(--amber); color: #FFFFFF }
+.glimresult { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 16px 18px; border-radius: 10px; background: var(--okbg) }
+.glimresult > div { display: flex; flex-direction: column; gap: 2px }
+.glimresult .gl { font-size: 13px; font-weight: 600; color: var(--muted) }
+.glimresult strong { font-size: 20px }
+.glimresult .gs { font-size: 14px; color: var(--muted); margin: 0; padding-left: 18px }
+.glimresult > div .gs { padding-left: 0 }
+.glimresult.yes.s1 { background: var(--amberbg) }
+.glimresult.yes.s2 { background: var(--redbg) }
+.glimresult.yes.s2 strong { color: var(--red) }
+.agerow { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 16px; margin-bottom: 16px }
+.agerow .field { width: 200px }
+.agerow .note { margin: 0 0 10px }
+.agerow abbr { text-decoration: none; color: var(--red) }

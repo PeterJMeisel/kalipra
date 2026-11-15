@@ -88,6 +88,8 @@ export type Person = {
   health?: Health
   /** Vägningar med datum */
   weights?: WeightEntry[]
+  /** Dietistens svar i GLIM-bedömningen */
+  glim?: import('./glim').GlimAnswers
   createdAt: string
   updatedAt?: string
 }
@@ -111,6 +113,9 @@ export type AssessmentDraft = {
   weights: WeightEntry[]
   health: Health
   heightCm?: number
+  /** Ålder, behövs för BMI-gränsen i GLIM */
+  age?: number
+  glim?: import('./glim').GlimAnswers
 }
 
 export const emptyDraft = (): AssessmentDraft => ({ weights: [], health: emptyHealth() })
