@@ -45,7 +45,8 @@ prealbumin kan användas som stödjande labvärden.
 
 - Viktförlust 6 mån och längre tillbaka kan räknas fram ur de daterade vikterna som redan finns.
 - BMI räknas fram ur vikt och längd. Åldersgränsen 70 år skrivs "> 70" under diagnos men "≥ 70" under
-  svårighetsgrad i underlaget – vi använder ≥ 70 genomgående (som i GLIM-artikeln). Bekräfta.
+  svårighetsgrad i underlaget. Beslut (2026-11-15): ≥ 70 år används genomgående, både för diagnos och
+  svårighetsgrad.
 - Muskelmassa, intag och inflammation fylls i av dietisten (kryssrutor), eftersom de kräver klinisk bedömning
   eller mätning.
 - Inflammation kan föreslås utifrån patientens hälsotillstånd (t.ex. hjärtsvikt, KOL, cancer), men dietisten
