@@ -164,7 +164,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
       </form>
 
       {dayEntries.length === 0 ? (
-        <p className="empty">Inget registrerat för dag {currentDay} ännu. Sök upp ett livsmedel ovan för att börja.</p>
+        <p className="empty">Inget registrerat för dag {currentDay}.</p>
       ) : (
         MEALS.filter(m => dayEntries.some(e => e.meal === m)).map(m => (
           <section key={m} className="mealblock">

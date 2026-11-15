@@ -286,7 +286,7 @@ export default function App() {
               {message && <p className="msg">{message}</p>}
               <h2 className="sub">Mina patienter</h2>
               {state.persons.length === 0
-                ? <p className="empty">Inga patienter ännu. Börja med <strong>Ny patient</strong>.</p>
+                ? <p className="empty">Inga patienter ännu.</p>
                 : <PersonPicker weightOf={p => currentWeight(state, p.id)?.kg} persons={state.persons} actionLabel="Välj"
                     detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'kostberäkning', 'kostberäkningar')}
                     onPick={id => { setMessage(''); setNyPersonId(id) }}
@@ -315,7 +315,7 @@ export default function App() {
                 {assessPerson ? (
                   <p className="facts">Kopplad till <strong>{assessPerson.code}</strong> · {assessPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {assessPerson.age} år · {formatNumber(assessPerson.heightCm, 0)} cm</p>
                 ) : (
-                  <p className="facts">Ingen patient kopplad. Du kan göra bedömningen direkt och koppla den till en patient när du vill.</p>
+                  <p className="facts">Ingen patient kopplad.</p>
                 )}
               </div>
               <div className="actions">
@@ -356,14 +356,12 @@ export default function App() {
               onChange={patch => setState(s => ({ ...s, draft: { ...s.draft, ...patch, health: patch.health ?? s.draft.health } }))}
             />
           )}
-          {assessPerson && <p className="note">Ändringar sparas direkt och gäller även patientens beräkningar.</p>}
         </main>
       )}
 
       {view === 'koppla-ny' && (
         <main className="main narrow">
           <h1>Koppla till ny patient</h1>
-          <p className="lead">Vikterna och hälsotillstånden från bedömningen följer med. Patienten sparas med en beräkning, så du kan lägga in kostregistrering senare.</p>
           <ClientForm submitLabel="Skapa patient och koppla" onSave={linkToNew} onCancel={() => go('undernaring')}
             prefill={{ age: state.draft.age, heightCm: state.draft.heightCm, weightKg: sortWeights(state.draft.weights).at(-1)?.kg, health: state.draft.health }} />
         </main>

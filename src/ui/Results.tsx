@@ -29,7 +29,7 @@ function rangeText(r: Range, unit = ''): string {
 
 export function Results({ client, summary, need, plan, hasEntries }: Props) {
   if (!hasEntries) {
-    return <p className="empty">Lägg in en kostregistrering så visas intaget jämfört med behov och referensvärden här.</p>
+    return <p className="empty">Ingen kostregistrering ännu.</p>
   }
   const t = summary.perDay
   const v = (k: NutrientKey) => t[k] ?? 0
@@ -119,7 +119,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
 
       <section>
         <h3>Vitaminer, mineraler och salt</h3>
-        <p className="note">Jämfört med NNR 2023 för {client.sex === 'kvinna' ? 'kvinnor' : 'män'} {client.age} år. RI = rekommenderat intag, AI = tillräckligt intag. Tiamin och niacin är beräknade på energibehovet ({formatNumber(need.teeMJ, 1)} MJ).</p>
+        <p className="note">Jämfört med NNR 2023 för {client.sex === 'kvinna' ? 'kvinnor' : 'män'} {client.age} år. RI = rekommenderat intag, AI = tillräckligt intag.</p>
         <div className="microlist">
           {micro.map(m => {
             const d = NUTRIENTS[m.key]
@@ -146,7 +146,6 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
             )
           })}
         </div>
-        <p className="note">Stapelns mittlinje motsvarar 100 % av referensvärdet. Referensvärden avser genomsnittligt intag över tid hos friska personer.</p>
       </section>
 
       <section>
@@ -171,7 +170,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
       {missingKeys.length > 0 && (
         <section className="missing">
           <h3>Saknade värden</h3>
-          <p className="note">Några livsmedel saknar värden i databasen. Summan för dessa näringsämnen kan därför vara för låg:</p>
+          <p className="note">Livsmedel som saknar värden:</p>
           <ul>
             {missingKeys.map(k => <li key={k}><strong>{NUTRIENTS[k].label}:</strong> {summary.missing[k]!.join(', ')}</li>)}
           </ul>

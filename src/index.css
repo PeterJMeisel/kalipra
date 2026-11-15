@@ -399,3 +399,15 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .agerow .field { width: 200px }
 .agerow .note { margin: 0 0 10px }
 .agerow abbr { text-decoration: none; color: var(--red) }
+
+/* Data som saknas för GLIM */
+.field.missing input, .field.missing .datebtn { border: 2px solid var(--red); background: var(--redbg) }
+.field.missing > span { color: var(--red) }
+.weightadd.missing { border: 2px dashed var(--red) }
+.missingbox { margin: 12px auto 0; max-width: 560px; padding: 14px 18px; border-radius: 10px; background: var(--redbg); border: 1px solid var(--red) }
+.missingbox.soft { background: var(--amberbg); border-color: var(--amber) }
+.missingbox ul { margin: 6px 0 0; padding-left: 20px }
+.missingbox a { color: inherit; font-weight: 600 }
+.gcrit.gmissing { outline: 2px dashed var(--amber); outline-offset: -2px }
+.gcrit .gneed { color: var(--amber); font-weight: 600 }
+.gcrit .seg.unanswered button { border-style: dashed }

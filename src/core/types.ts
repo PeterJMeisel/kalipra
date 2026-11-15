@@ -9,13 +9,12 @@ export type WeightGoal = {
 }
 
 export const CONDITION_GROUPS = [
-  { group: 'Metabola och endokrina', items: ['Diabetes typ 1', 'Diabetes typ 2', 'Graviditetsdiabetes', 'Prediabetes', 'Höga blodfetter', 'Hypertoni', 'Fetma', 'Hypotyreos', 'Hypertyreos', 'Gikt'] },
+  { group: 'Metabola och endokrina', items: ['Diabetes typ 1', 'Diabetes typ 2', 'Graviditetsdiabetes', 'Prediabetes', 'Höga blodfetter', 'Hypertoni', 'Hypotyreos', 'Hypertyreos', 'Gikt'] },
   { group: 'Hjärta och kärl', items: ['Hjärt-kärlsjukdom', 'Hjärtsvikt', 'Stroke'] },
   { group: 'Njure', items: ['Kronisk njursjukdom'] },
   { group: 'Mag–tarm', items: ['IBS', 'IBD (Crohns sjukdom / ulcerös kolit)', 'Stomi / kort tarm', 'Exokrin pankreasinsufficiens', 'Gastropares'] },
-  { group: 'Nutritionsrisk', items: ['Undernäring / risk för undernäring', 'Sarkopeni', 'Trycksår / svårläkta sår', 'Cancer under behandling', 'KOL', 'Demens', 'Parkinson', 'ALS'] },
-  { group: 'Brister och skelett', items: ['Järnbristanemi', 'B12-brist', 'Osteoporos'] },
-  { group: 'Övrigt', items: ['Ryggmärgsskada', 'Amputation'] },
+  { group: 'Nutritionsrisk', items: ['Sarkopeni', 'Trycksår / svårläkta sår', 'Cancer under behandling', 'KOL', 'Demens', 'Parkinson', 'ALS'] },
+  { group: 'Övrigt', items: ['Osteoporos', 'Ryggmärgsskada', 'Amputation'] },
 ] as const
 
 export type WeightEntry = { id: string; date: string; kg: number; /** Längd vid vägningen, om den angavs */ heightCm?: number }

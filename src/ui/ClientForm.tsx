@@ -68,7 +68,6 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: 
           <label className="field span2">
             <span>Kod / alias</span>
             <input id="cf-code" value={code} onChange={e => setCode(e.target.value)} placeholder="t.ex. K-2026-014" autoComplete="off" />
-            <small>Använd en kod i stället för namn – programmet behöver inga personuppgifter.</small>
           </label>
           <label className="field">
             <span>Ålder (år)</span>
@@ -128,7 +127,6 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: 
             <label className="field">
               <span>Målvikt (kg)</span>
               <input id="cf-target" inputMode="decimal" value={target} onChange={e => setTarget(e.target.value)} />
-              <small>Energibehovet vid målvikten visas bredvid nuvarande behov.</small>
             </label>
           </div>
         )}

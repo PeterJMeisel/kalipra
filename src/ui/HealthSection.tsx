@@ -40,7 +40,6 @@ export function HealthSection({ health, onChange, open, onToggle }: Props) {
       </button>
       {count > 0 && !open && <p className="healthsummary">{health.conditions.join(', ')}</p>}
       <div id={id} hidden={!open} className="formsection healthbody">
-        <p className="note">Kryssa i diagnoser och tillstånd som kan påverka nutritionen. Vissa ändrar hur resultatet visas, t.ex. lyfts saltraden fram vid hypertoni.</p>
         <div className="condgroups">
           {CONDITION_GROUPS.map(g => (
             <fieldset key={g.group} className="condgroup">
@@ -88,7 +87,6 @@ export function HealthSection({ health, onChange, open, onToggle }: Props) {
               }))}
             </div>
             {health.amputations.length === 0 && <small className="warntext">Välj minst en kroppsdel.</small>}
-            <small className="muted">Energibehovet räknas på faktisk vikt. Korrigerat BMI läggs till när procentsatserna per kroppsdel och längd före amputation är bedömda.</small>
           </fieldset>
         )}
       </div>
