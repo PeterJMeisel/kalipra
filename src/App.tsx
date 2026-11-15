@@ -134,7 +134,7 @@ export default function App() {
       {fileInput}
       <header className="top">
         <button className="brand" onClick={() => go('start')} aria-label="Till startsidan">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg>
+          <Logo size={34} />
           <span>Kalipra<span className="tag">Verktyg för dietister</span></span>
         </button>
         <div className="topright">
@@ -159,7 +159,7 @@ export default function App() {
       {view === 'start' && (
         <main className="start">
           <div className="starthero">
-            <div className="startlogo"><svg viewBox="0 0 64 64" aria-hidden="true" width="88" height="88"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg></div>
+            <div className="startlogo"><Logo size={96} /></div>
             <h1>Kalipra</h1>
             <p className="lead">Verktyg för dietister</p>
           </div>
@@ -329,6 +329,21 @@ function LoadList({ clients, onOpen, onPickFile, onExportAll, message }: LoadPro
       )}
       <p className="note">Beräkningar sparas automatiskt i den här webbläsaren på den här datorn. Exportera till fil för att flytta dem till en annan dator eller spara en säkerhetskopia.</p>
     </>
+  )
+}
+
+/** Kalipras logga – samma utseende överallt (även appikon och fliksymbol). */
+function Logo({ size }: { size: number }) {
+  return (
+    <svg className="logo" width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="Kalipra">
+      <rect width="64" height="64" rx="14" fill="#3B2A4A" />
+      <g transform="translate(8 8) scale(.75)">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="#FFFFFF" strokeWidth="4" />
+        <path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="#FFFFFF" />
+        <path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="#FFFFFF" opacity=".55" />
+        <path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="#E8A33D" />
+      </g>
+    </svg>
   )
 }
 

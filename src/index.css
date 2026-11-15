@@ -15,7 +15,7 @@ Former: stramt, 8 px hörn, raka linjer.
   --brand-ink: light-dark(#FFFFFF, #1C1622);
   --top: light-dark(#3B2A4A, #2A1F35);
   --top-ink: #FFFFFF;
-  --tint: light-dark(#E8F6EF, #1E2A26);
+  --tint: light-dark(#E8F6EF, #241D2C);
   --mint: light-dark(#C9EEDD, #2C4A3E);
   --saffron: light-dark(#E8A33D, #F0B95E);
   --ok: light-dark(#1F7A55, #6FD3A4);
@@ -47,7 +47,7 @@ input, select, textarea { font-size: 16px; border: 1px solid var(--line); border
 .app { min-height: 100vh }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--top); color: var(--top-ink); flex-wrap: wrap }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; background: none; border: 0; color: inherit; padding: 4px 0; min-height: 44px }
-.brand svg { width: 30px; height: 30px }
+.brand .logo { flex: none; box-shadow: 0 0 0 1px rgb(255 255 255 / .25); border-radius: 9px }
 .brand .tag { font-weight: 400; font-size: 14px; opacity: .8; margin-left: 4px }
 @media (max-width: 600px) { .brand .tag { display: none } }
 .brand:hover:not(:disabled) { border: 0; opacity: .9 }
@@ -279,7 +279,8 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .healthbody[hidden] { display: none }
 @media (prefers-reduced-motion: reduce) { .healthtoggle svg { transition: none } }
 
-.startlogo { color: var(--brand); display: flex; justify-content: center; margin-bottom: 14px }
+.startlogo { display: flex; justify-content: center; margin-bottom: 18px }
+.startlogo .logo { border-radius: 21px; box-shadow: 0 10px 30px rgb(59 42 74 / .25) }
 .starthero .lead { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 20px; font-weight: 500 }
 
 /* Ljust/mörkt läge – ljust är standard */
