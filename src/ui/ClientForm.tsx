@@ -12,11 +12,10 @@ type Props = {
   onCancel?: () => void
 }
 
-type Section = 'uppgifter' | 'halsa'
 const SIDES: LimbSide[] = ['vänster', 'höger']
 
 export function ClientForm({ initial, onSave, onCancel }: Props) {
-  const [section, setSection] = useState<Section>('uppgifter')
+  const [healthOpen, setHealthOpen] = useState(false)
   const [code, setCode] = useState(initial?.code ?? '')
   const [age, setAge] = useState(String(initial?.age ?? ''))
   const [sex, setSex] = useState<Sex>(initial?.sex ?? 'kvinna')
@@ -56,7 +55,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   function submit(e: React.FormEvent) {
     e.preventDefault()
     const a = num(age), w = num(weight), h = num(height), p = num(pal)
-    const fail = (msg: string, s: Section = 'uppgifter') => { setSection(s); setError(msg) }
+    const fail = (msg: string, health = false) => { if (health) setHealthOpen(true); setError(msg) }
     if (!code.trim()) return fail('Ange en kod eller ett alias för personen.')
     if (!Number.isFinite(a) || a < MIN_SUPPORTED_AGE || a > 120) return fail(`Ålder måste vara mellan ${MIN_SUPPORTED_AGE} och 120 år.`)
     if (!(w >= 8 && w <= 400)) return fail('Ange nuvarande vikt i kg (8–400).')
@@ -69,7 +68,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
       goal = { targetWeightKg: t }
     }
     if (has('Amputation') && health.amputations.length === 0) {
-      return fail('Välj vilka kroppsdelar som är amputerade, eller kryssa ur Amputation.', 'halsa')
+      return fail('Välj vilka kroppsdelar som är amputerade, eller kryssa ur Amputation.', true)
     }
     onSave({
       code: code.trim(), age: Math.floor(a), sex, weightKg: w, heightCm: h, pal: p, bmrFormula: formula, goal,
@@ -86,16 +85,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
 
   return (
     <form className="form" onSubmit={submit} noValidate>
-      <div className="formtabs" role="tablist">
-        <button type="button" role="tab" aria-selected={section === 'uppgifter'} className={section === 'uppgifter' ? 'on' : ''} onClick={() => setSection('uppgifter')}>
-          Uppgifter
-        </button>
-        <button type="button" role="tab" aria-selected={section === 'halsa'} className={section === 'halsa' ? 'on' : ''} onClick={() => setSection('halsa')}>
-          Hälsotillstånd{count > 0 && <span className="count">{count}</span>}
-        </button>
-      </div>
-
-      <div hidden={section !== 'uppgifter'} className="formsection">
+      <div className="formsection">
         <div className="grid2">
           <label className="field span2">
             <span>Kod / alias</span>
@@ -166,7 +156,13 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
         )}
       </div>
 
-      <div hidden={section !== 'halsa'} className="formsection">
+      <div className="healthpanel">
+        <button type="button" className="healthtoggle" aria-expanded={healthOpen} aria-controls="halsotillstand" onClick={() => setHealthOpen(o => !o)}>
+          <span>Hälsotillstånd{count > 0 && <span className="count">{count}</span>}</span>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        {count > 0 && !healthOpen && <p className="healthsummary">{health.conditions.join(', ')}</p>}
+      <div id="halsotillstand" hidden={!healthOpen} className="formsection healthbody">
         <p className="note">Kryssa i diagnoser och tillstånd som kan påverka nutritionen. Vissa ändrar hur resultatet visas, t.ex. lyfts saltraden fram vid hypertoni.</p>
         <div className="condgroups">
           {CONDITION_GROUPS.map(g => (
@@ -226,6 +222,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
           <span>Övrigt om hälsotillståndet</span>
           <textarea rows={3} value={health.notes ?? ''} onChange={e => setHealth(h => ({ ...h, notes: e.target.value }))} />
         </label>
+      </div>
       </div>
 
       {error && <p className="error" role="alert">{error}</p>}

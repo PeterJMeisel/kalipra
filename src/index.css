@@ -261,3 +261,15 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .goalbox2 .gl { color: var(--muted); font-size: 15px }
 .goalbox2 .gv { font-size: 26px; font-weight: 700; color: var(--green); font-variant-numeric: tabular-nums }
 .goalbox2 small { color: var(--muted) }
+
+/* Hälsotillstånd som utfällbar meny */
+.healthpanel { border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
+.healthtoggle { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 0; border-radius: 0; background: var(--sage); padding: 14px 16px; font-weight: 700; font-size: 17px; min-height: 52px; text-align: left }
+.healthtoggle > span { display: inline-flex; gap: 10px; align-items: center }
+.healthtoggle .count { background: var(--green); color: var(--green-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px; text-align: center }
+.healthtoggle svg { transition: transform .2s ease; flex: none }
+.healthtoggle[aria-expanded=true] svg { transform: rotate(180deg) }
+.healthsummary { margin: 0; padding: 10px 16px; font-size: 14px; color: var(--muted) }
+.healthbody { padding: 16px }
+.healthbody[hidden] { display: none }
+@media (prefers-reduced-motion: reduce) { .healthtoggle svg { transition: none } }
