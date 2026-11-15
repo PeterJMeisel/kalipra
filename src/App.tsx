@@ -30,8 +30,8 @@ export default function App() {
   const [view, setView] = useState<View>('start')
   const [calcId, setCalcId] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('registrering')
-  /** Ny beräkning: 'ny' = ny person, 'befintlig' = välj person */
-  const [nyMode, setNyMode] = useState<'ny' | 'befintlig'>('ny')
+  /** Ny beräkning: 'lista' = patientlistan (eller vald patient), 'ny' = formulär för ny patient */
+  const [nyMode, setNyMode] = useState<'lista' | 'ny'>('lista')
   const [nyPersonId, setNyPersonId] = useState<string | null>(null)
   /** Undernäringsbedömning: null = okopplad bedömning */
   const [assessPersonId, setAssessPersonId] = useState<string | null>(null)
@@ -69,7 +69,7 @@ export default function App() {
     go('berakning')
   }
   function startNewCalc(personId: string | null) {
-    setNyMode(personId ? 'befintlig' : 'ny')
+    setNyMode('lista')
     setNyPersonId(personId)
     go('ny')
   }
@@ -109,7 +109,7 @@ export default function App() {
     setState(s => ({ ...s, calculations: s.calculations.filter(c => c.id !== id) }))
     setCalcId(null)
     startNewCalc(null)
-    setNyMode('befintlig')
+    setNyMode('lista')
   }
   function setDiary(d: Diary) {
     patchCalc(d.clientId, { days: d.days, entries: d.entries })
@@ -139,11 +139,11 @@ export default function App() {
       if (imported.calculations.length === 1) {
         open(imported.calculations[0].id)
       } else {
-        setNyMode('befintlig'); setNyPersonId(null); setView('ny')
+        setNyMode('lista'); setNyPersonId(null); setView('ny')
         setMessage(`Hämtade ${plural(imported.calculations.length, 'beräkning', 'beräkningar')} från filen (${added} nya, ${replaced} ersatta).`)
       }
     } catch (e) {
-      setNyMode('befintlig'); setNyPersonId(null); setView('ny')
+      setNyMode('lista'); setNyPersonId(null); setView('ny')
       setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalipra.')
     }
     if (fileRef.current) fileRef.current.value = ''
@@ -246,33 +246,36 @@ export default function App() {
       {view === 'ny' && (
         <main className="main narrow">
           <h1>Ny beräkning</h1>
-          <div className="seg nyseg" role="tablist" aria-label="Patient">
-            <button type="button" role="tab" aria-selected={nyMode === 'ny'} className={nyMode === 'ny' ? 'on' : ''} onClick={() => { setNyMode('ny'); setNyPersonId(null) }}>Ny patient</button>
-            <button type="button" role="tab" aria-selected={nyMode === 'befintlig'} className={nyMode === 'befintlig' ? 'on' : ''} onClick={() => setNyMode('befintlig')}>Befintlig patient</button>
-          </div>
           {nyMode === 'ny' && (
-            <ClientForm key="ny" onSave={f => open(createPerson(f).calcId, 'registrering')} onCancel={() => go('start')} />
-          )}
-          {nyMode === 'befintlig' && !nyPerson && (
             <>
-              <p className="lead">Välj vilken patient beräkningen gäller.</p>
+              <p><button type="button" className="linkback" onClick={() => setNyMode('lista')}>← Tillbaka till patientlistan</button></p>
+              <h2 className="sub">Ny patient</h2>
+              <ClientForm key="ny" onSave={f => open(createPerson(f).calcId, 'registrering')} onCancel={() => setNyMode('lista')} />
+            </>
+          )}
+          {nyMode === 'lista' && !nyPerson && (
+            <>
               <div className="loadactions">
+                <button className="primary" onClick={() => { setMessage(''); setNyMode('ny') }}>+ Ny patient</button>
                 <button onClick={() => fileRef.current?.click()}>Hämta från fil …</button>
                 {state.calculations.length > 0 && <button onClick={() => exportFile(state.calculations.map(c => c.id), `kalipra-alla-${now().slice(0, 10)}`)}>Exportera alla till fil</button>}
               </div>
               {message && <p className="msg">{message}</p>}
-              <PersonPicker persons={state.persons} actionLabel="Välj"
-                detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'beräkning', 'beräkningar')}
-                onPick={id => { setMessage(''); setNyPersonId(id) }} />
+              <h2 className="sub">Mina patienter</h2>
+              {state.persons.length === 0
+                ? <p className="empty">Inga patienter ännu. Börja med <strong>+ Ny patient</strong>.</p>
+                : <PersonPicker persons={state.persons} actionLabel="Välj"
+                    detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'beräkning', 'beräkningar')}
+                    onPick={id => { setMessage(''); setNyPersonId(id) }} />}
             </>
           )}
-          {nyMode === 'befintlig' && nyPerson && nyPrefill && (
+          {nyMode === 'lista' && nyPerson && nyPrefill && (
             <>
               <p className="msg">Ny beräkning för <strong>{nyPerson.code}</strong>. Uppgifterna är hämtade från senaste beräkningen – ändra det som är nytt, t.ex. vikt.{' '}
-                <button type="button" className="small" onClick={() => setNyPersonId(null)}>Välj annan patient</button></p>
+                <button type="button" className="small" onClick={() => setNyPersonId(null)}>Tillbaka till patientlistan</button></p>
               <SavedCalcs calcs={calculationsFor(state, nyPerson.id)} onOpen={id => open(id)} />
               <h2 className="sub">Ny beräkning</h2>
-              <ClientForm key={nyPerson.id} initial={nyPrefill} submitLabel="Skapa beräkning" onSave={f => createCalcFor(nyPerson.id, f)} onCancel={() => go('start')} />
+              <ClientForm key={nyPerson.id} initial={nyPrefill} submitLabel="Skapa beräkning" onSave={f => createCalcFor(nyPerson.id, f)} onCancel={() => setNyPersonId(null)} />
             </>
           )}
         </main>
