@@ -32,9 +32,39 @@ const HENRY: Record<Sex, Coef[]> = {
 }
 
 /** Basalmetabolism (BMR/BEE) i MJ/dag enligt Henry 2005. Ålder i hela år. */
-export function bmrMJ(sex: Sex, age: number, weightKg: number, heightCm: number): number {
+export function henryMJ(sex: Sex, age: number, weightKg: number, heightCm: number): number {
   const coef = HENRY[sex].find(c => age < c.maxAge)!
   return coef.w * weightKg + coef.h * (heightCm / 100) + coef.c
+}
+
+export type BmrFormula = 'henry' | 'mifflin' | 'hb1919' | 'hb1984'
+
+export const BMR_FORMULAS: { value: BmrFormula; label: string; short: string; note: string; adultsOnly: boolean }[] = [
+  { value: 'henry', label: 'Henry 2005 (NNR 2023)', short: 'Henry', note: 'Används för NNR 2023:s referensvärden. Gäller alla åldrar.', adultsOnly: false },
+  { value: 'mifflin', label: 'Mifflin–St Jeor 1990', short: 'Mifflin–St Jeor', note: 'Mifflin m.fl., Am J Clin Nutr 1990;51:241–7. Utvecklad för vuxna.', adultsOnly: true },
+  { value: 'hb1919', label: 'Harris–Benedict 1919 (original)', short: 'Harris–Benedict 1919', note: 'Harris & Benedict 1919. Utvecklad för vuxna.', adultsOnly: true },
+  { value: 'hb1984', label: 'Harris–Benedict reviderad (Roza & Shizgal 1984)', short: 'Harris–Benedict 1984', note: 'Roza & Shizgal, Am J Clin Nutr 1984;40:168–82. Utvecklad för vuxna.', adultsOnly: true },
+]
+
+/** BMR i kcal/dag enligt Mifflin–St Jeor och Harris–Benedict (vikt kg, längd cm, ålder år). */
+function kcalFormula(formula: Exclude<BmrFormula, 'henry'>, sex: Sex, age: number, w: number, h: number): number {
+  const man = sex === 'man'
+  switch (formula) {
+    case 'mifflin':
+      return 10 * w + 6.25 * h - 5 * age + (man ? 5 : -161)
+    case 'hb1919':
+      return man ? 66.473 + 13.7516 * w + 5.0033 * h - 6.755 * age
+        : 655.0955 + 9.5634 * w + 1.8496 * h - 4.6756 * age
+    case 'hb1984':
+      return man ? 88.362 + 13.397 * w + 4.799 * h - 5.677 * age
+        : 447.593 + 9.247 * w + 3.098 * h - 4.33 * age
+  }
+}
+
+/** BMR i MJ/dag med vald formel (standard: Henry 2005). */
+export function bmrMJ(sex: Sex, age: number, weightKg: number, heightCm: number, formula: BmrFormula = 'henry'): number {
+  if (formula === 'henry') return henryMJ(sex, age, weightKg, heightCm)
+  return (kcalFormula(formula, sex, age, weightKg, heightCm) * KJ_PER_KCAL) / 1000
 }
 
 export type PalOption = { value: number; label: string; note?: string }
@@ -57,8 +87,10 @@ export type EnergyNeed = {
   teeKcal: number
 }
 
-export function energyNeed(sex: Sex, age: number, weightKg: number, heightCm: number, pal: number): EnergyNeed {
-  const bmr = bmrMJ(sex, age, weightKg, heightCm)
+export function energyNeed(
+  sex: Sex, age: number, weightKg: number, heightCm: number, pal: number, formula: BmrFormula = 'henry',
+): EnergyNeed {
+  const bmr = bmrMJ(sex, age, weightKg, heightCm, formula)
   const tee = bmr * pal
   return { bmrMJ: bmr, bmrKcal: mjToKcal(bmr), teeMJ: tee, teeKcal: mjToKcal(tee) }
 }
@@ -80,10 +112,10 @@ export type GoalPlan = {
  * Skillnaden visas som under- eller överskott per dag.
  */
 export function goalPlan(
-  sex: Sex, age: number, weightKg: number, heightCm: number, pal: number, goal: WeightGoal,
+  sex: Sex, age: number, weightKg: number, heightCm: number, pal: number, goal: WeightGoal, formula: BmrFormula = 'henry',
 ): GoalPlan {
-  const currentNeed = energyNeed(sex, age, weightKg, heightCm, pal)
-  const targetNeed = energyNeed(sex, age, goal.targetWeightKg, heightCm, pal)
+  const currentNeed = energyNeed(sex, age, weightKg, heightCm, pal, formula)
+  const targetNeed = energyNeed(sex, age, goal.targetWeightKg, heightCm, pal, formula)
   const deltaKg = goal.targetWeightKg - weightKg
   const direction = Math.abs(deltaKg) < 0.05 ? 'bibehåll' : deltaKg < 0 ? 'nedgång' : 'uppgång'
   return {

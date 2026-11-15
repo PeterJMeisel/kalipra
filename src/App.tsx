@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import data from './data/livsmedel.json'
-import { bmi, energyNeed, goalPlan, kcalToKj, PAL_OPTIONS } from './core/energy'
+import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, PAL_OPTIONS } from './core/energy'
 import { FoodDatabase, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
@@ -110,8 +110,9 @@ export default function App() {
 
   const calc = useMemo(() => {
     if (!client || !diary) return null
-    const need = energyNeed(client.sex, client.age, client.weightKg, client.heightCm, client.pal)
-    const plan = client.goal ? goalPlan(client.sex, client.age, client.weightKg, client.heightCm, client.pal, client.goal) : null
+    const formula = client.bmrFormula ?? 'henry'
+    const need = energyNeed(client.sex, client.age, client.weightKg, client.heightCm, client.pal, formula)
+    const plan = client.goal ? goalPlan(client.sex, client.age, client.weightKg, client.heightCm, client.pal, client.goal, formula) : null
     const summary = summarizeDiary(db, diary.entries, diary.days, SUMMARY_KEYS)
     return { need, plan, summary }
   }, [client, diary])
@@ -174,7 +175,7 @@ export default function App() {
       {view === 'ny' && (
         <main className="main narrow">
           <h1>Ny beräkning</h1>
-          <p className="lead">Fyll i uppgifter om personen. Energibehovet beräknas med Henrys ekvationer (2005), samma som NNR 2023 använder.</p>
+          <p className="lead">Fyll i uppgifter om personen. Välj formel för energibehovet – Henry 2005 (som NNR 2023 använder), Mifflin–St Jeor eller Harris–Benedict.</p>
           <ClientForm onSave={createClient} onCancel={() => go('start')} />
         </main>
       )}
@@ -218,20 +219,27 @@ export default function App() {
               <button className="small" onClick={() => exportFile([client.id], `kostberakning-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
             </div>
             {message && <p className="msg">{message}</p>}
-            <dl className="needs">
-              <div><dt>BMR</dt><dd>{formatNumber(calc.need.bmrKcal, 0)} kcal<small>{formatNumber(calc.need.bmrMJ * 1000, 0)} kJ</small></dd></div>
-              <div><dt>Energibehov nu ({formatNumber(client.weightKg, 1)} kg)</dt><dd>{formatNumber(calc.need.teeKcal, 0)} kcal<small>{formatNumber(calc.need.teeMJ * 1000, 0)} kJ</small></dd></div>
-              {calc.plan && (
-                <div className="goal">
-                  <dt>Energibehov vid målvikt ({formatNumber(calc.plan.targetWeightKg, 1)} kg)</dt>
-                  <dd>
-                    {formatNumber(calc.plan.targetNeed.teeKcal, 0)} kcal{' '}
-                    <span className="diff">({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(calc.plan.differenceKcal), 0)} kcal/dag)</span>
-                    <small>{formatNumber(calc.plan.targetNeed.teeMJ * 1000, 0)} kJ ({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(kcalToKj(calc.plan.differenceKcal)), 0)} kJ/dag) · {calc.plan.direction === 'nedgång' ? 'underskott' : calc.plan.direction === 'uppgång' ? 'överskott' : 'ingen skillnad'} jämfört med nu</small>
-                  </dd>
-                </div>
-              )}
-            </dl>
+            <EnergySplit
+              bmrKcal={calc.need.bmrKcal}
+              totalKcal={calc.need.teeKcal}
+              pal={client.pal}
+              formula={BMR_FORMULAS.find(f => f.value === (client.bmrFormula ?? 'henry'))!.short}
+              weightKg={client.weightKg}
+            />
+            {calc.plan && (
+              <div className="goalbox2">
+                <span className="gl">Totalt energibehov vid målvikt ({formatNumber(calc.plan.targetWeightKg, 1)} kg)</span>
+                <span className="gv">
+                  {formatNumber(calc.plan.targetNeed.teeKcal, 0)} kcal{' '}
+                  <span className="diff">({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(calc.plan.differenceKcal), 0)} kcal/dag)</span>
+                </span>
+                <small>
+                  {formatNumber(calc.plan.targetNeed.teeMJ * 1000, 0)} kJ ({calc.plan.differenceKcal < 0 ? '−' : '+'}{formatNumber(Math.abs(kcalToKj(calc.plan.differenceKcal)), 0)} kJ/dag)
+                  {' '}· BMR vid målvikt {formatNumber(calc.plan.targetNeed.bmrKcal, 0)} kcal
+                  {' '}· {calc.plan.direction === 'nedgång' ? 'underskott' : calc.plan.direction === 'uppgång' ? 'överskott' : 'ingen skillnad'} jämfört med nu
+                </small>
+              </div>
+            )}
           </section>
 
           <nav className="tabs" role="tablist">
@@ -306,6 +314,31 @@ function LoadList({ clients, onOpen, onPickFile, onExportAll, message }: LoadPro
       )}
       <p className="note">Beräkningar sparas automatiskt i den här webbläsaren på den här datorn. Exportera till fil för att flytta dem till en annan dator eller spara en säkerhetskopia.</p>
     </>
+  )
+}
+
+function EnergySplit({ bmrKcal, totalKcal, pal, formula, weightKg }: {
+  bmrKcal: number; totalKcal: number; pal: number; formula: string; weightKg: number
+}) {
+  const activity = totalKcal - bmrKcal
+  const bmrPct = (bmrKcal / totalKcal) * 100
+  const kj = (kcal: number) => formatNumber(kcalToKj(kcal), 0)
+  return (
+    <section className="split" aria-label="Energibehov uppdelat på BMR och aktivitet">
+      <div className="splithead">
+        <span>Totalt energibehov nu ({formatNumber(weightKg, 1)} kg)</span>
+        <strong>{formatNumber(totalKcal, 0)} kcal <small>{kj(totalKcal)} kJ</small></strong>
+      </div>
+      <div className="splitbar" aria-hidden="true">
+        <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
+        <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
+      </div>
+      <div className="splitlegend">
+        <span><i className="sw-bmr" />BMR, vila ({formula}): <strong>{formatNumber(bmrKcal, 0)} kcal</strong> · {kj(bmrKcal)} kJ · {formatNumber(bmrPct, 0)} %</span>
+        <span><i className="sw-act" />Aktivitet (PAL {formatNumber(pal, 2)}): <strong>{formatNumber(activity, 0)} kcal</strong> · {kj(activity)} kJ · {formatNumber(100 - bmrPct, 0)} %</span>
+      </div>
+      <small className="muted">Totalt = BMR × PAL = {formatNumber(bmrKcal, 0)} × {formatNumber(pal, 2)}</small>
+    </section>
   )
 }
 

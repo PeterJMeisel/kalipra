@@ -245,3 +245,19 @@ input.subfield { min-height: 36px; padding: 4px 10px; font-size: 15px; color: va
 textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; background: var(--panel) }
 @media (min-width: 761px) and (max-width: 960px) { .bigchoices { grid-template-columns: repeat(2, minmax(0, 300px)) } }
 @media (max-width: 600px) { .ampgrid { grid-template-columns: minmax(0, 1fr) } .bigchoices { grid-template-columns: minmax(0, 360px) } }
+
+/* Energibehov: BMR och totalt */
+.split { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px }
+.splithead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.splithead > span { color: var(--muted); font-size: 15px }
+.splithead strong { font-size: 28px; font-variant-numeric: tabular-nums; white-space: nowrap }
+.splithead small { font-size: 15px; font-weight: 400; color: var(--muted) }
+.splitbar { display: flex; height: 22px; border-radius: 6px; overflow: hidden; gap: 2px }
+.sb-bmr, .sw-bmr { background: var(--green) }
+.sb-act, .sw-act { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--green) 45%, transparent) 0 6px, color-mix(in srgb, var(--green) 25%, transparent) 6px 12px) }
+.splitlegend { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 15px; font-variant-numeric: tabular-nums }
+.splitlegend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px }
+.goalbox2 { display: grid; gap: 2px; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--green); background: var(--panel) }
+.goalbox2 .gl { color: var(--muted); font-size: 15px }
+.goalbox2 .gv { font-size: 26px; font-weight: 700; color: var(--green); font-variant-numeric: tabular-nums }
+.goalbox2 small { color: var(--muted) }

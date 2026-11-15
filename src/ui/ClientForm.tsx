@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PAL_OPTIONS } from '../core/energy'
+import { BMR_FORMULAS, PAL_OPTIONS, type BmrFormula } from '../core/energy'
 import { MIN_SUPPORTED_AGE } from '../core/references'
 import {
   ARM_LEVELS, CONDITION_GROUPS, emptyHealth, LEG_LEVELS,
@@ -23,6 +23,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : '')
   const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : '')
   const [pal, setPal] = useState(String(initial?.pal ?? 1.6))
+  const [formula, setFormula] = useState<BmrFormula>(initial?.bmrFormula ?? 'henry')
   const [hasGoal, setHasGoal] = useState(!!initial?.goal)
   const [target, setTarget] = useState(initial?.goal ? String(initial.goal.targetWeightKg).replace('.', ',') : '')
   const [health, setHealth] = useState<Health>(() => ({ ...emptyHealth(), ...initial?.health }))
@@ -71,7 +72,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
       return fail('Välj vilka kroppsdelar som är amputerade, eller kryssa ur Amputation.', 'halsa')
     }
     onSave({
-      code: code.trim(), age: Math.floor(a), sex, weightKg: w, heightCm: h, pal: p, goal,
+      code: code.trim(), age: Math.floor(a), sex, weightKg: w, heightCm: h, pal: p, bmrFormula: formula, goal,
       health: {
         ...health,
         ckdStage: has('Kronisk njursjukdom') ? health.ckdStage : undefined,
@@ -137,6 +138,16 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
               <input id="cf-pal-custom" inputMode="decimal" value={pal} onChange={e => setPal(e.target.value)} aria-label="Eget PAL-värde" />
             )}
             <small>{PAL_OPTIONS.find(o => String(o.value) === pal)?.note ?? 'Eget värde'}</small>
+          </label>
+          <label className="field span2">
+            <span>Formel för energibehov (BMR)</span>
+            <select id="cf-formula" value={formula} onChange={e => setFormula(e.target.value as BmrFormula)}>
+              {BMR_FORMULAS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+            </select>
+            <small>{BMR_FORMULAS.find(f => f.value === formula)!.note} Energibehov = BMR × PAL.</small>
+            {BMR_FORMULAS.find(f => f.value === formula)!.adultsOnly && Number(age) > 0 && Number(age) < 18 && (
+              <small className="warntext">Formeln är framtagen för vuxna. För barn och ungdomar rekommenderas Henry.</small>
+            )}
           </label>
         </div>
 

@@ -43,6 +43,8 @@ export type Client = {
   weightKg: number
   heightCm: number
   pal: number
+  /** Formel för BMR. Saknas i beräkningar från version 0.1 = Henry */
+  bmrFormula?: import('./energy').BmrFormula
   goal: WeightGoal | null
   /** Saknas i beräkningar från version 0.1 */
   health?: Health

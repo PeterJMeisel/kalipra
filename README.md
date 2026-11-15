@@ -3,7 +3,7 @@
 Kostberäkningsprogram för dietister. Version 0.1 innehåller:
 
 - **Klienter** med kod/alias, ålder, kön, vikt, längd och fysisk aktivitetsnivå (PAL). Inga personuppgifter behövs.
-- **Energibehov**: BMR enligt Henrys ekvationer (2005), som är de som ligger bakom NNR 2023:s referensvärden, gånger PAL.
+- **Energibehov**: BMR gånger PAL. Formeln väljs per beräkning: Henry 2005 (standard, används av NNR 2023), Mifflin–St Jeor 1990, Harris–Benedict 1919 (original) eller Harris–Benedict reviderad (Roza & Shizgal 1984).
 - **Viktmål**: målvikt och takt (kg/vecka) ger ett justerat energiintag, beräknad tid till mål och energibehov vid målvikt. Förenklad modell med 7 700 kcal per kg.
 - **Kostregistrering** över 1–14 dagar, per måltid, med livsmedel och mängd i gram från Livsmedelsverkets livsmedelsdatabas.
 - **Resultat**: energiintag (kcal och kJ) jämfört med behov eller mål, energifördelning (E%) mot NNR 2023, protein per kg, fiber per MJ samt vitaminer, mineraler och salt i procent av RI/AI för personens ålder och kön.
