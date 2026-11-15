@@ -1,4 +1,4 @@
-# Kostberäkning
+# Kalibra – Verktyg för dietister
 
 Kostberäkningsprogram för dietister. Version 0.1 innehåller:
 
@@ -53,6 +53,6 @@ skrivbordsprogram (planen är [Tauri](https://tauri.app)).
 - Tiamin (0,1 mg/MJ) och niacin (1,6 NE/MJ) räknas på klientens beräknade energibehov.
 - Fiber: minst 3 g/MJ för vuxna, 2–3 g/MJ för barn och ungdomar.
 - Protein 15–20 E% för personer över 65 år (NNR 2023, erratum 2).
-- PAL 1,1–1,3 är klinisk praxis och ingår inte i NNR 2023.
+- PAL 1,2–1,3 är klinisk praxis och ingår inte i NNR 2023. Förvalt PAL är 1,2.
 - Viktförändring: 7 700 kcal per kg, utan hänsyn till metabol anpassning.
 - Graviditet, amning och barn under 2 år stöds inte ännu.

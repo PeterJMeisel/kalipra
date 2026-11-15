@@ -21,7 +21,7 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
   const [sex, setSex] = useState<Sex>(initial?.sex ?? 'kvinna')
   const [weight, setWeight] = useState(initial ? String(initial.weightKg).replace('.', ',') : '')
   const [height, setHeight] = useState(initial ? String(initial.heightCm).replace('.', ',') : '')
-  const [pal, setPal] = useState(String(initial?.pal ?? 1.6))
+  const [pal, setPal] = useState(String(initial?.pal ?? 1.2))
   const [formula, setFormula] = useState<BmrFormula>(normalizeFormula(initial?.bmrFormula))
   const [hasGoal, setHasGoal] = useState(!!initial?.goal)
   const [target, setTarget] = useState(initial?.goal ? String(initial.goal.targetWeightKg).replace('.', ',') : '')
@@ -76,7 +76,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
         ...health,
         ckdStage: has('Kronisk njursjukdom') ? health.ckdStage : undefined,
         allergyText: has('Födoämnesallergi') ? health.allergyText?.trim() || undefined : undefined,
-        notes: health.notes?.trim() || undefined,
       },
     })
   }
@@ -218,10 +217,6 @@ export function ClientForm({ initial, onSave, onCancel }: Props) {
           </fieldset>
         )}
 
-        <label className="field">
-          <span>Övrigt om hälsotillståndet</span>
-          <textarea rows={3} value={health.notes ?? ''} onChange={e => setHealth(h => ({ ...h, notes: e.target.value }))} />
-        </label>
       </div>
       </div>
 

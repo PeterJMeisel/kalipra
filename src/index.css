@@ -1,92 +1,96 @@
 /*
-VOICE: lugn klinisk arbetsyta – som ett välgjort journalblad, inte en app med reklamkänsla.
-IDEA: dietistens kostformulär: tydliga fält, linjerade tabeller, en färgad energimätare.
-PICTURE: energimätaren och näringsstaplarna i resultatvyn bär bilden.
-COLOUR/TYPE: vit + djup skogsgrön, ljus salviagrön som stödfält, tomatröd för avvikelser; Source Sans 3 + Fraunces för rubriker.
-LAYOUT: klientlista till vänster, arbetsyta till höger; staplas under 760px.
+Kalibra – Verktyg för dietister
+Färger: plommon (varumärke), mint (stödfält), saffran (accent), grafit (text), kall vit (bakgrund).
+Status: grönt = inom, amber = nära, rött = under/över. Typsnitt: Space Grotesk (rubriker) + Inter (text).
+Former: stramt, 8 px hörn, raka linjer.
 */
 :root {
   color-scheme: light dark;
-  --bg: light-dark(#ffffff, #0f1512);
-  --panel: light-dark(#ffffff, #151d19);
-  --ink: light-dark(#14201a, #e6eee9);
-  --muted: light-dark(#5b6b62, #9aaca2);
-  --line: light-dark(#dbe4de, #26332c);
-  --green: light-dark(#1d6040, #6fcf9b);
-  --green-ink: light-dark(#ffffff, #0b1a12);
-  --sage: light-dark(#eaf3ed, #1a2a21);
-  --red: light-dark(#c63d2b, #ff8a73);
-  --amber: light-dark(#b07a0c, #f1c35a);
-  --redbg: light-dark(#fbe9e6, #3a1c17);
-  --amberbg: light-dark(#fbf1dc, #33280f);
-  --okbg: light-dark(#e3f2e9, #173325);
+  --bg: light-dark(#F7F7F5, #141018);
+  --panel: light-dark(#FFFFFF, #1D1724);
+  --ink: light-dark(#1C1622, #ECE8F0);
+  --muted: light-dark(#5A5262, #A9A1B2);
+  --line: light-dark(#E2DFE5, #2F2738);
+  --brand: light-dark(#3B2A4A, #CDB6E3);
+  --brand-ink: light-dark(#FFFFFF, #1C1622);
+  --tint: light-dark(#E8F6EF, #1E2A26);
+  --mint: light-dark(#C9EEDD, #2C4A3E);
+  --saffron: light-dark(#E8A33D, #F0B95E);
+  --ok: light-dark(#1F7A55, #6FD3A4);
+  --red: light-dark(#C63D2B, #FF8A73);
+  --amber: light-dark(#9A6A0A, #F1C35A);
+  --redbg: light-dark(#FBE9E6, #3A1C17);
+  --amberbg: light-dark(#FBF1DC, #33280F);
+  --okbg: light-dark(#E3F2E9, #173325);
 }
 :root[data-theme=light] { color-scheme: light }
 :root[data-theme=dark] { color-scheme: dark }
 * { box-sizing: border-box; min-width: 0 }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: clip }
-h1, h2, h3, h4 { font-family: Fraunces, Georgia, serif; font-weight: 600; line-height: 1.1; margin: 0 }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: clip }
+h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin: 0 }
 h1 { font-size: clamp(28px, 4vw, 40px); text-wrap: balance }
 h2 { font-size: 20px }
 h3 { font-size: 20px; margin: 28px 0 12px }
-h4 { font-size: 16px; font-family: inherit; font-weight: 700; color: var(--green); margin: 18px 0 6px }
+h4 { font-size: 16px; font-family: inherit; font-weight: 700; color: var(--brand); margin: 18px 0 6px }
 button, input, select, textarea { font: inherit; color: inherit }
 button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 16px; min-height: 44px }
-button:hover:not(:disabled) { border-color: var(--green) }
+button:hover:not(:disabled) { border-color: var(--brand) }
 button:disabled { opacity: .45; cursor: default }
-button.primary { background: var(--green); color: var(--green-ink); border-color: var(--green); font-weight: 600 }
+button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); font-weight: 600 }
 button.small, .filebtn { min-height: 36px; padding: 6px 12px; font-size: 15px }
-:focus-visible { outline: 3px solid color-mix(in srgb, var(--green) 55%, transparent); outline-offset: 2px }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent); outline-offset: 2px }
 input, select, textarea { font-size: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 44px; background: var(--panel); width: 100% }
 .muted, .note { color: var(--muted) }
 .note { font-size: 14px; margin: 6px 0 12px }
 
 .app { min-height: 100vh }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--green); color: var(--green-ink); flex-wrap: wrap }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(3vw, 16px); background: var(--brand); color: var(--brand-ink); flex-wrap: wrap }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; background: none; border: 0; color: inherit; padding: 4px 0; min-height: 44px }
-.brand svg { width: 28px; height: 28px }
+.brand svg { width: 30px; height: 30px }
+.brand .tag { font-weight: 400; font-size: 14px; opacity: .8; margin-left: 4px }
+@media (max-width: 600px) { .brand .tag { display: none } }
 .brand:hover:not(:disabled) { border: 0; opacity: .9 }
 .topnav { display: flex; gap: 6px; flex-wrap: wrap }
 .topnav button { background: transparent; color: inherit; border-color: color-mix(in srgb, currentColor 40%, transparent); min-height: 40px; padding: 6px 14px; font-weight: 600 }
 .topnav button:hover:not(:disabled) { border-color: currentColor }
-.topnav button.on { background: var(--green-ink); color: var(--green); border-color: var(--green-ink) }
+.topnav button.on { background: var(--brand-ink); color: var(--brand); border-color: var(--brand-ink) }
 .savewarn { margin: 0; padding: 10px max(3vw, 16px); background: var(--redbg); color: var(--red); font-weight: 600 }
 .source { font-size: 13px; color: var(--muted); margin: 0 }
 .source.center { text-align: center; max-width: 60ch }
 .ccode { font-weight: 700 }
 
-.start { min-height: calc(100vh - 68px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(28px, 5vh, 48px); padding: 40px 20px; background: radial-gradient(ellipse at 50% 0%, var(--sage), transparent 70%) }
+.start { min-height: calc(100vh - 68px); background-color: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(28px, 5vh, 48px); padding: 40px 20px; background-image: linear-gradient(var(--tint), var(--bg) 60%) }
 .starthero { text-align: center }
 .starthero h1 { font-size: clamp(38px, 6vw, 56px) }
 .starthero .lead { margin: 12px auto 0; font-size: 18px }
 .bigchoices { display: grid; grid-template-columns: repeat(3, minmax(0, 280px)); gap: 20px; width: 100%; justify-content: center }
-.bigbtn { display: grid; justify-items: center; align-content: center; gap: 10px; min-height: 230px; padding: 28px 22px; border-radius: 18px; border: 2px solid var(--green); background: var(--panel); color: var(--green); text-align: center; box-shadow: 0 10px 30px rgb(20 60 40 / .10); transition: transform .15s ease, box-shadow .15s ease }
-.bigbtn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 16px 40px rgb(20 60 40 / .18) }
+.bigbtn { display: grid; justify-items: center; align-content: center; gap: 10px; min-height: 230px; padding: 28px 22px; border-radius: 12px; border: 2px solid var(--brand); background: var(--panel); color: var(--brand); text-align: center; box-shadow: 0 10px 30px rgb(59 42 74 / .10); transition: transform .15s ease, box-shadow .15s ease }
+.bigbtn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 16px 40px rgb(59 42 74 / .18) }
 .bigbtn svg { width: 64px; height: 64px }
-.bigbtn .bt { font-family: Fraunces, Georgia, serif; font-size: 28px; font-weight: 600; line-height: 1.1; color: inherit }
+.bigbtn .bt { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 28px; font-weight: 600; line-height: 1.1; color: inherit }
 .bigbtn .bs { font-size: 15px; color: var(--muted); max-width: 26ch }
-.bigbtn.primary { background: var(--green); color: var(--green-ink) }
+.bigbtn.primary { background: var(--brand); color: var(--brand-ink) }
 .bigbtn.primary .bs { color: inherit; opacity: .85 }
 
 .narrow { max-width: 760px; margin: 0 auto }
 h2.sub { font-size: 20px; margin: 32px 0 12px }
 .loadactions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px }
-.msg { margin: 12px 0 0; padding: 10px 14px; background: var(--sage); border-radius: 8px; font-size: 15px }
+.msg { margin: 12px 0 0; padding: 10px 14px; background: var(--tint); border-radius: 8px; font-size: 15px }
 .filter { margin-bottom: 10px }
 .savedlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
-.savedlist button { width: 100%; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 14px 18px; border-radius: 12px }
-.savedlist button:hover:not(:disabled) { background: var(--sage) }
+.savedlist button { width: 100%; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 14px 18px; border-radius: 8px }
+.savedlist button:hover:not(:disabled) { background: var(--tint) }
 .savedlist .ccode { font-size: 18px }
 .cmeta { grid-column: 1; color: var(--muted); font-size: 15px }
 .cdate { grid-column: 1; color: var(--muted); font-size: 13px }
-.savedlist .open { grid-column: 2; grid-row: 1 / span 3; align-self: center; color: var(--green); font-weight: 700; white-space: nowrap }
+.savedlist .open { grid-column: 2; grid-row: 1 / span 3; align-self: center; color: var(--brand); font-weight: 700; white-space: nowrap }
 
 .main { padding: 28px clamp(16px, 3vw, 40px) 64px; max-width: 1180px; margin: 0 auto }
 .main.narrow { max-width: 760px }
 .panel { padding-top: 8px }
 .lead { color: var(--muted); max-width: 62ch }
 
-.clienthead { background: var(--sage); border-radius: 14px; padding: 22px 24px; display: grid; gap: 14px }
+.clienthead { background: var(--tint); border-radius: 8px; padding: 22px 24px; display: grid; gap: 14px }
 .chtop { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap }
 .chtop .small { background: var(--panel) }
 .facts { margin: 6px 0 0; color: var(--muted) }
@@ -95,13 +99,13 @@ h2.sub { font-size: 20px; margin: 32px 0 12px }
 .needs dt { font-size: 14px; color: var(--muted) }
 .needs dd { margin: 0; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap }
 .needs dd small { display: block; font-size: 14px; font-weight: 400; color: var(--muted) }
-.needs .goal dd { color: var(--green) }
+.needs .goal dd { color: var(--brand) }
 .goalline { margin: 0; font-size: 15px }
 .warntext { color: var(--red) }
 
 .tabs { display: flex; gap: 4px; margin: 22px 0 8px; border-bottom: 1px solid var(--line); overflow-x: auto }
 .tabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; padding: 10px 16px; font-weight: 600; color: var(--muted) }
-.tabs button.on { color: var(--ink); border-bottom-color: var(--green) }
+.tabs button.on { color: var(--ink); border-bottom-color: var(--saffron) }
 
 .form { display: grid; gap: 18px; max-width: 640px; margin-top: 18px }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px }
@@ -114,10 +118,10 @@ h2.sub { font-size: 20px; margin: 32px 0 12px }
 .seg button:first-child { border-radius: 8px 0 0 8px }
 .seg button:last-child { border-radius: 0 8px 8px 0 }
 .seg button + button { margin-left: -1px }
-.seg button.on { background: var(--green); color: var(--green-ink); border-color: var(--green); position: relative }
+.seg button.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); position: relative }
 .check { display: flex; gap: 10px; align-items: center; font-weight: 600 }
 .check input { width: 22px; height: 22px; min-height: 0 }
-.goalbox { background: var(--sage); padding: 16px; border-radius: 10px }
+.goalbox { background: var(--tint); padding: 16px; border-radius: 8px }
 .error { color: var(--red); margin: 0 }
 .actions { display: flex; gap: 10px }
 
@@ -128,13 +132,13 @@ h2.sub { font-size: 20px; margin: 32px 0 12px }
 .days button.on { background: var(--ink); color: var(--bg); border-color: var(--ink) }
 .inline { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--muted) }
 .inline select { width: auto }
-.adder { display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px auto; gap: 12px; align-items: end; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel) }
+.adder { display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px auto; gap: 12px; align-items: end; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel) }
 .search { position: relative }
-.hits { position: absolute; z-index: 5; top: 100%; left: 0; right: 0; margin: 4px 0 0; padding: 4px; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / .14); max-height: 340px; overflow-y: auto }
+.hits { position: absolute; z-index: 5; top: 100%; left: 0; right: 0; margin: 4px 0 0; padding: 4px; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 12px 32px rgb(0 0 0 / .14); max-height: 340px; overflow-y: auto }
 .hits button { width: 100%; display: flex; justify-content: space-between; gap: 12px; text-align: left; border: 0; min-height: 40px; padding: 8px 10px; border-radius: 6px }
-.hits button.on, .hits button:hover { background: var(--sage) }
+.hits button.on, .hits button:hover { background: var(--tint) }
 .hits small { color: var(--muted); white-space: nowrap }
-.empty { color: var(--muted); padding: 28px; text-align: center; border: 1px dashed var(--line); border-radius: 12px }
+.empty { color: var(--muted); padding: 28px; text-align: center; border: 1px dashed var(--line); border-radius: 8px }
 .entries { width: 100%; border-collapse: collapse }
 .entries td { padding: 6px 4px; border-bottom: 1px solid var(--line) }
 .entries .name { width: 100% }
@@ -145,14 +149,14 @@ h2.sub { font-size: 20px; margin: 32px 0 12px }
 .entries .del button:hover { color: var(--red) }
 .daytotal { text-align: right; margin: 4px 0 0 }
 
-.energyhero { display: grid; gap: 10px; padding: 22px 24px; border-radius: 14px; border: 1px solid var(--line) }
+.energyhero { display: grid; gap: 10px; padding: 22px 24px; border-radius: 8px; border: 1px solid var(--line) }
 .big { display: grid }
 .big .lbl { color: var(--muted); font-size: 15px }
 .big .val { font-size: clamp(40px, 7vw, 56px); font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums }
 .big .val small { font-size: 22px; font-weight: 600; color: var(--muted) }
 .big .sub { color: var(--muted) }
-.meter { position: relative; height: 16px; border-radius: 99px; background: var(--sage); overflow: hidden }
-.meter .fill { height: 100%; background: var(--green); border-radius: 99px; transition: width .5s ease }
+.meter { position: relative; height: 16px; border-radius: 99px; background: var(--tint); overflow: hidden }
+.meter .fill { height: 100%; background: var(--brand); border-radius: 99px; transition: width .5s ease }
 .meter .mark { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--ink) }
 .cmp { margin: 0 }
 
@@ -163,24 +167,24 @@ table.ref { width: 100%; border-collapse: collapse; font-variant-numeric: tabula
 .ref .subrow td:first-child { padding-left: 22px; color: var(--muted) }
 .ref .wide { width: 40% }
 .pill { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 99px; white-space: nowrap }
-.pill.ok { background: var(--okbg); color: var(--green) }
+.pill.ok { background: var(--okbg); color: var(--ok) }
 .pill.low, .pill.high { background: var(--redbg); color: var(--red) }
 .pill.near { background: var(--amberbg); color: var(--amber) }
-.hbar { height: 10px; background: var(--sage); border-radius: 99px; overflow: hidden }
-.hbar div { height: 100%; background: var(--green) }
+.hbar { height: 10px; background: var(--tint); border-radius: 99px; overflow: hidden }
+.hbar div { height: 100%; background: var(--brand) }
 
 .microlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px }
-.micro { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px }
+.micro { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px }
 .mhead, .mfoot { display: flex; justify-content: space-between; gap: 8px; align-items: baseline }
 .mname { font-weight: 600 }
 .mval { font-variant-numeric: tabular-nums; white-space: nowrap }
 .mfoot { font-size: 13px; color: var(--muted) }
 .pct { font-weight: 700; font-variant-numeric: tabular-nums }
-.pct.ok { color: var(--green) } .pct.near { color: var(--amber) } .pct.low, .pct.high { color: var(--red) }
-.bar { position: relative; height: 8px; background: var(--sage); border-radius: 99px }
+.pct.ok { color: var(--ok) } .pct.near { color: var(--amber) } .pct.low, .pct.high { color: var(--red) }
+.bar { position: relative; height: 8px; background: var(--tint); border-radius: 99px }
 .bar div { height: 100%; border-radius: 99px; transition: width .5s ease }
 .bar i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .55 }
-.bar.ok div { background: var(--green) } .bar.near div { background: var(--amber) } .bar.low div, .bar.high div { background: var(--red) }
+.bar.ok div { background: var(--ok) } .bar.near div { background: var(--amber) } .bar.low div, .bar.high div { background: var(--red) }
 .mnote { color: var(--muted); font-size: 12.5px }
 .missing ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--muted) }
 
@@ -220,22 +224,22 @@ table.ref { width: 100%; border-collapse: collapse; font-variant-numeric: tabula
 /* Formulärflikar och hälsotillstånd */
 .formtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line) }
 .formtabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; font-weight: 600; color: var(--muted); display: inline-flex; gap: 8px; align-items: center }
-.formtabs button.on { color: var(--ink); border-bottom-color: var(--green) }
-.formtabs .count { background: var(--green); color: var(--green-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px }
+.formtabs button.on { color: var(--ink); border-bottom-color: var(--saffron) }
+.formtabs .count { background: var(--brand); color: var(--brand-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px }
 .formsection { display: grid; gap: 18px }
 .formsection[hidden] { display: none }
 .condgroups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px }
-.condgroup { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px 12px; margin: 0; display: grid; gap: 2px; align-content: start }
-.condgroup legend { font-weight: 700; color: var(--green); padding: 0 4px; font-size: 15px }
+.condgroup { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px 12px; margin: 0; display: grid; gap: 2px; align-content: start }
+.condgroup legend { font-weight: 700; color: var(--brand); padding: 0 4px; font-size: 15px }
 .cond { display: flex; gap: 10px; align-items: center; min-height: 36px; cursor: pointer }
 .cond input, .check.small input { width: 20px; height: 20px; min-height: 0; flex: none }
 .subfield { margin: 0 0 6px 30px; display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); width: calc(100% - 30px) }
 .subfield select { width: auto; min-height: 36px; padding: 4px 8px }
 input.subfield { min-height: 36px; padding: 4px 10px; font-size: 15px; color: var(--ink) }
-.amputation { border: 2px solid var(--green); border-radius: 12px; padding: 14px 16px; margin: 0; display: grid; gap: 12px; background: var(--sage) }
+.amputation { border: 2px solid var(--brand); border-radius: 8px; padding: 14px 16px; margin: 0; display: grid; gap: 12px; background: var(--tint) }
 .amputation legend { font-weight: 700; padding: 0 6px }
 .ampgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px }
-.ampcell { display: grid; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; align-content: start }
+.ampcell { display: grid; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; align-content: start }
 .check.small { font-weight: 600; font-size: 15px }
 .chips { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
 .chips li { background: var(--panel); border: 1px solid var(--line); border-radius: 99px; padding: 2px 12px; font-size: 14px }
@@ -247,29 +251,32 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 @media (max-width: 600px) { .ampgrid { grid-template-columns: minmax(0, 1fr) } .bigchoices { grid-template-columns: minmax(0, 360px) } }
 
 /* Energibehov: BMR och totalt */
-.split { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px }
+.split { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px }
 .splithead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
 .splithead > span { color: var(--muted); font-size: 15px }
 .splithead strong { font-size: 28px; font-variant-numeric: tabular-nums; white-space: nowrap }
 .splithead small { font-size: 15px; font-weight: 400; color: var(--muted) }
 .splitbar { display: flex; height: 22px; border-radius: 6px; overflow: hidden; gap: 2px }
-.sb-bmr, .sw-bmr { background: var(--green) }
-.sb-act, .sw-act { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--green) 45%, transparent) 0 6px, color-mix(in srgb, var(--green) 25%, transparent) 6px 12px) }
+.sb-bmr, .sw-bmr { background: var(--brand) }
+.sb-act, .sw-act { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--brand) 45%, transparent) 0 6px, color-mix(in srgb, var(--brand) 25%, transparent) 6px 12px) }
 .splitlegend { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 15px; font-variant-numeric: tabular-nums }
 .splitlegend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px }
-.goalbox2 { display: grid; gap: 2px; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--green); background: var(--panel) }
+.goalbox2 { display: grid; gap: 2px; padding: 14px 18px; border-radius: 8px; border: 2px solid var(--brand); background: var(--panel) }
 .goalbox2 .gl { color: var(--muted); font-size: 15px }
-.goalbox2 .gv { font-size: 26px; font-weight: 700; color: var(--green); font-variant-numeric: tabular-nums }
+.goalbox2 .gv { font-size: 26px; font-weight: 700; color: var(--brand); font-variant-numeric: tabular-nums }
 .goalbox2 small { color: var(--muted) }
 
 /* Hälsotillstånd som utfällbar meny */
-.healthpanel { border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
-.healthtoggle { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 0; border-radius: 0; background: var(--sage); padding: 14px 16px; font-weight: 700; font-size: 17px; min-height: 52px; text-align: left }
+.healthpanel { border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+.healthtoggle { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 0; border-radius: 0; background: var(--tint); padding: 14px 16px; font-weight: 700; font-size: 17px; min-height: 52px; text-align: left }
 .healthtoggle > span { display: inline-flex; gap: 10px; align-items: center }
-.healthtoggle .count { background: var(--green); color: var(--green-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px; text-align: center }
+.healthtoggle .count { background: var(--brand); color: var(--brand-ink); border-radius: 99px; font-size: 12px; min-width: 22px; padding: 1px 7px; text-align: center }
 .healthtoggle svg { transition: transform .2s ease; flex: none }
 .healthtoggle[aria-expanded=true] svg { transform: rotate(180deg) }
 .healthsummary { margin: 0; padding: 10px 16px; font-size: 14px; color: var(--muted) }
 .healthbody { padding: 16px }
 .healthbody[hidden] { display: none }
 @media (prefers-reduced-motion: reduce) { .healthtoggle svg { transition: none } }
+
+.startlogo { color: var(--brand); display: flex; justify-content: center; margin-bottom: 14px }
+.starthero .lead { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 20px; font-weight: 500 }

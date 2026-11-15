@@ -103,7 +103,7 @@ export default function App() {
       }
     } catch (e) {
       setView('ladda')
-      setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kostberäkning.')
+      setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalibra.')
     }
     if (fileRef.current) fileRef.current.value = ''
   }
@@ -127,8 +127,8 @@ export default function App() {
       {fileInput}
       <header className="top">
         <button className="brand" onClick={() => go('start')} aria-label="Till startsidan">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2.5" /><path d="M16 2a14 14 0 0 1 14 14H16z" fill="currentColor" /><path d="M16 16 6.1 25.9A14 14 0 0 1 2 16z" fill="currentColor" opacity=".45" /></svg>
-          <span>Kostberäkning</span>
+          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg>
+          <span>Kalibra<span className="tag">Verktyg för dietister</span></span>
         </button>
         {view !== 'start' && (
           <nav className="topnav">
@@ -144,8 +144,9 @@ export default function App() {
       {view === 'start' && (
         <main className="start">
           <div className="starthero">
-            <h1>Kostberäkning</h1>
-            <p className="lead">Energibehov, kostregistrering och näringsintag jämfört med NNR 2023.</p>
+            <div className="startlogo"><svg viewBox="0 0 64 64" aria-hidden="true" width="88" height="88"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="currentColor" /><path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="currentColor" opacity=".55" /><path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="var(--saffron)" /></svg></div>
+            <h1>Kalibra</h1>
+            <p className="lead">Verktyg för dietister</p>
           </div>
           <div className="bigchoices">
             <button className="bigbtn primary" onClick={() => go('ny')}>
@@ -175,7 +176,6 @@ export default function App() {
       {view === 'ny' && (
         <main className="main narrow">
           <h1>Ny beräkning</h1>
-          <p className="lead">Fyll i uppgifter om personen. Välj formel för energibehovet – Henry 2005 (som NNR 2023 använder), Mifflin–St Jeor eller reviderad Harris–Benedict.</p>
           <ClientForm onSave={createClient} onCancel={() => go('start')} />
         </main>
       )}
@@ -195,7 +195,7 @@ export default function App() {
             clients={state.clients}
             onOpen={id => open(id)}
             onPickFile={() => fileRef.current?.click()}
-            onExportAll={() => exportFile(state.clients.map(c => c.id), `kostberakning-alla-${now().slice(0, 10)}`)}
+            onExportAll={() => exportFile(state.clients.map(c => c.id), `kalibra-alla-${now().slice(0, 10)}`)}
             message={message}
           />
         </main>
@@ -216,7 +216,7 @@ export default function App() {
                   </ul>
                 )}
               </div>
-              <button className="small" onClick={() => exportFile([client.id], `kostberakning-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
+              <button className="small" onClick={() => exportFile([client.id], `kalibra-${client.code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}`)}>Exportera till fil</button>
             </div>
             {message && <p className="msg">{message}</p>}
             <EnergySplit

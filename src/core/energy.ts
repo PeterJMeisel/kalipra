@@ -74,7 +74,6 @@ export function bmrMJ(sex: Sex, age: number, weightKg: number, heightCm: number,
 export type PalOption = { value: number; label: string; note?: string }
 
 export const PAL_OPTIONS: PalOption[] = [
-  { value: 1.1, label: 'Sängliggande, sjuk', note: 'Klinisk praxis, ingår inte i NNR 2023' },
   { value: 1.2, label: 'Sängliggande / rullstol, mycket låg aktivitet', note: 'Klinisk praxis, ingår inte i NNR 2023' },
   { value: 1.3, label: 'Uppegående, mycket stillasittande', note: 'Klinisk praxis, ingår inte i NNR 2023' },
   { value: 1.4, label: 'Stillasittande arbete, lite fysisk aktivitet på fritiden', note: 'NNR 2023' },
