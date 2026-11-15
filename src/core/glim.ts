@@ -124,10 +124,10 @@ export function assessGlim(input: {
  */
 export const INFLAMMATION_REASONS: Record<string, string> = {
   'Inflammation (CRP)': 'förhöjt CRP tyder på inflammation',
-  'Hjärtsvikt': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
-  'KOL': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
-  'Kronisk njursjukdom': 'kronisk organsjukdom med kronisk eller återkommande inflammation',
-  'Cancer under behandling': 'cancer med kronisk eller återkommande inflammation',
+  'Hjärtsvikt': 'kronisk organsjukdom',
+  'KOL': 'kronisk organsjukdom',
+  'Kronisk njursjukdom': 'kronisk organsjukdom',
+  'Cancer under behandling': 'cancersjukdom',
   'IBD (Crohns sjukdom / ulcerös kolit)': 'kronisk inflammatorisk tarmsjukdom',
 }
 
