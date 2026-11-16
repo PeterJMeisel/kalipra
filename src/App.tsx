@@ -401,8 +401,10 @@ export default function App() {
             </>
           ) : (
             <>
-              <div className="loadactions pl-actions">
+              <div className="pl-newrow">
                 <button className="primary pl-new" onClick={() => { setMessage(''); setPickNew(true) }}>+ Ny patient</button>
+              </div>
+              <div className="loadactions pl-actions">
                 <button onClick={() => fileRef.current?.click()}>Importera patienter …</button>
                 {state.persons.length > 0 && !exportSel && <button onClick={() => { setMessage(''); setExportSel(new Set()) }}>Exportera …</button>}
                 {activePerson && <button onClick={() => { setActiveId(null); setCalcId(null); setAssessPersonId(null); setMessage('Ingen patient är laddad.') }}>Stäng patient</button>}
