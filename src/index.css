@@ -52,10 +52,12 @@ input, select, textarea { font-size: 16px; border: 1px solid var(--line); border
 .brand .tag { font-weight: 400; font-size: 14px; opacity: .8; margin-left: 4px }
 @media (max-width: 600px) { .brand .tag { display: none } }
 .brand:hover:not(:disabled) { border: 0; opacity: .9 }
-.topnav { display: flex; gap: 6px; flex-wrap: wrap }
-.topnav button { background: transparent; color: inherit; border-color: color-mix(in srgb, currentColor 40%, transparent); min-height: 40px; padding: 6px 14px; font-weight: 600 }
-.topnav button:hover:not(:disabled) { border-color: currentColor }
-.topnav button.on { background: var(--top-ink); color: #3B2A4A; border-color: var(--top-ink) }
+.topnav { display: flex; gap: 0 }
+/* Samma utseende som Dag/Dagar: sammanfogade knappar, vald knapp ljust tonad med mörk kant */
+.topnav button { background: var(--panel); color: var(--ink); border-color: var(--line); border-radius: 0; min-height: 38px; padding: 6px 16px }
+.topnav button:first-child { border-radius: 8px 0 0 8px }
+.topnav button:last-child { border-radius: 0 8px 8px 0; border-left: 0 }
+.topnav button.on { background: var(--tint); border-color: var(--brand); font-weight: 600 }
 .savewarn { margin: 0; padding: 10px max(3vw, 16px); background: var(--redbg); color: var(--red); font-weight: 600 }
 .source { font-size: 13px; color: var(--muted); margin: 0 }
 .source.center { text-align: center; max-width: 60ch }

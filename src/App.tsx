@@ -351,9 +351,9 @@ export default function App() {
         </div>
         <div className="topright">
           {view !== 'start' && (
-            <nav className="topnav">
-              <button className={view === 'oversikt' ? 'on' : ''} onClick={openKostreg}>Kostregistrering</button>
-              <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
+            <nav className="topnav" role="radiogroup" aria-label="Verktyg">
+              <button role="radio" aria-checked={view === 'oversikt'} className={view === 'oversikt' ? 'on' : ''} onClick={openKostreg}>Kostregistrering</button>
+              <button role="radio" aria-checked={['undernaring', 'koppla-ny'].includes(view)} className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (['undernaring', 'koppla-ny'].includes(view)) return; if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
             </nav>
           )}
           <button type="button" className="themeswitch" role="switch" aria-checked={theme === 'dark'} aria-label="Mörkt läge"
