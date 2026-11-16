@@ -156,3 +156,7 @@ export function splitClient(c: Omit<Client, 'id' | 'createdAt'>) {
   const calc = { weightKg: c.weightKg, pal: c.pal, bmrFormula: c.bmrFormula, goal: c.goal }
   return { person, calc }
 }
+
+/** Övre gränser för klientuppgifter: runda tal strax över de högsta som uppmätts hos människor
+ * (äldsta ca 122 år, längsta ca 272 cm, tyngsta ca 635 kg). */
+export const LIMITS = { maxAge: 130, maxHeightCm: 280, maxWeightKg: 650 } as const

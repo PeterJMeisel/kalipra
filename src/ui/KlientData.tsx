@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { bmi, BMR_FORMULAS, normalizeFormula, PAL_OPTIONS } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
-import { emptyHealth, type Calculation, type Health, type Person } from '../core/types'
+import { emptyHealth, LIMITS, type Calculation, type Health, type Person } from '../core/types'
 import { HealthSection } from './HealthSection'
 
 type Props = {
@@ -20,9 +20,9 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
   const [healthOpen, setHealthOpen] = useState(true)
   const weight = calc?.weightKg
   const b = weight ? bmi(weight, person.heightCm) : null
-  const num = (value: number | undefined, onSet: (n: number) => void, label: string, decimals: number) => (
+  const num = (value: number | undefined, onSet: (n: number) => void, label: string, decimals: number, max = Infinity) => (
     <input inputMode="decimal" key={`${label}-${value}`} defaultValue={value !== undefined ? formatNumber(value, decimals) : ''} aria-label={label}
-      onBlur={e => { const n = Number(e.target.value.replace(',', '.').replace(/\s/g, '')); if (n > 0) onSet(n); else if (value !== undefined) e.target.value = formatNumber(value, decimals) }} />
+      onBlur={e => { const n = Number(e.target.value.replace(',', '.').replace(/\s/g, '')); if (n > 0 && n <= max) onSet(n); else if (value !== undefined) e.target.value = formatNumber(value, decimals) }} />
   )
   const pal = calc?.pal ?? 1.2
   const palKnown = PAL_OPTIONS.some(o => Math.abs(o.value - pal) < 0.001)
@@ -36,15 +36,15 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
             <input defaultValue={person.code} key={`code-${person.code}`} aria-label="Filnamn"
               onBlur={e => { const v = e.target.value.trim(); if (v) onPatchPerson({ code: v }); else e.target.value = person.code }} />
           </label>
-          <label>Ålder (år){num(person.age, n => onPatchPerson({ age: Math.round(n) }), 'Ålder i år', 0)}</label>
+          <label>Ålder (år){num(person.age, n => onPatchPerson({ age: Math.round(n) }), 'Ålder i år', 0, LIMITS.maxAge)}</label>
           <label>Kön
             <select value={person.sex} onChange={e => onPatchPerson({ sex: e.target.value as Person['sex'] })}>
               <option value="kvinna">Kvinna</option>
               <option value="man">Man</option>
             </select>
           </label>
-          <label>Längd (cm){num(person.heightCm, n => onPatchPerson({ heightCm: n }), 'Längd i cm', 0)}</label>
-          <label>Vikt (kg){calc ? num(weight, n => onPatchCalc({ weightKg: n }), 'Vikt i kg', 1) : <span className="muted">Ingen beräkning</span>}</label>
+          <label>Längd (cm){num(person.heightCm, n => onPatchPerson({ heightCm: n }), 'Längd i cm', 0, LIMITS.maxHeightCm)}</label>
+          <label>Vikt (kg){calc ? num(weight, n => onPatchCalc({ weightKg: n }), 'Vikt i kg', 1, LIMITS.maxWeightKg) : <span className="muted">Ingen beräkning</span>}</label>
           <label>BMI<output>{b !== null ? formatNumber(b, 1) : '–'}</output></label>
         </div>
         {calc && (

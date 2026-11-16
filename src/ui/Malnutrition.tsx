@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { bmi } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
 import { newId } from '../core/storage'
-import { emptyHealth, KNOWN_CONDITIONS, type Health, type Person, type Sex, type WeightEntry } from '../core/types'
+import { emptyHealth, KNOWN_CONDITIONS, LIMITS, type Health, type Person, type Sex, type WeightEntry } from '../core/types'
 import { autoField, change, changeWithin, periodText, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { DatePicker } from './DatePicker'
@@ -133,7 +133,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   function setAge(t: string) {
     setAgeText(t)
     const v = Number(t.trim())
-    onChange({ age: t.trim() && Number.isInteger(v) && v >= 18 && v <= 120 ? v : undefined })
+    onChange({ age: t.trim() && Number.isInteger(v) && v >= 18 && v <= LIMITS.maxAge ? v : undefined })
   }
   const auto = autoField(recent)
 
@@ -153,12 +153,12 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     e.preventDefault()
     const h = parse(vals.h)
     const w = parse(vals.w) ?? solveBody('w', { h, b: parse(vals.b) })
-    if (age === undefined) return setError('Ange klientens nuvarande ålder (18–120 år).')
+    if (age === undefined) return setError(`Ange klientens nuvarande ålder (18–${LIMITS.maxAge} år).`)
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return setError('Ange datum.')
     if (date > today()) return setError('Datumet kan inte vara i framtiden.')
-    if (h !== undefined && !(h >= 70 && h <= 250)) return setError('Ange längd i cm (70–250).')
+    if (h !== undefined && !(h >= 70 && h <= LIMITS.maxHeightCm)) return setError(`Ange längd i cm (70–${LIMITS.maxHeightCm}).`)
     if (w === undefined) return setError('Ange vikt, eller längd och BMI så räknas vikten ut.')
-    if (!(w >= 8 && w <= 400)) return setError('Vikten ska vara 8–400 kg.')
+    if (!(w >= 8 && w <= LIMITS.maxWeightKg)) return setError(`Vikten ska vara 8–${LIMITS.maxWeightKg} kg.`)
     if (weights.some(x => x.date === date)) return setError('Det finns redan en vikt för det datumet. Ta bort den först om du vill ändra.')
     const kg = Math.round(w * 10) / 10
     const entry = { id: newId(), date, kg, ...(h !== undefined ? { heightCm: Math.round(h * 10) / 10 } : {}) }

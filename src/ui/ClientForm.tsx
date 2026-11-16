@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BMR_FORMULAS, normalizeFormula, PAL_OPTIONS, type BmrFormula } from '../core/energy'
 import { MIN_SUPPORTED_AGE } from '../core/references'
-import { emptyHealth, KNOWN_CONDITIONS, type Client, type Health, type Sex } from '../core/types'
+import { emptyHealth, KNOWN_CONDITIONS, LIMITS, type Client, type Health, type Sex } from '../core/types'
 import { HealthSection } from './HealthSection'
 
 type Props = {
@@ -38,15 +38,15 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: 
     e.preventDefault()
     const a = num(age), w = num(weight), h = num(height), p = num(pal)
     const fail = (msg: string, health = false) => { if (health) setHealthOpen(true); setError(msg) }
-    if (!code.trim()) return fail('Ange en kod eller ett alias för klienten.')
-    if (!Number.isFinite(a) || a < MIN_SUPPORTED_AGE || a > 120) return fail(`Ålder måste vara mellan ${MIN_SUPPORTED_AGE} och 120 år.`)
-    if (!(w >= 8 && w <= 400)) return fail('Ange nuvarande vikt i kg (8–400).')
-    if (!(h >= 70 && h <= 250)) return fail('Ange längd i cm (70–250).')
+    if (!code.trim()) return fail('Ange ett filnamn för klienten.')
+    if (!Number.isFinite(a) || a < MIN_SUPPORTED_AGE || a > LIMITS.maxAge) return fail(`Ålder måste vara mellan ${MIN_SUPPORTED_AGE} och ${LIMITS.maxAge} år.`)
+    if (!(w >= 8 && w <= LIMITS.maxWeightKg)) return fail(`Ange nuvarande vikt i kg (8–${LIMITS.maxWeightKg}).`)
+    if (!(h >= 70 && h <= LIMITS.maxHeightCm)) return fail(`Ange längd i cm (70–${LIMITS.maxHeightCm}).`)
     if (!(p >= 1 && p <= 2.5)) return fail('PAL måste vara mellan 1,0 och 2,5.')
     let goal = null
     if (hasGoal) {
       const t = num(target)
-      if (!(t >= 8 && t <= 400)) return fail('Ange målvikt i kg.')
+      if (!(t >= 8 && t <= LIMITS.maxWeightKg)) return fail('Ange målvikt i kg.')
       goal = { targetWeightKg: t }
     }
     if (has('Amputation') && health.amputations.length === 0) {
