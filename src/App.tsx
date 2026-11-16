@@ -323,7 +323,7 @@ export default function App() {
       <header className="top">
         <button className="brand" onClick={openKostreg} aria-label="Till kostregistreringen">
           <Logo size={34} />
-          <span>Kalipra<span className="tag">Verktyg för dietister</span></span>
+          <span>Kalipra</span>
         </button>
         <div className="patientbar" aria-label="Laddad patient">
           {activePerson ? (
