@@ -16,6 +16,7 @@ import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
 import { Workspace } from './ui/Workspace'
+import { PatientData } from './ui/PatientData'
 
 const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData, nutrition as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
@@ -26,7 +27,7 @@ const ANON_KEY = 'kalipra.anonCalc'
 const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
 /** Startinnehåll för en ny kostregistrering. */
 const startDiary = () => ({ days: 1, entries: [] })
-type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter'
+type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter' | 'patientdata'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
 const now = () => new Date().toISOString()
@@ -61,6 +62,8 @@ export default function App() {
   // Ingen patient är vald när programmet startar
   const [activeId, setActiveId] = useState<string | null>(null)
   const [pickNew, setPickNew] = useState(false)
+  /** Vyn att gå tillbaka till när Patientdata stängs */
+  const [prevView, setPrevView] = useState<View>('start')
   const [anonMode, setAnonMode] = useState(false)
   /** Patientlistan öppnad från kostregistrering utan patient: registreringen följer med till vald patient. */
   const [carryAnon, setCarryAnon] = useState(false)
@@ -308,6 +311,11 @@ export default function App() {
           ) : (
             <span className="pb-none">Ingen patient vald</span>
           )}
+          {activePerson && (
+            <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => { setPrevView(view); go('patientdata') }}>
+              Patientdata
+            </button>
+          )}
           <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={openPatientList}>
             Välj patient
           </button>
@@ -330,6 +338,20 @@ export default function App() {
       </header>
 
       {!saved && <p className="savewarn">Webbläsaren tillåter inte lokal lagring här. Exportera beräkningen till fil för att behålla den.</p>}
+
+      {view === 'patientdata' && activePerson && (() => {
+        const pc = calculation && calculation.personId === activePerson.id ? calculation : calculationsFor(state, activePerson.id)[0] ?? null
+        return (
+          <PatientData person={activePerson} calc={pc}
+            onPatchPerson={p => patchPerson(activePerson.id, p)}
+            onPatchCalc={p => pc && patchCalc(pc.id, p)}
+            onDone={() => go(prevView === 'patientdata' ? 'start' : prevView)} />
+        )
+      })()}
+
+      {view === 'patientdata' && !activePerson && (
+        <main className="main narrow"><p className="empty">Ingen patient vald.</p></main>
+      )}
 
       {view === 'patienter' && (
         <main className="main narrow">

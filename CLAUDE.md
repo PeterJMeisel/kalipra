@@ -36,10 +36,9 @@ byggs bort från webben. Lägg aldrig in ett hjälpmedel utan den flaggan.
 **Innan webbplatsen publiceras:** gå igenom listan nedan, bygg `npm run build:site` och kontrollera att
 inget av hjälpmedlen finns i `dist/` (t.ex. `grep -r "kycklingfilé" dist/` ska inte ge träff).
 
-### Aktuellt läge: publikationsläge
+### Aktuellt läge: arbetsläge (sedan 2026-11-16, märke `arbete-start-2026-11-16`)
 
-Inga tillfälliga hjälpmedel är aktiva (testkost och start på dagdiagrammet togs bort 2026-11-16).
-Peter säger till när vi går över till arbetsläge igen. Då läggs hjälpmedel in bakom `ARBETSLAGE` och listas här.
+Inga tillfälliga hjälpmedel är aktiva än.
 
 ### Arbetsläge – aktiva hjälpmedel
 
