@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { fiberReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
+import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
@@ -475,17 +475,18 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           // Vätska: vatten i all registrerad mat och dryck (g ≈ ml)
           const ml = v('WATER')
           const mlkg = ml / weightKg
-          const ref = 30 * sh
-          if (isMeal) return <ShareBox label="Vätska" value={ml} unit="ml" dayRef={30 * weightKg} refText={`riktvärde (${formatNumber(30 * weightKg, 0)} ml)`} />
+          const fl = fluidReference(person.age, person.sex, weightKg)
+          if (isMeal) return <ShareBox label="Vätska" value={ml} unit="ml" dayRef={fl.ml} refText={`riktvärde (${formatNumber(fl.ml, 0)} ml)`} />
+          const okF = ml >= fl.ml
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Vätska</span>
               <span className="val">{formatNumber(ml, 0)} <small>ml · {formatNumber(mlkg, 0)} ml/kg</small></span>
               <div className="meter" aria-hidden="true">
-                <div className={`fill ${mlkg >= ref ? '' : 'low'}`} style={{ width: `${Math.min((mlkg / ref) * 100, 150) / 1.5}%` }} />
+                <div className={`fill ${okF ? '' : 'low'}`} style={{ width: `${Math.min((ml / fl.ml) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Vatten i mat och dryck · riktvärde {formatNumber(ref, 0)} ml/kg ({formatNumber(ref * weightKg, 0)} ml)</span>
+              <span className="sub">Vatten i mat och dryck · {fl.text}</span>
             </div>
           )
         })()}

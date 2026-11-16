@@ -20,9 +20,9 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
   const [healthOpen, setHealthOpen] = useState(true)
   const weight = calc?.weightKg
   const b = weight ? bmi(weight, person.heightCm) : null
-  const num = (value: number | undefined, onSet: (n: number) => void, label: string, decimals: number, max = Infinity) => (
+  const num = (value: number | undefined, onSet: (n: number) => void, label: string, decimals: number, max = Infinity, min = 0, allowMin = false) => (
     <input inputMode="decimal" key={`${label}-${value}`} defaultValue={value !== undefined ? formatNumber(value, decimals) : ''} aria-label={label}
-      onBlur={e => { const n = Number(e.target.value.replace(',', '.').replace(/\s/g, '')); if (n > 0 && n <= max) onSet(n); else if (value !== undefined) e.target.value = formatNumber(value, decimals) }} />
+      onBlur={e => { const n = Number(e.target.value.replace(',', '.').replace(/\s/g, '')); if ((allowMin ? n >= min : n > min) && n <= max && e.target.value.trim() !== '') onSet(n); else if (value !== undefined) e.target.value = formatNumber(value, decimals) }} />
   )
   const pal = calc?.pal ?? 1.2
   const palKnown = PAL_OPTIONS.some(o => Math.abs(o.value - pal) < 0.001)
@@ -36,7 +36,7 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
             <input defaultValue={person.code} key={`code-${person.code}`} aria-label="Filnamn"
               onBlur={e => { const v = e.target.value.trim(); if (v) onPatchPerson({ code: v }); else e.target.value = person.code }} />
           </label>
-          <label>Ålder (år){num(person.age, n => onPatchPerson({ age: Math.round(n) }), 'Ålder i år', 0, LIMITS.maxAge)}</label>
+          <label>Ålder (år){num(person.age, n => onPatchPerson({ age: Math.round(n) }), 'Ålder i år', 0, LIMITS.maxAge, 0, true)}</label>
           <label>Kön
             <select value={person.sex} onChange={e => onPatchPerson({ sex: e.target.value as Person['sex'] })}>
               <option value="kvinna">Kvinna</option>

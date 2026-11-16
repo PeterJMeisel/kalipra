@@ -283,3 +283,21 @@ export function fiberReference(age: number, sex: Sex, teeMJ: number): { minG: nu
   const lo = Math.round(2 * teeMJ), hi = Math.round(3 * teeMJ)
   return { minG: lo, maxG: hi, text: `${lo}–${hi} g/dag (2–3 g/MJ)` }
 }
+
+/**
+ * Riktvärde för vätska (vatten i all mat och dryck), ml/dag.
+ * Barn under 18 år: EFSA:s tillräckliga intag (AI) av totalt vatten (EFSA 2010, doi:10.2903/j.efsa.2010.1459):
+ * 6–12 mån 800–1000 ml, 1–2 år 1100–1200 ml, 2–3 år 1300 ml, 4–8 år 1600 ml,
+ * 9–13 år pojkar 2100 / flickor 1900 ml, från 14 år som vuxna (män 2500 / kvinnor 2000 ml).
+ * Vuxna: 30 ml/kg (kliniskt riktvärde som används i Kalipra).
+ */
+export function fluidReference(age: number, sex: Sex, weightKg: number): { ml: number; text: string } {
+  if (age >= 18) return { ml: 30 * weightKg, text: `riktvärde 30 ml/kg (${Math.round(30 * weightKg).toLocaleString('sv-SE')} ml)` }
+  const efsa = (ml: number, range?: string) => ({ ml, text: `riktvärde ${range ?? ml.toLocaleString('sv-SE')} ml/dag (EFSA)` })
+  if (age < 1) return efsa(800, '800–1 000')
+  if (age < 2) return efsa(1100, '1 100–1 200')
+  if (age < 4) return efsa(1300)
+  if (age < 9) return efsa(1600)
+  if (age < 14) return efsa(sex === 'man' ? 2100 : 1900)
+  return efsa(sex === 'man' ? 2500 : 2000)
+}
