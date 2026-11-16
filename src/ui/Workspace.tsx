@@ -2,9 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
 import { macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
-import { energyNeed, normalizeFormula, bmi, withExtraEnergy, type EnergyNeed } from '../core/energy'
-import { emptyHealth, mealName, sortMeals, type Calculation, type DiaryEntry, type Health, type Meal, type Person } from '../core/types'
-import { HealthSection } from './HealthSection'
+import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
+import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
 import { SourceTag } from './DiaryEditor'
 
@@ -23,10 +22,9 @@ type Props = {
 
 
 /** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
-export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPickPatient }: Props) {
+export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
-  const [rightTab, setRightTab] = useState<'livsmedel' | 'patient'>('livsmedel')
   const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
   const [scope, setScope] = useState<'dag' | 'maltid' | 'dagar'>('dag')
 
@@ -218,21 +216,8 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
       </section>
 
       <section className="ws-right panelbox" aria-label="Livsmedelssök och patientuppgifter">
-        <nav className="ws-tabs" role="tablist">
-          <button role="tab" aria-selected={rightTab === 'livsmedel'} className={rightTab === 'livsmedel' ? 'on' : ''} onClick={() => setRightTab('livsmedel')}>Livsmedelssök</button>
-          <button role="tab" aria-selected={rightTab === 'patient'} className={rightTab === 'patient' ? 'on' : ''} onClick={() => setRightTab('patient')}>Patient</button>
-        </nav>
-        {rightTab === 'livsmedel'
-          ? <FoodPicker db={db} meal={meal} onAdd={addEntry} />
-          : person
-            ? <PatientPanel person={person} calc={calc} onPatchPerson={onPatchPerson} onPatchCalc={onPatchCalc} />
-            : (
-              <div className="ws-nopatient">
-                <p><strong>Ingen patient vald.</strong></p>
-                <p className="muted">Intaget visas utan behov och rekommendationer. Välj en patient för att jämföra med behov, protein per kg och RDI.</p>
-                {onPickPatient && <button className="primary" onClick={onPickPatient}>Välj patient</button>}
-              </div>
-            )}
+        <h3 className="ws-rtitle">Livsmedelssök</h3>
+        <FoodPicker db={db} meal={meal} onAdd={addEntry} />
       </section>
 
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
@@ -361,39 +346,6 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
         </label>
         <button type="button" className="primary" disabled={!picked} onClick={add}>Lägg till {meal.toLowerCase()}</button>
       </div>
-    </div>
-  )
-}
-
-/* ---------- Höger: patient ---------- */
-
-function PatientPanel({ person, calc, onPatchPerson, onPatchCalc }: {
-  person: Person; calc: Calculation
-  onPatchPerson: (p: Partial<Person>) => void; onPatchCalc: (p: Partial<Calculation>) => void
-}) {
-  const [healthOpen, setHealthOpen] = useState(true)
-  const b = bmi(calc.weightKg, person.heightCm)
-  const numInput = (value: number, onSet: (n: number) => void, label: string, step = '0,1') => (
-    <input inputMode="decimal" defaultValue={formatNumber(value, step === '1' ? 0 : 1)} aria-label={label}
-      key={value} onBlur={e => { const n = Number(e.target.value.replace(',', '.')); if (n > 0) onSet(n) }} />
-  )
-  return (
-    <div className="ws-patient">
-      <div className="ws-pgrid">
-        <label>Vikt (kg){numInput(calc.weightKg, n => onPatchCalc({ weightKg: n }), 'Vikt i kg')}</label>
-        <label>Längd (cm){numInput(person.heightCm, n => onPatchPerson({ heightCm: n }), 'Längd i cm', '1')}</label>
-        <label>BMI<output>{formatNumber(b, 1)}</output></label>
-        <label>Ålder{numInput(person.age, n => onPatchPerson({ age: Math.round(n) }), 'Ålder i år', '1')}</label>
-        <label>Kön
-          <select value={person.sex} onChange={e => onPatchPerson({ sex: e.target.value as Person['sex'] })}>
-            <option value="kvinna">Kvinna</option>
-            <option value="man">Man</option>
-          </select>
-        </label>
-        <label>PAL{numInput(calc.pal, n => onPatchCalc({ pal: n }), 'PAL')}</label>
-      </div>
-      <HealthSection health={person.health ?? emptyHealth()} onChange={(h: Health) => onPatchPerson({ health: h })}
-        open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
     </div>
   )
 }

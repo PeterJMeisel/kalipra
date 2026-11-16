@@ -559,27 +559,8 @@ export default function App() {
 
       {view === 'oversikt' && !anonMode && calculation && calcPerson && (
         <main className="main wsmain">
-          <section className="clienthead ws-head">
-            <div className="chtop">
-              <div>
-                <h1>{calcPerson.code}</h1>
-                <p className="facts">
-                  {calcPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {calcPerson.age} år · {formatNumber(calculation.weightKg, 1)} kg · {formatNumber(calcPerson.heightCm, 0)} cm · BMI {formatNumber(bmi(calculation.weightKg, calcPerson.heightCm), 1)} · PAL {formatNumber(calculation.pal, 2)}
-                </p>
-              </div>
-              <div className="actions">
-                {personCalcs.length > 1 && (
-                  <select aria-label="Beräkning" value={calculation.id} onChange={e => setCalcId(e.target.value)}>
-                    {personCalcs.map((c, i) => <option key={c.id} value={c.id}>{dayText(c.createdAt)}{i === 0 ? ' (senaste)' : ''}</option>)}
-                  </select>
-                )}
-                <button className="small" onClick={() => open(calculation.id, 'resultat')}>Fullständigt resultat →</button>
-                <button className="small" onClick={() => { setAssessPersonId(calcPerson.id); go('undernaring') }}>Bedöm undernäring</button>
-                <button className="small" onClick={openPatientList}>Byt patient</button>
-              </div>
-            </div>
-            {message && <p className="msg">{message}</p>}
-          </section>
+          <h1 className="ws-title">Kostregistrering</h1>
+          {message && <p className="msg">{message}</p>}
           <Workspace
             key={calculation.id}
             db={db}
