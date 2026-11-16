@@ -2,11 +2,31 @@ import type { NutrientKey, NutrientTotals } from './nutrients'
 import type { DiaryEntry, Meal } from './types'
 
 /** Livsmedelsdatabaser som kan sökas i. */
-export type SourceId = 'lmv' | 'fineli' | 'usda'
+export type SourceId = 'lmv' | 'fineli' | 'usda' | 'nutrition'
 export const SOURCES: Record<SourceId, { label: string; short: string; credit: string }> = {
   lmv: { label: 'Livsmedelsverket', short: 'LMV', credit: 'Livsmedelsverkets livsmedelsdatabas (CC BY 4.0)' },
   fineli: { label: 'Fineli', short: 'Fineli', credit: 'Fineli, THL – Institutet för hälsa och välfärd, Finland, release 20 (CC BY 4.0)' },
   usda: { label: 'USDA', short: 'USDA', credit: 'USDA FoodData Central, SR Legacy april 2018 (public domain, CC0)' },
+  nutrition: { label: 'Nutritionsprodukter', short: 'Nutr', credit: 'Tillverkarnas produktblad för sondnäring och kosttillägg (Fresenius Kabi, Nestlé Health Science)' },
+}
+
+/** Källor som är ibockade från början. USDA får man välja själv. */
+export const DEFAULT_SOURCES: SourceId[] = ['lmv', 'fineli', 'nutrition']
+const SOURCE_KEY = 'kalipra.sources.v2'
+
+export function loadSources(available: SourceId[]): SourceId[] {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SOURCE_KEY) ?? 'null')
+    if (Array.isArray(saved)) {
+      const ok = saved.filter((x): x is SourceId => available.includes(x))
+      if (ok.length) return ok
+    }
+  } catch { /* ignorera */ }
+  const def = available.filter(x => DEFAULT_SOURCES.includes(x))
+  return def.length ? def : available
+}
+export function saveSources(list: SourceId[]) {
+  try { localStorage.setItem(SOURCE_KEY, JSON.stringify(list)) } catch { /* ignorera */ }
 }
 
 export type FoodData = {
@@ -18,6 +38,8 @@ export type FoodData = {
   units: Record<string, string>
   /** [nummer, namn, analyserat (1/0), värden per 100 g i samma ordning som keys] */
   foods: [number, string, number, (number | null)[]][]
+  /** Nutritionsprodukter: per produkt (samma ordning som foods) om värdena gäller 100 ml eller 100 g. */
+  products?: { basis: 'ml' | 'g'; manufacturer?: string; category?: string | null }[]
 }
 
 export type Food = {
@@ -25,8 +47,11 @@ export type Food = {
   number: number
   name: string
   analysed: boolean
-  /** Värden per 100 g ätlig del. Saknade värden är undefined. */
+  /** Värden per 100 g ätlig del (per 100 ml när unit är 'ml'). Saknade värden är undefined. */
   per100g: NutrientTotals
+  /** Enhet för mängden. 'ml' för flytande nutritionsprodukter, annars gram. */
+  unit: 'g' | 'ml'
+  manufacturer?: string
 }
 
 export type SourceInfo = { id: SourceId; fetched: string; count: number }
@@ -40,17 +65,18 @@ export class FoodDatabase {
   constructor(data: FoodData | FoodData[]) {
     for (const d of Array.isArray(data) ? data : [data]) {
       const source: SourceId = d.id ?? 'lmv'
-      for (const [number, name, analysed, values] of d.foods) {
+      d.foods.forEach(([number, name, analysed, values], idx) => {
+        const prod = d.products?.[idx]
         const per100g: NutrientTotals = {}
         d.keys.forEach((k, i) => {
           const v = values[i]
           if (v != null) per100g[k] = v
         })
-        const food: Food = { source, number, name, analysed: analysed === 1, per100g }
+        const food: Food = { source, number, name, analysed: analysed === 1, per100g, unit: prod?.basis === 'ml' ? 'ml' : 'g', ...(prod?.manufacturer ? { manufacturer: prod.manufacturer } : {}) }
         this.foods.push(food)
         this.byKey.set(`${source}:${number}`, food)
-        this.searchKeys.push(normalize(name))
-      }
+        this.searchKeys.push(normalize([name, prod?.manufacturer, prod?.category].filter(Boolean).join(' ')))
+      })
       this.sources.push({ id: source, fetched: d.fetched, count: d.foods.length })
     }
   }

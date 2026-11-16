@@ -129,3 +129,16 @@ describe('Fineli', () => {
     expect(f.NACL).toBeCloseTo((f.NA! * 2.5) / 1000, 1)
   })
 })
+
+import nutrition from '../data/nutrition.json'
+import { FoodDatabase as DB2, type FoodData as FD2 } from './foods'
+describe('nutritionsprodukter', () => {
+  const ndb = new DB2([nutrition as unknown as FD2])
+  it('hittas på namn och tillverkare och har rätt enhet', () => {
+    const hit = ndb.search('fresubin 2 kcal drink', 5)[0]
+    expect(hit.source).toBe('nutrition')
+    expect(hit.unit).toBe('ml')
+    expect(ndb.search('nestlé resource', 50).length).toBeGreaterThan(5)
+    expect(ndb.search('althéra', 5)[0].unit).toBe('g')
+  })
+})

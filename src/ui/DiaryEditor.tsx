@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { SOURCES, type Food, type FoodDatabase, type SourceId } from '../core/foods'
+import { loadSources, saveSources, SOURCES, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { formatNumber } from '../core/nutrients'
 import { MEALS, type Diary, type DiaryEntry, type Meal } from '../core/types'
 import { newId } from '../core/storage'
@@ -10,18 +10,7 @@ type Props = {
   onChange: (d: Diary) => void
 }
 
-const SOURCE_KEY = 'kalipra.sources'
 
-function loadSources(available: SourceId[]): SourceId[] {
-  try {
-    const saved = JSON.parse(localStorage.getItem(SOURCE_KEY) ?? 'null')
-    if (Array.isArray(saved)) {
-      const ok = saved.filter((s): s is SourceId => available.includes(s))
-      if (ok.length) return ok
-    }
-  } catch { /* ignorera */ }
-  return available
-}
 
 export function SourceTag({ source }: { source: SourceId }) {
   return <span className={`srctag src-${source}`} title={SOURCES[source].credit}>{SOURCES[source].short}</span>
@@ -47,7 +36,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
     if (next.length === 0) return
     setSources(next)
     setActive(0)
-    try { localStorage.setItem(SOURCE_KEY, JSON.stringify(next)) } catch { /* ignorera */ }
+    saveSources(next)
   }
   const currentDay = Math.min(day, diary.days)
   const dayEntries = diary.entries.filter(e => e.day === currentDay)
@@ -148,7 +137,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
                 <li key={`${f.source}:${f.number}`} role="option" aria-selected={i === active}>
                   <button type="button" className={i === active ? 'on' : ''} onMouseDown={e => e.preventDefault()} onClick={() => pick(f)}>
                     <span>{multi && <SourceTag source={f.source} />}{f.name}</span>
-                    <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 g</small>
+                    <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 {f.unit}</small>
                   </button>
                 </li>
               ))}
@@ -157,7 +146,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
           {query.trim().length > 1 && !picked && hits.length === 0 && <small className="muted">Inga träffar.</small>}
         </div>
         <label className="field grams">
-          <span>Mängd (g)</span>
+          <span>Mängd ({picked?.unit ?? 'g'})</span>
           <input ref={gramsRef} id="food-grams" inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)} />
         </label>
         <button type="submit" className="primary" disabled={!picked}>Lägg till</button>
@@ -179,7 +168,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
                       <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
                         <input
-                          aria-label={`Mängd i gram för ${f?.name}`}
+                          aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`}
                           inputMode="decimal"
                           defaultValue={String(e.grams).replace('.', ',')}
                           onBlur={ev => {
@@ -187,7 +176,7 @@ export function DiaryEditor({ db, diary, onChange }: Props) {
                             if (g > 0) update(e.id, { grams: g })
                             else ev.target.value = String(e.grams).replace('.', ',')
                           }}
-                        /> g
+                        /> {f?.unit ?? 'g'}
                       </td>
                       <td className="num kcal">{formatNumber(kcal, 0)} kcal</td>
                       <td className="del">

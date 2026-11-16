@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
+import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
 import { macroReferences, microReferences, type Range } from '../core/references'
 import { energyNeed, normalizeFormula, bmi } from '../core/energy'
@@ -8,7 +8,6 @@ import { newId } from '../core/storage'
 import { HealthSection } from './HealthSection'
 import { SourceTag } from './DiaryEditor'
 
-const SOURCE_KEY = 'kalipra.sources'
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
@@ -20,16 +19,6 @@ type Props = {
   onPatchCalc: (patch: Partial<Calculation>) => void
 }
 
-function loadSources(available: SourceId[]): SourceId[] {
-  try {
-    const saved = JSON.parse(localStorage.getItem(SOURCE_KEY) ?? 'null')
-    if (Array.isArray(saved)) {
-      const ok = saved.filter((s): s is SourceId => available.includes(s))
-      if (ok.length) return ok
-    }
-  } catch { /* ignorera */ }
-  return available
-}
 
 /** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
 export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Props) {
@@ -108,7 +97,7 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Prop
             <p className="empty">Inget registrerat för {meal.toLowerCase()}, dag {currentDay}. Lägg till livsmedel från listan till höger.</p>
           ) : (
             <table className="entries ws-entries">
-              <thead><tr><th>Livsmedel</th><th className="num">Gram</th><th className="num">kcal</th><th></th></tr></thead>
+              <thead><tr><th>Livsmedel</th><th className="num">Mängd</th><th className="num">kcal</th><th></th></tr></thead>
               <tbody>
                 {mealEntries.map(e => {
                   const f = db.get(e.foodNumber, e.source)
@@ -117,12 +106,12 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Prop
                     <tr key={e.id}>
                       <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
-                        <input aria-label={`Mängd i gram för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
+                        <input aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
                           onBlur={ev => {
                             const g = Number(ev.target.value.replace(',', '.'))
                             if (g > 0) setEntries(entries.map(x => (x.id === e.id ? { ...x, grams: g } : x)))
                             else ev.target.value = String(e.grams).replace('.', ',')
-                          }} />
+                          }} /> <span className="unit">{f?.unit ?? 'g'}</span>
                       </td>
                       <td className="num kcal">{formatNumber(kcal, 0)}</td>
                       <td className="del"><button type="button" aria-label={`Ta bort ${f?.name}`} onClick={() => setEntries(entries.filter(x => x.id !== e.id))}>×</button></td>
@@ -191,7 +180,7 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
     const next = sources.includes(id) ? sources.filter(s => s !== id) : available.filter(s => s === id || sources.includes(s))
     if (next.length === 0) return
     setSources(next)
-    try { localStorage.setItem(SOURCE_KEY, JSON.stringify(next)) } catch { /* ignorera */ }
+    saveSources(next)
   }
   function add() {
     const g = Number(grams.replace(',', '.'))
@@ -220,7 +209,7 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
             <button type="button" className={picked === f ? 'on' : ''}
               onClick={() => { setPicked(f); setTimeout(() => gramsRef.current?.select(), 0) }}>
               <span>{multi && <SourceTag source={f.source} />}{f.name}</span>
-              <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal</small>
+              <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 {f.unit}</small>
             </button>
           </li>
         ))}
@@ -228,9 +217,9 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
       </ul>
       <div className="ws-addrow">
         <span className="pickedname">{picked ? picked.name : 'Välj ett livsmedel i listan'}</span>
-        <label className="inline">Gram{' '}
+        <label className="inline">{picked?.unit === 'ml' ? 'Ml' : 'Gram'}{' '}
           <input ref={gramsRef} inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') add() }} aria-label="Mängd i gram" />
+            onKeyDown={e => { if (e.key === 'Enter') add() }} aria-label="Mängd" />
         </label>
         <button type="button" className="primary" disabled={!picked} onClick={add}>Lägg till {meal.toLowerCase()}</button>
       </div>

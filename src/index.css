@@ -342,6 +342,8 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .srctag { display: inline-block; margin-right: 8px; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .02em; vertical-align: 1px; background: var(--tint); color: var(--ink) }
 .srctag.src-usda { background: #E8A33D33 }
 .srctag.src-fineli { background: #4A90D933 }
+.srctag.src-nutrition { background: #1F7A5533 }
+.ws-entries .unit { font-size: 13px; color: var(--muted) }
 
 /* Längd, vikt och BMI: det beräknade fältet */
 .weightadd .autocalc input { background: var(--tint); border-style: dashed }
