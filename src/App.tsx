@@ -347,7 +347,7 @@ export default function App() {
           <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
             Klientdata
           </button>
-          <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
+          <button type="button" className={`pb-btn pb-data ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
             Välj klient
           </button>
         </div>
