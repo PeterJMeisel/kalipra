@@ -3,9 +3,9 @@ import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type Food
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
 import { macroReferences, microReferences, type Range } from '../core/references'
 import { energyNeed, normalizeFormula, bmi } from '../core/energy'
-import { emptyHealth, MEALS, type Calculation, type DiaryEntry, type Health, type Meal, type Person } from '../core/types'
-import { newId } from '../core/storage'
+import { emptyHealth, mealName, sortMeals, type Calculation, type DiaryEntry, type Health, type Meal, type Person } from '../core/types'
 import { HealthSection } from './HealthSection'
+import { newId } from '../core/storage'
 import { SourceTag } from './DiaryEditor'
 
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
@@ -25,13 +25,17 @@ type Props = {
 /** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
 export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPickPatient }: Props) {
   const [day, setDay] = useState(1)
-  const [meal, setMeal] = useState<Meal>('Frukost')
+  const [mealSel, setMeal] = useState<Meal>(mealName(1))
   const [rightTab, setRightTab] = useState<'livsmedel' | 'patient'>('livsmedel')
   const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
   const [scope, setScope] = useState<'dag' | 'maltid'>('dag')
 
   const currentDay = Math.min(day, calc.days)
   const entries = calc.entries
+  // Måltid 1 … n, plus eventuella äldre namngivna måltider i sparade beräkningar
+  const numbered = Array.from({ length: Math.max(1, calc.meals ?? 1) }, (_, i) => mealName(i + 1))
+  const meals = sortMeals([...numbered, ...entries.map(e => e.meal)])
+  const meal = meals.includes(mealSel) ? mealSel : meals[0]
   const mealEntries = entries.filter(e => e.day === currentDay && e.meal === meal)
   const dayEntries = entries.filter(e => e.day === currentDay)
 
@@ -41,10 +45,34 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
   function addEntry(food: Food, grams: number) {
     setEntries([...entries, { id: newId(), day: currentDay, meal, foodNumber: food.number, ...(food.source !== 'lmv' ? { source: food.source } : {}), grams }])
   }
-  function setDays(n: number) {
-    const days = Math.max(1, Math.min(14, n))
-    onPatchCalc({ days, entries: entries.filter(e => e.day <= days) })
-    if (day > days) setDay(days)
+  function addMeal() {
+    const n = Math.max(numbered.length, ...meals.map(m => Number(/^Måltid (\d+)$/.exec(m)?.[1] ?? 0))) + 1
+    onPatchCalc({ meals: n })
+    setMeal(mealName(n))
+  }
+  function removeMeal(m: Meal) {
+    const count = entries.filter(e => e.meal === m).length
+    if (count && !confirm(`Ta bort ${m.toLowerCase()} och ${count} registrerade livsmedel i den, alla dagar?`)) return
+    // Numrerade måltider efter den borttagna flyttas ner ett steg
+    const k = Number(/^Måltid (\d+)$/.exec(m)?.[1] ?? 0)
+    const next = entries.filter(e => e.meal !== m).map(e => {
+      const j = Number(/^Måltid (\d+)$/.exec(e.meal)?.[1] ?? 0)
+      return k && j > k ? { ...e, meal: mealName(j - 1) } : e
+    })
+    onPatchCalc({ entries: next, meals: k ? Math.max(1, numbered.length - 1) : calc.meals })
+    setMeal(meals[Math.max(0, meals.indexOf(m) - 1)] === m ? meals[0] : meals[Math.max(0, meals.indexOf(m) - 1)])
+  }
+  function addDay() {
+    if (calc.days >= 14) return
+    onPatchCalc({ days: calc.days + 1 })
+    setDay(calc.days + 1)
+  }
+  function removeDay() {
+    const d = calc.days
+    const count = entries.filter(e => e.day === d).length
+    if (count && !confirm(`Ta bort dag ${d} och ${count} registrerade livsmedel?`)) return
+    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d) })
+    if (day >= d) setDay(d - 1)
   }
 
   const weightKg = calc.weightKg
@@ -53,27 +81,38 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
     [person, weightKg, calc.pal, calc.bmrFormula],
   )
   const summary = useMemo(() => summarizeDiary(db, entries, calc.days, SUMMARY_KEYS), [db, entries, calc.days])
-  const mealShare: Partial<Record<Meal, number>> = { Frukost: 0.25, 'Mellanmål fm': 0.05, Lunch: 0.3, 'Mellanmål em': 0.1, Middag: 0.25, Kvällsmål: 0.05 }
 
   /** Intag och behov för vald omfattning (dag eller vald måltid). */
   const scoped = useMemo(() => {
     if (scope === 'dag') return { totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
-    const share = mealShare[meal] ?? 0.05
+    const share = 1 / meals.length
     return {
       totals: summary.perMeal[meal] ?? {},
       needKcal: (need?.teeKcal ?? 0) * share,
       needMJ: (need?.teeMJ ?? 0) * share,
-      label: `${meal.toLowerCase()} (${formatNumber(share * 100, 0)} % av dagsbehovet)`,
+      label: `${meal.toLowerCase()} (${formatNumber(share * 100, 0)} % av dagsbehovet, jämnt fördelat på ${meals.length} måltider)`,
     }
-  }, [scope, summary, need, meal])
+  }, [scope, summary, need, meal, meals.length])
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
   return (
     <div className="ws">
       <section className="ws-meals panelbox" aria-label="Registrerade livsmedel per måltid">
+        <div className="ws-daytabs" role="tablist" aria-label="Dag">
+          {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => {
+            const n = entries.filter(e => e.day === d).length
+            return (
+              <button key={d} role="tab" aria-selected={currentDay === d} className={currentDay === d ? 'on' : ''} onClick={() => setDay(d)}>
+                Dag {d}{n > 0 && <span className="count">{n}</span>}
+              </button>
+            )
+          })}
+          {calc.days < 14 && <button type="button" className="ws-add" onClick={addDay}>+ Lägg till dag</button>}
+          {calc.days > 1 && <button type="button" className="ws-remove" onClick={removeDay} title={`Ta bort dag ${calc.days}`}>Ta bort dag {calc.days}</button>}
+        </div>
         <div className="ws-mealtabs" role="tablist" aria-label="Måltid">
-          {MEALS.map(m => {
+          {meals.map(m => {
             const n = dayEntries.filter(e => e.meal === m).length
             return (
               <button key={m} role="tab" aria-selected={meal === m} className={meal === m ? 'on' : ''} onClick={() => setMeal(m)}>
@@ -81,18 +120,8 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
               </button>
             )
           })}
-          <span className="ws-days">
-            <label className="inline">Dag{' '}
-              <select value={currentDay} onChange={e => setDay(Number(e.target.value))}>
-                {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
-              </select>
-            </label>
-            <label className="inline">av{' '}
-              <select value={calc.days} onChange={e => setDays(Number(e.target.value))}>
-                {Array.from({ length: 14 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
-              </select>
-            </label>
-          </span>
+          <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
+          {meals.length > 1 && <button type="button" className="ws-remove" onClick={() => removeMeal(meal)} title={`Ta bort ${meal.toLowerCase()}`}>Ta bort {meal.toLowerCase()}</button>}
         </div>
         <div className="ws-tablewrap">
           {mealEntries.length === 0 ? (
@@ -454,7 +483,7 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
 
 function MealView({ summary }: { summary: ReturnType<typeof summarizeDiary> }) {
   const dayKcal = summary.perDay['ENERC|kcal'] ?? 0
-  const meals = MEALS.filter(m => summary.perMeal[m])
+  const meals = sortMeals(Object.keys(summary.perMeal))
   if (meals.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
   return (
     <table className="ref">

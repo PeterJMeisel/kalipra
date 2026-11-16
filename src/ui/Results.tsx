@@ -1,7 +1,7 @@
 import type { DiarySummary } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey } from '../core/nutrients'
 import { macroReferences, microReferences, type Range } from '../core/references'
-import { MEALS, type Client } from '../core/types'
+import { sortMeals, type Client } from '../core/types'
 import { kcalToKj, type EnergyNeed, type GoalPlan } from '../core/energy'
 
 type Props = {
@@ -152,7 +152,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
         <h3>Fördelning över måltider</h3>
         <table className="ref">
           <tbody>
-            {MEALS.filter(m => summary.perMeal[m]).map(m => {
+            {sortMeals(Object.keys(summary.perMeal)).map(m => {
               const mk = summary.perMeal[m]!['ENERC|kcal'] ?? 0
               return (
                 <tr key={m}>

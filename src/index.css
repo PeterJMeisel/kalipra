@@ -516,3 +516,10 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-microval { grid-template-columns: 1fr auto }
 .ws-microval .mv { font-weight: 600; text-align: right }
 @media (max-width: 900px) { .ws-intakerow { grid-template-columns: repeat(2, 1fr) } }
+.ws-daytabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px }
+.ws-daytabs button { min-height: 32px; padding: 4px 12px; font-size: 13px }
+.ws-daytabs button.on { background: var(--tint); border-color: var(--brand); font-weight: 600 }
+.ws-daytabs .count { margin-left: 6px; color: var(--muted); font-size: 12px }
+.ws-add { border-style: dashed !important; color: var(--brand); font-weight: 600 }
+.ws-remove { border: 0 !important; background: none !important; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 4px 6px !important }
+.ws-rtitle { margin: 2px 0 10px; font-size: 16px }

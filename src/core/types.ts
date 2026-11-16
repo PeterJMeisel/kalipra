@@ -58,8 +58,18 @@ export type Client = {
   updatedAt?: string
 }
 
+/** Äldre namngivna måltider (finns kvar i sparade beräkningar). Nya måltider heter "Måltid 1", "Måltid 2" … */
 export const MEALS = ['Frukost', 'Mellanmål fm', 'Lunch', 'Mellanmål em', 'Middag', 'Kvällsmål', 'Övrigt'] as const
-export type Meal = (typeof MEALS)[number]
+export type Meal = string
+export const mealName = (n: number) => `Måltid ${n}`
+const mealRank = (m: string) => {
+  const i = (MEALS as readonly string[]).indexOf(m)
+  if (i >= 0) return i
+  const n = /^Måltid (\d+)$/.exec(m)
+  return n ? 100 + Number(n[1]) : 1000
+}
+/** Sorterar måltider: äldre namngivna först i dygnsordning, sedan Måltid 1, 2, 3 … */
+export const sortMeals = (meals: Iterable<string>) => [...new Set(meals)].sort((a, b) => mealRank(a) - mealRank(b) || a.localeCompare(b, 'sv'))
 
 export type DiaryEntry = {
   id: string
@@ -97,6 +107,8 @@ export type Person = {
 
 /** En beräkning (ett tillfälle) för en person: vikt och aktivitet vid tillfället samt kostregistrering. */
 export type Calculation = {
+  /** Antal måltider i kostregistreringen (Måltid 1 … n) */
+  meals?: number
   id: string
   personId: string
   createdAt: string
