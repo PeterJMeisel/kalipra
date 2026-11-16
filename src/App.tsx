@@ -25,7 +25,7 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT',
 const ACTIVE_KEY = 'kalipra.activePatient'
 const ANON_KEY = 'kalipra.anonCalc'
 /** Referensperson när ingen patient är vald: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2. */
-const REF_WEIGHT = 60
+const REF_WEIGHT = 64.8
 const REF_PERSON: Person = { id: 'referens', code: 'Kajsa Kul', age: 45, sex: 'kvinna', heightCm: 166, createdAt: '2026-01-01T00:00:00.000Z' }
 const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
 /** Startinnehåll för en ny kostregistrering. */
