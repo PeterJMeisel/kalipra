@@ -203,7 +203,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
             aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
             title={mealEntries.length === 0 ? 'Måltiden är tom' : `Kopiera ${meal.toLowerCase()} till en annan måltid`}>
-            Kopiera {meal.toLowerCase()} …
+            Kopiera måltid …
           </button>
         </div>
       </section>
