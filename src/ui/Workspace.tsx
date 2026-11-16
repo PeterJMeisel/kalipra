@@ -204,8 +204,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
         )}
         <div className="ws-totals">
           <span>
-            {meal}: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
-            <span className="sep">·</span> Dag {currentDay}: <strong>{formatNumber(kcalOf(dayEntries), 0)} kcal</strong>
+            Måltid: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
           </span>
           <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
             aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
