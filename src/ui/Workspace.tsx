@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
 import { macroReferences, microReferences, type Range } from '../core/references'
@@ -386,6 +386,8 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
   scoped: Scoped; scope: 'dag' | 'maltid'
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
+  const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
+  useEffect(() => { try { localStorage.setItem('kalipra.microDetail', detailed ? '1' : '0') } catch { /* ignorera */ } }, [detailed])
   const kcal = v('ENERC|kcal')
   const pct = scoped.needKcal > 0 ? (kcal / scoped.needKcal) * 100 : 0
   const bmrPct = (need.bmrKcal / need.teeKcal) * 100
@@ -435,8 +437,13 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
         </div>
       </div>
 
-      <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {scope === 'dag' ? 'RDI (NNR 2023)' : 'måltidens andel av RDI'}</h4>
-      <div className="ws-micros">
+      <div className="ws-h4row">
+        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {scope === 'dag' ? 'RDI (NNR 2023)' : 'måltidens andel av RDI'}</h4>
+        <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
+          {detailed ? 'Enkel vy' : 'Detaljerad vy'}
+        </button>
+      </div>
+      <div className={`ws-micros ${detailed ? 'detailed' : ''}`}>
         {micro.map(m => {
           const d = NUTRIENTS[m.key]
           const val = v(m.key)
@@ -446,10 +453,14 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
             <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? 'högst ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
               <span className="mn">{d.label}</span>
               <div className={`bar ${st}`} aria-hidden="true">
-                <div style={{ width: `${Math.min(p, 200) / 2}%` }} />
-                <i style={{ left: '50%' }} />
+                <div style={{ width: `${Math.min(p, 100)}%` }} />
               </div>
               <span className={`mp ${st}`}>{formatNumber(p, 0)} %</span>
+              {detailed && (
+                <span className="md">
+                  {formatNumber(val, d.decimals)} {d.unit} <span className="ref">({m.kind === 'max' ? 'högst ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit})</span>
+                </span>
+              )}
             </div>
           )
         })}

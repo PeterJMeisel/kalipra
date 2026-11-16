@@ -134,8 +134,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
                   <span className="mval">{formatNumber(val, d.decimals)} {d.unit}</span>
                 </div>
                 <div className={`bar ${st}`} aria-hidden="true">
-                  <div style={{ width: `${Math.min(pct, 200) / 2}%` }} />
-                  <i style={{ left: '50%' }} />
+                  <div style={{ width: `${Math.min(pct, 100)}%` }} />
                 </div>
                 <div className="mfoot">
                   <span>{m.kind === 'max' ? 'Högst' : m.kind} {formatNumber(m.value, Number.isInteger(m.value * 10 ** d.decimals) ? d.decimals : 2)} {d.unit}</span>
