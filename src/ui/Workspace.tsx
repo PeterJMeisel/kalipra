@@ -126,7 +126,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const mealShare = 1 / Math.max(1, meals.length)
   const mealScoped = useMemo(() => ({
     totals: daySummary.perMeal[meal] ?? {}, needKcal: (need?.teeKcal ?? 0) * mealShare, needMJ: (need?.teeMJ ?? 0) * mealShare,
-    label: `${meal.toLowerCase()}, dag ${currentDay}`, share: mealShare,
+    label: `${meal.toLowerCase()}, dag ${currentDay}`, share: mealShare, dayKcal: daySummary.perDay['ENERC|kcal'] ?? 0,
     note: `${meal}, dag ${currentDay}. Jämförs med ${formatNumber(mealShare * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på ${meals.length} ${meals.length === 1 ? 'måltid' : 'måltider'}).`,
   }), [daySummary, meal, need, mealShare, currentDay, meals.length])
   const view = scope === 'dagar' ? avgScoped : bottomTab === 'maltid' ? mealScoped : scoped
@@ -353,7 +353,7 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 /* ---------- Nertill: näring mot behov ---------- */
 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
-type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string }
+type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number }
 
 function RdiView({ person, repro, weightKg, need, scoped }: {
   person: Person; repro: Repro | null; weightKg: number
@@ -389,7 +389,20 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           </div>
           <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av behovet · skillnad {kcal - scoped.needKcal >= 0 ? '+' : '−'}{formatNumber(Math.abs(kcal - scoped.needKcal), 0)} kcal</span>
         </div>
-        <div className="ws-kcalbox">
+        {scoped.dayKcal !== undefined ? (() => {
+          // Fliken Måltid: hur stor del av dagens registrerade energi måltiden står för
+          const dk = scoped.dayKcal
+          const part = dk > 0 ? (kcal / dk) * 100 : 0
+          return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Andel av dagens energi</span>
+              <span className="val">{formatNumber(part, 0)} <small>%</small></span>
+              <div className="meter" aria-hidden="true"><div className="fill" style={{ width: `${Math.min(part, 100)}%` }} /></div>
+              <span className="sub">{formatNumber(kcal, 0)} av dagens {formatNumber(dk, 0)} kcal</span>
+            </div>
+          )
+        })() : (
+          <div className="ws-kcalbox">
           <span className="lbl">Energibehov per dag{repro ? ` (${REPRO_LABEL(repro)})` : ''}</span>
           <span className="val">{formatNumber(need.teeKcal, 0)} <small>kcal</small></span>
           <div className="splitbar" aria-hidden="true">
@@ -399,9 +412,10 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
             {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
         </div>
+        )}
         <div className="ws-kcalbox">
           <span className="lbl">Protein</span>
-          {proteinPerKg !== null ? (
+          {sh === 1 ? (
             <>
               <span className="val">{formatNumber(proteinPerKg, 2)} <small>{sh < 1 ? 'g/kg' : 'g/kg och dag'}</small></span>
               <div className="meter" aria-hidden="true">
@@ -412,8 +426,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
             </>
           ) : (
             <>
-              <span className="val">{formatNumber(v('PROT'), 1)} <small>g denna måltid</small></span>
-              <span className="sub">g/kg beräknas per dag – växla till Dag.</span>
+              <span className="val">{formatNumber(v('PROT'), 1)} <small>g</small></span>
             </>
           )}
         </div>
