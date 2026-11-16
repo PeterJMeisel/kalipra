@@ -87,9 +87,9 @@ const AR_BY_SEX: Record<Sex, Record<OlderGroup, ArRow>> = {
 
 export type Repro = { kind: 'gravid'; trimester: 1 | 2 | 3 } | { kind: 'ammande'; period: '0-6' | '6+' }
 
-/** Graviditet/amning utifrån hälsotillstånden. Gäller bara kvinnor. */
-export function reproFrom(health: Health | undefined, sex: Sex): Repro | null {
-  if (sex !== 'kvinna' || !health) return null
+/** Graviditet/amning utifrån hälsotillstånden, oavsett registrerat kön. */
+export function reproFrom(health: Health | undefined, _sex?: Sex): Repro | null {
+  if (!health) return null
   if (health.conditions.includes('Gravid')) return { kind: 'gravid', trimester: health.trimester ?? 1 }
   if (health.conditions.includes('Ammande')) return { kind: 'ammande', period: health.lactationPeriod ?? '0-6' }
   return null

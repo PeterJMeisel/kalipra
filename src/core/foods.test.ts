@@ -191,11 +191,11 @@ describe('graviditet och amning', () => {
     expect(mi.find(x => x.key === 'FOL')!.kind).toBe('AI')
     expect(mi.find(x => x.key === 'ID')!.value).toBe(200)
   })
-  it('ammande 0–6 mån: +2 MJ och +19 g protein; män ignoreras', () => {
+  it('ammande 0–6 mån: +2 MJ och +19 g protein; gäller oavsett kön', () => {
     const r = reproFrom(h(['Ammande'], { lactationPeriod: '0-6' }), 'kvinna')!
     expect(reproEnergyMJ(r)).toBe(2)
     expect(macroReferences(30, 'kvinna', r, 60).proteinAddG).toBe(19)
     expect(mr(30, 'kvinna', 9, r).find(x => x.key === 'VITA')!.value).toBe(1400)
-    expect(reproFrom(h(['Gravid']), 'man')).toBeNull()
+    expect(reproFrom(h(['Gravid']), 'man')).toEqual({ kind: 'gravid', trimester: 1 })
   })
 })
