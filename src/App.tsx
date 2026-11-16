@@ -419,8 +419,6 @@ export default function App() {
                   <button className="small" onClick={() => setExportSel(null)}>Avbryt</button>
                 </div>
               )}
-              {carryAnon && <p className="msg">Kostregistreringen du har gjort ({plural(anon.entries.length, 'livsmedel', 'livsmedel')}) kopplas till den patient du väljer eller skapar.{' '}
-                <button type="button" className="small" onClick={() => setCarryAnon(false)}>Koppla inte</button></p>}
               {message && <p className="msg">{message}</p>}
               <h2 className="sub">Mina patienter <span className="muted">· senast öppnad först</span></h2>
               {sortedPersons.length === 0
