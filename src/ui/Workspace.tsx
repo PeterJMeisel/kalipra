@@ -494,6 +494,13 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           const fr = fiberReference(person.age, person.sex, need.teeMJ)
           const refG = fr.minG * sh
           const ok = g >= refG
+          if (fr.minG === 0) return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Fiber</span>
+              <span className="val">{formatNumber(g, 1)} <small>g</small></span>
+              <span className="sub">Rekommendation: {fr.text}</span>
+            </div>
+          )
           if (isMeal) return <ShareBox label="Fiber" value={g} unit="g" dayRef={fr.minG} refText={`rekommendation (${fr.text})`} />
           return (
             <div className="ws-kcalbox">
@@ -844,7 +851,9 @@ const rangeText = (r: Range): string => {
   const f = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 1)
   if (r.min !== undefined && r.max !== undefined) return `${f(r.min)}–${f(r.max)} E%`
   if (r.min !== undefined) return `minst ${f(r.min)} E%`
-  return `högst ${f(r.max!)} E%`
+  if (r.max === undefined) return 'ingen rekommendation'
+  if (r.max === 0) return 'bör undvikas'
+  return `högst ${f(r.max)} E%`
 }
 
 /** Cirkeldiagram (ring) över energifördelningen mellan makronutrienterna. Fast färgordning. */

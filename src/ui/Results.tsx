@@ -24,7 +24,9 @@ function rangeText(r: Range, unit = ''): string {
   const f = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 1)
   if (r.min !== undefined && r.max !== undefined) return `${f(r.min)}–${f(r.max)}${unit}`
   if (r.min !== undefined) return `minst ${f(r.min)}${unit}`
-  return `högst ${f(r.max!)}${unit}`
+  if (r.max === undefined) return 'ingen rekommendation'
+  if (r.max === 0) return 'bör undvikas'
+  return `högst ${f(r.max)}${unit}`
 }
 
 export function Results({ client, summary, need, plan, hasEntries }: Props) {

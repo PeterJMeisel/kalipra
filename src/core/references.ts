@@ -4,13 +4,15 @@ import type { Health, Sex } from './types'
 /**
  * Referensvärden enligt NNR 2023 (rev. 003), så som de återges i Livsmedelsverkets
  * "Referensvärden för energi och näringsämnen" och Helsedirektoratets sammanfattning.
- * Gäller friska personer från 2 år. Graviditet och amning ingår inte ännu.
+ * Gäller friska personer. Ålder 0 år använder värdena för 7–11 månader och ålder 1 år värdena för 1–3 år
+ * (NNR:s grupp 12–23 månader ingår där). Helammade spädbarn 0–6 mån har egna värden som inte används.
  * Kontrollerat mot Livsmedelsverkets slutleverans (2025), tabell 5 och 7–15.
  */
 
-export type AgeGroup = '2-3' | '4-6' | '7-10' | '11-14' | '15-17' | '18-24' | '25-50' | '51-70' | '71+'
+export type AgeGroup = '7-11m' | '2-3' | '4-6' | '7-10' | '11-14' | '15-17' | '18-24' | '25-50' | '51-70' | '71+'
 
 export function ageGroup(age: number): AgeGroup {
+  if (age < 1) return '7-11m'
   if (age < 4) return '2-3'
   if (age < 7) return '4-6'
   if (age < 11) return '7-10'
@@ -23,18 +25,20 @@ export function ageGroup(age: number): AgeGroup {
 }
 
 export const AGE_GROUP_LABEL: Record<AgeGroup, string> = {
-  '2-3': '1–3 år', '4-6': '4–6 år', '7-10': '7–10 år', '11-14': '11–14 år', '15-17': '15–17 år',
+  '7-11m': '7–11 månader', '2-3': '1–3 år', '4-6': '4–6 år', '7-10': '7–10 år', '11-14': '11–14 år', '15-17': '15–17 år',
   '18-24': '18–24 år', '25-50': '25–50 år', '51-70': '51–70 år', '71+': 'över 70 år',
 }
 
 // Kolumnordning: A, D, Riboflavin, B6, Folat, C, E(AI), B12(AI), Ca, Fe, Zn, P(AI), K(AI), Mg(AI), I(AI), Se(AI), salt max (g)
 type Row = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number]
-const CHILD: Record<'2-3' | '4-6' | '7-10', Row> = {
+const CHILD: Record<'7-11m' | '2-3' | '4-6' | '7-10', Row> = {
+  // 7–11 månader: tabell 7–11 (jod AI 80–90 µg, lägsta värdet används)
+  '7-11m': [250, 10, 0.45, 0.45, 90, 30, 5, 1.5, 310, 10, 3.0, 170, 700, 80, 80, 20, 0.925],
   '2-3': [300, 10, 0.6, 0.6, 120, 25, 7, 1.5, 450, 7, 4.5, 250, 850, 170, 100, 20, 2.75],
   '4-6': [350, 10, 0.7, 0.7, 140, 35, 8, 1.7, 800, 7, 5.8, 440, 1150, 230, 100, 25, 3.5],
   '7-10': [450, 10, 1.0, 1.0, 200, 55, 9, 2.5, 800, 9, 7.7, 440, 1800, 230, 100, 40, 4.25],
 }
-type OlderGroup = Exclude<AgeGroup, '2-3' | '4-6' | '7-10'>
+type OlderGroup = Exclude<AgeGroup, '7-11m' | '2-3' | '4-6' | '7-10'>
 const BY_SEX: Record<Sex, Record<OlderGroup, Row>> = {
   kvinna: {
     '11-14': [650, 10, 1.4, 1.3, 280, 75, 10, 3.5, 1150, 13, 10.8, 640, 2400, 250, 120, 60, 5.0],
@@ -59,7 +63,9 @@ const BY_SEX: Record<Sex, Record<OlderGroup, Row>> = {
  * E, B12, P, K, Mg, jod och selen är provisoriska AR (0,8 × AI).
  */
 type ArRow = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number]
-const AR_CHILD: Record<'2-3' | '4-6' | '7-10', ArRow> = {
+const AR_CHILD: Record<'7-11m' | '2-3' | '4-6' | '7-10', ArRow> = {
+  // 7–11 månader: tabell 12–15 (jod 64–72 µg, lägsta värdet används)
+  '7-11m': [200, 7.5, 0.34, 0.34, 70, 25, 4, 1.1, 250, 8, 2.5, 140, 600, 64, 64, 15],
   '2-3': [240, 7.5, 0.5, 0.5, 90, 20, 6, 1.2, 400, 6, 3.8, 200, 700, 136, 80, 15],
   '4-6': [270, 7.5, 0.6, 0.6, 110, 30, 7, 1.4, 700, 5, 4.8, 350, 900, 184, 80, 20],
   '7-10': [340, 7.5, 0.8, 0.9, 160, 45, 7, 2.0, 675, 7, 6.4, 350, 1450, 184, 80, 35],
@@ -149,7 +155,7 @@ export type MicroReference = {
  */
 export function microReferences(age: number, sex: Sex, energyMJ: number, repro: Repro | null = null): MicroReference[] {
   const g = ageGroup(age)
-  const child = g === '2-3' || g === '4-6' || g === '7-10'
+  const child = g === '7-11m' || g === '2-3' || g === '4-6' || g === '7-10'
   const r: Row = repro ? REPRO_RI[repro.kind] : child ? CHILD[g] : BY_SEX[sex][g]
   const a: ArRow = repro ? REPRO_AR[repro.kind] : child ? AR_CHILD[g] : AR_BY_SEX[sex][g]
   const vitD = !repro && age >= 75 ? 20 : r[1]
@@ -225,6 +231,7 @@ export type MacroReference = {
 }
 
 const PROTEIN_RI_G_PER_KG: Record<AgeGroup, Record<Sex, number>> = {
+  '7-11m': { kvinna: 1.23, man: 1.23 },
   '2-3': { kvinna: 1.05, man: 1.05 },
   '4-6': { kvinna: 0.86, man: 0.86 },
   '7-10': { kvinna: 0.91, man: 0.91 },
@@ -242,15 +249,17 @@ const PROTEIN_RI_G_PER_KG: Record<AgeGroup, Record<Sex, number>> = {
 export function macroReferences(age: number, sex: Sex, repro: Repro | null = null, weightKg?: number): MacroReference {
   const base = PROTEIN_RI_G_PER_KG[ageGroup(age)][sex]
   const add = reproProteinAddG(repro).ri
+  // Barn 6–23 månader: NNR 2023 tabell 6 (fritt socker bör undvikas)
+  const infant = age < 1, toddler = age >= 1 && age < 2
   return {
     // NNR 2023 (erratum 2): äldre över 65 år bör få 15–20 E% från protein
-    protein: age > 65 ? { min: 15, max: 20 } : { min: 10, max: 20 },
-    fat: { min: 25, max: 40 },
+    protein: infant ? { min: 7, max: 15 } : toddler ? { min: 10, max: 15 } : age > 65 ? { min: 15, max: 20 } : { min: 10, max: 20 },
+    fat: infant ? { min: 30, max: 45 } : toddler ? { min: 30, max: 40 } : { min: 25, max: 40 },
     carbohydrate: { min: 45, max: 60 },
-    saturated: { max: 10 },
+    saturated: infant ? {} : { max: 10 },
     monounsaturated: { min: 10, max: 20 },
     polyunsaturated: { min: 5, max: 10 },
-    freeSugar: { max: 10 },
+    freeSugar: age < 2 ? { max: 0 } : { max: 10 },
     proteinGPerKg: add && weightKg ? base + add / weightKg : base,
     proteinAddG: add || undefined,
     essentialFatMinE: repro ? 5 : 3,
@@ -258,7 +267,7 @@ export function macroReferences(age: number, sex: Sex, repro: Repro | null = nul
   }
 }
 
-export const MIN_SUPPORTED_AGE = 2
+export const MIN_SUPPORTED_AGE = 0
 
 /**
  * Kostfiber i gram per dag enligt NNR 2023 (Livsmedelsverkets sammanfattning, s. 12):
@@ -266,6 +275,7 @@ export const MIN_SUPPORTED_AGE = 2
  * Barn från 2 år: 2–3 g/MJ eller mer (inga grammängder anges) – räknas om till gram med barnets energibehov.
  */
 export function fiberReference(age: number, sex: Sex, teeMJ: number): { minG: number; maxG?: number; text: string } {
+  if (age < 2) return { minG: 0, text: 'ingen rekommendation under 2 år' }
   if (age >= 18) {
     const g = sex === 'man' ? 35 : 25
     return { minG: g, text: `minst ${g} g/dag` }
