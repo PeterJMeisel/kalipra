@@ -618,3 +618,4 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .dv-chart .brk { stroke: var(--panel); stroke-width: 2.5 }
 .dv-chart .overval { font-size: 10px; font-weight: 600; fill: var(--ink) }
 .ws-remove.armed { color: #fff !important; background: var(--red) !important; text-decoration: none !important; border-radius: 6px; font-weight: 600 }
+.ws-title { margin: 0 0 14px }
