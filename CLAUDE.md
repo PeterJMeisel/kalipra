@@ -13,22 +13,22 @@ Språk: svenska. Använd ordet "patient". Inga patientidentifierande uppgifter.
 
 Lägena är en del av arbetsflödet, inte en funktion i programmet.
 
-- **Produktionsläge** = artefakten. Här får tillfälliga hjälpmedel för testning finnas.
+- **Arbetsläge** = artefakten. Här får tillfälliga hjälpmedel för testning finnas.
 - **Publikationsläge** = webbplatsen. Inga tillfälliga hjälpmedel.
 
-Alla tillfälliga hjälpmedel styrs av `PRODUCTION` i `src/core/mode.ts` (sant bara i artefaktbygget), så att de
+Alla tillfälliga hjälpmedel styrs av `ARBETSLAGE` i `src/core/mode.ts` (sant bara i artefaktbygget), så att de
 byggs bort från webben. Lägg aldrig in ett hjälpmedel utan den flaggan.
 
 ### Byte av läge (git)
 
-**Till produktionsläge** (Peter säger "produktionsläge"/"funktionsläge"):
-1. Commita allt pågående. Sätt märket `git tag produktion-start-ÅÅÅÅ-MM-DD`.
-2. Varje tillfälligt hjälpmedel blir en **egen commit** med prefixet `[produktionsläge]` i meddelandet,
+**Till arbetsläge** (Peter säger "arbetsläge"; tidigare kallat produktionsläge/funktionsläge):
+1. Commita allt pågående. Sätt märket `git tag arbete-start-ÅÅÅÅ-MM-DD`.
+2. Varje tillfälligt hjälpmedel blir en **egen commit** med prefixet `[arbetsläge]` i meddelandet,
    och bara hjälpmedlet i den commiten. Riktiga funktioner commitas separat som vanligt.
-3. Lägg hjälpmedlet bakom `PRODUCTION` och skriv in det i listan nedan.
+3. Lägg hjälpmedlet bakom `ARBETSLAGE` och skriv in det i listan nedan.
 
 **Tillbaka till publikationsläge** (Peter säger "publikationsläge"):
-1. Hitta hjälpmedlen: `git log --oneline produktion-start-…..HEAD --grep "\[produktionsläge\]"`.
+1. Hitta hjälpmedlen: `git log --oneline arbete-start-…..HEAD --grep "\[arbetsläge\]"`.
 2. Ångra dem i omvänd ordning: `git revert --no-edit <hash> …` (nyaste först). Lös ev. konflikter.
 3. Töm listan nedan, kör `npm test`, `npm run build:single` och publicera artefakten.
 4. Kontrollera att inga hjälpmedel finns kvar (sök efter dem i `dist-single/`).
@@ -39,9 +39,9 @@ inget av hjälpmedlen finns i `dist/` (t.ex. `grep -r "kycklingfilé" dist/` ska
 ### Aktuellt läge: publikationsläge
 
 Inga tillfälliga hjälpmedel är aktiva (testkost och start på dagdiagrammet togs bort 2026-11-16).
-Peter säger till när vi går över till produktionsläge igen. Då läggs hjälpmedel in bakom `PRODUCTION` och listas här.
+Peter säger till när vi går över till arbetsläge igen. Då läggs hjälpmedel in bakom `ARBETSLAGE` och listas här.
 
-### Produktionsläge – aktiva hjälpmedel
+### Arbetsläge – aktiva hjälpmedel
 
 (inga)
 
