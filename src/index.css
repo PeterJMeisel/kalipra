@@ -612,3 +612,8 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .dv-tip i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 6px }
 .dv-tip.side { transform: none }
 .dv-chartbox { position: relative }
+/* Värden över 100 % i dagdiagrammet */
+.dv-chart .overzone { fill: var(--ink); opacity: .04 }
+.dv-chart .tick.over { font-style: italic }
+.dv-chart .brk { stroke: var(--panel); stroke-width: 2.5 }
+.dv-chart .overval { font-size: 10px; font-weight: 600; fill: var(--ink) }
