@@ -491,7 +491,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
         </button>}
       </div>
       <div className={`ws-micros ${detailed && sh === 1 ? 'detailed' : ''}`}>
-        {micro.map(m => {
+        {micro.filter(m => m.key !== 'NACL').map(m => { // salt visas i egen ruta ovanför
           const d = NUTRIENTS[m.key]
           const val = v(m.key)
           const p = m.value > 0 ? (val / m.value) * 100 : 0
