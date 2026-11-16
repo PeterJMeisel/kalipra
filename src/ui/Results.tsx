@@ -103,7 +103,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
               <td data-l="Näringsämne">Protein per kg kroppsvikt</td>
               <td data-l="Gram" className="num">{formatNumber(proteinPerKg, 2)}</td>
               <td data-l="E%" className="num"></td>
-              <td data-l="Rekommendation">RI {formatNumber(macro.proteinGPerKg, 2)} g/kg</td>
+              <td data-l="Rekommendation">minst {formatNumber(macro.proteinGPerKg, 2)} g/kg</td>
               <td data-l="Läge"><span className={`pill ${proteinPerKg >= macro.proteinGPerKg ? 'ok' : 'low'}`}>{proteinPerKg >= macro.proteinGPerKg ? 'Inom' : 'Under'}</span></td>
             </tr>
             <tr>

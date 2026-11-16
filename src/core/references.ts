@@ -180,7 +180,9 @@ const PROTEIN_RI_G_PER_KG: Record<AgeGroup, Record<Sex, number>> = {
   '18-24': { kvinna: 0.83, man: 0.83 },
   '25-50': { kvinna: 0.83, man: 0.83 },
   '51-70': { kvinna: 0.83, man: 0.83 },
-  '71+': { kvinna: 0.83, man: 0.83 },
+  // NNR 2023 anger 0,83 g/kg även för > 70 år, men Livsmedelsverket anger för kostplanering till äldre
+  // cirka 1,2 g/kg (18 E%) för att motverka minskad muskelmassa. Kalipra använder 1,2 g/kg för > 70 år.
+  '71+': { kvinna: 1.2, man: 1.2 },
 }
 
 /** Rekommenderad energifördelning (E%) för personer från 2 år. */

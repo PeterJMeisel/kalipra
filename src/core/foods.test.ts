@@ -170,3 +170,10 @@ describe('AI och UL', () => {
     expect(mr(10, 'man', 7).find(m => m.key === 'VITD')!.ul).toBeUndefined()
   })
 })
+
+describe('protein för äldre', () => {
+  it('1,2 g/kg över 70 år, 0,83 för 51–70', () => {
+    expect(macroReferences(75, 'kvinna').proteinGPerKg).toBe(1.2)
+    expect(macroReferences(65, 'man').proteinGPerKg).toBe(0.83)
+  })
+})
