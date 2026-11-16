@@ -617,3 +617,4 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .dv-chart .tick.over { font-style: italic }
 .dv-chart .brk { stroke: var(--panel); stroke-width: 2.5 }
 .dv-chart .overval { font-size: 10px; font-weight: 600; fill: var(--ink) }
+.dv-chart .overmark { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round }

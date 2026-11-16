@@ -621,7 +621,7 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
   const barW = n <= 3 ? 12 : n <= 5 ? 9 : 7
   const gapBar = 2, gapGroup = 18
   const groupW = n * barW + (n - 1) * gapBar
-  const left = 52, top = 12, plotH = 230, bottom = 80
+  const left = 52, top = 22, plotH = 230, bottom = 80
   const width = left + groups.length * (groupW + gapGroup) + 8
   const height = top + plotH + bottom
   // Skala: 0–100 % i steg om 25 % (steghöjd S). Över 100 % är skalan hoptryckt: stegen 150 och 200 %
@@ -666,6 +666,11 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
                         onMouseEnter={() => setHover({ g: g.label, b, x: x + barW / 2, y: top0 })} />
                       <path className={`dvbar dc${colorIdx(b.day)}`} pointerEvents="none"
                         d={h > 0 ? `M${x},${top + plotH} V${top0 + r} Q${x},${top0} ${x + r},${top0} H${x + barW - r} Q${x + barW},${top0} ${x + barW},${top0 + r} V${top + plotH} Z` : ''} />
+                      {b.pct > MAX && (
+                        // ">" vriden uppåt: stapeln fortsätter över 200 %
+                        <polyline className="overmark" pointerEvents="none"
+                          points={`${x + barW / 2 - 4},${top - 4} ${x + barW / 2},${top - 9} ${x + barW / 2 + 4},${top - 4}`} />
+                      )}
                     </g>
                   )
                 })}
