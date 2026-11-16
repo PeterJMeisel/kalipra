@@ -110,7 +110,24 @@ export default function App() {
   function openPatientList() {
     setCarryAnon(anonMode && view === 'oversikt' && anon.entries.length > 0)
     setPickNew(false)
+    if (view !== 'patienter' && view !== 'patientdata') setPrevView(view)
     go('patienter')
+  }
+  /** Bannerknapparna Patientdata och Välj patient: andra trycket tar tillbaka till där man var. */
+  function togglePanel(v: 'patientdata' | 'patienter') {
+    const panel = (x: View) => x === 'patientdata' || x === 'patienter'
+    if (view === v) {
+      // Samma beräkning och samma läge (med/utan patient) ligger kvar – vi byter bara vy tillbaka.
+      setCarryAnon(false)
+      go(panel(prevView) ? 'oversikt' : prevView)
+      return
+    }
+    if (!panel(view)) setPrevView(view)
+    if (v === 'patienter') {
+      setCarryAnon(anonMode && view === 'oversikt' && anon.entries.length > 0)
+      setPickNew(false)
+    }
+    go(v)
   }
 
   function open(id: string, startTab: Tab = 'resultat') {
@@ -318,11 +335,11 @@ export default function App() {
             <span className="pb-none">Ingen patient vald</span>
           )}
           {activePerson && (
-            <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => { setPrevView(view); go('patientdata') }}>
+            <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
               Patientdata
             </button>
           )}
-          <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={openPatientList}>
+          <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
             Välj patient
           </button>
         </div>
