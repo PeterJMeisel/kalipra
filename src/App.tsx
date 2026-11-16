@@ -94,7 +94,7 @@ export default function App() {
   const personCalcs = calcPerson ? calculationsFor(state, calcPerson.id) : []
   const activePerson = personById(activeId)
 
-  /** Laddar patienten: den visas i bannern och används av Patientöversikt och Bedöm undernäring. */
+  /** Laddar patienten: den visas i bannern och används av Kostregistrering och Bedöm undernäring. */
   function activate(personId: string) {
     setAnonMode(false)
     setActiveId(personId)
@@ -323,8 +323,7 @@ export default function App() {
         <div className="topright">
           {view !== 'start' && (
             <nav className="topnav">
-              <button className={view === 'oversikt' && anonMode ? 'on' : ''} onClick={newCalculation}>Kostregistrering</button>
-              <button className={view === 'oversikt' && !anonMode ? 'on' : ''} onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>Patientöversikt</button>
+              <button className={view === 'oversikt' ? 'on' : ''} onClick={newCalculation}>Kostregistrering</button>
               <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
             </nav>
           )}
@@ -424,10 +423,6 @@ export default function App() {
                 <path d="M41 40V9c-3 2-4.5 6-4.5 11v3H41" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="bt">Kostregistrering</span>
-            </button>
-            <button className="bigbtn" onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>
-              <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M5 40c1.5-8 6.5-12 13-12s11.5 4 13 12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M32 14h11M32 22h11M36 30h7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
-              <span className="bt">Patientöversikt</span>
             </button>
             <button className="bigbtn" onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M24 8v20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M10 18h28l-4 14H14z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><circle cx="24" cy="8" r="3" fill="currentColor" /></svg>
@@ -564,7 +559,7 @@ export default function App() {
 
       {view === 'oversikt' && !anonMode && !(calculation && calcPerson) && (
         <main className="main narrow">
-          <h1>Patientöversikt</h1>
+          <h1>Välj patient</h1>
           {message && <p className="msg">{message}</p>}
           {state.persons.length === 0 ? (
             <>

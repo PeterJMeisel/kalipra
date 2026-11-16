@@ -65,7 +65,7 @@ input, select, textarea { font-size: 16px; border: 1px solid var(--line); border
 .starthero { text-align: center }
 .starthero h1 { font-size: clamp(38px, 6vw, 56px) }
 .starthero .lead { margin: 12px auto 0; font-size: 18px }
-.bigchoices { display: grid; grid-template-columns: repeat(3, minmax(0, 280px)); gap: 20px; width: 100%; justify-content: center }
+.bigchoices { display: grid; grid-template-columns: repeat(2, minmax(0, 280px)); gap: 20px; width: 100%; justify-content: center }
 .bigbtn { display: grid; justify-items: center; align-content: center; gap: 10px; min-height: 230px; padding: 28px 22px; border-radius: 12px; border: 2px solid var(--brand); background: var(--panel); color: var(--brand); text-align: center; box-shadow: 0 10px 30px rgb(59 42 74 / .10); transition: transform .15s ease, box-shadow .15s ease }
 .bigbtn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 16px 40px rgb(59 42 74 / .18) }
 .bigbtn svg { width: 64px; height: 64px }
