@@ -525,8 +525,8 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   ]
   const microKeys: NutrientKey[] = micro ? micro.map(m => m.key) : ['VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
-  const [mode, setMode] = useState<'diagram' | 'tabell'>(() => { try { return localStorage.getItem('kalipra.daysMode') === 'tabell' ? 'tabell' : 'diagram' } catch { return 'diagram' } })
-  useEffect(() => { try { localStorage.setItem('kalipra.daysMode', mode) } catch { /* ignorera */ } }, [mode])
+  const [mode, setMode] = useState<'diagram' | 'tabell'>(() => { try { return localStorage.getItem('kalipra.daysMode2') === 'diagram' ? 'diagram' : 'tabell' } catch { return 'diagram' } })
+  useEffect(() => { try { localStorage.setItem('kalipra.daysMode2', mode) } catch { /* ignorera */ } }, [mode])
 
   if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
 
@@ -552,8 +552,8 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
     <div className="ws-daysview">
       {canChart && (
         <div className="dv-modes" role="radiogroup" aria-label="Visa som">
-          <button role="radio" aria-checked={mode === 'diagram'} className={mode === 'diagram' ? 'on' : ''} onClick={() => setMode('diagram')}>Diagram</button>
           <button role="radio" aria-checked={mode === 'tabell'} className={mode === 'tabell' ? 'on' : ''} onClick={() => setMode('tabell')}>Tabell</button>
+          <button role="radio" aria-checked={mode === 'diagram'} className={mode === 'diagram' ? 'on' : ''} onClick={() => setMode('diagram')}>Diagram</button>
         </div>
       )}
       {canChart && mode === 'diagram' ? <DaysChart groups={chartGroups} /> : (
@@ -567,11 +567,11 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
               {cols.map(c => {
                 if (c.empty) return <td key={c.label} className="muted">–</td>
                 const x = r.cell(c.totals)
-                return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}><span className="dv-main">{x.main}</span>{x.sub && <span className={`dv-sub ${x.st ?? ''}`}>{x.sub}</span>}</td>
+                return <td key={c.label} className={`${x.st ? `hm ${x.st}` : ''} ${c.label.startsWith('Snitt') ? 'avg' : ''}`}><span className="dv-main">{x.main}</span>{x.sub && <span className="dv-sub">{x.sub}</span>}</td>
               })}
             </tr>
           ))}
-          <tr className="sect"><th scope="row" colSpan={cols.length + 1}>Vitaminer och mineraler{micro ? ' – % av RDI' : ''}</th></tr>
+          <tr className="sect"><th scope="row" colSpan={cols.length + 1}>Vitaminer och mineraler</th></tr>
           {microKeys.map(k => {
             const d = NUTRIENTS[k]
             const ref = micro?.find(m => m.key === k)
@@ -584,8 +584,9 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
                   if (!ref) return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}>{formatNumber(val, d.decimals)} {d.unit}</td>
                   const st = microStatus(ref, val)
                   return (
-                    <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''} title={`${formatNumber(val, d.decimals)} ${d.unit}`}>
-                      <span className={`pct ${st}`}>{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
+                    <td key={c.label} className={`hm ${st} ${c.label.startsWith('Snitt') ? 'avg' : ''}`}>
+                      <span className="dv-main">{formatNumber(val, d.decimals)} {d.unit}</span>
+                      <span className="dv-sub">{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
                     </td>
                   )
                 })}

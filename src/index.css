@@ -586,3 +586,9 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .dv-chart .dvbar.low, .dv-chart .dvbar.high { fill: var(--red) }
 .dv-chart .dvbar.energy { fill: var(--brand) }
 .dv-tip { position: absolute; transform: translate(-50%, -100%); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.12); pointer-events: none; white-space: nowrap; display: flex; flex-direction: column; gap: 2px }
+/* Värmekarta i Dagar-tabellen: cellbakgrund efter läge */
+.ws-daystable td.hm { border: 2px solid var(--panel) }
+.ws-daystable td.hm.ok { background: color-mix(in srgb, var(--ok) 22%, var(--panel)) }
+.ws-daystable td.hm.near { background: color-mix(in srgb, var(--orange) 24%, var(--panel)) }
+.ws-daystable td.hm.low, .ws-daystable td.hm.high { background: color-mix(in srgb, var(--red) 24%, var(--panel)) }
+.ws-daystable td.hm .dv-sub { color: var(--ink); opacity: .75 }
