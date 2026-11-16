@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
+import { fiberReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
@@ -233,7 +233,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
         {(bottomTab === 'rdi' || (bottomTab === 'maltid' && scope === 'dag')) && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={view} />
           : <IntakeView scoped={view} />)}
-        {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} />}
+        {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} teeMJ={need?.teeMJ} />}
         {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
         {bottomTab === 'jamfor' && scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} />}
       </section>
@@ -460,7 +460,8 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
         })()}
         {(() => {
           const g = v('FIBT')
-          const refG = (macro.fiberGPerMJ.min ?? 3) * need.teeMJ * sh
+          const fr = fiberReference(person.age, person.sex, need.teeMJ)
+          const refG = fr.minG * sh
           const ok = g >= refG
           return (
             <div className="ws-kcalbox">
@@ -470,7 +471,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${ok ? '' : 'low'}`} style={{ width: `${Math.min((g / refG) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(macro.fiberGPerMJ.min ?? 3, 0)} g/MJ ({formatNumber(refG, 0)} g) · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation {sh < 1 ? `minst ${formatNumber(refG, 0)} g för måltiden` : fr.text} · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
             </div>
           )
         })()}
@@ -844,7 +845,7 @@ function EnergyPie({ parts }: { parts: { label: string; pct: number }[] }) {
   )
 }
 
-function MacroView({ person, totals }: { person: Person | null; totals: NutrientTotals }) {
+function MacroView({ person, totals, teeMJ }: { person: Person | null; totals: NutrientTotals; teeMJ?: number }) {
   const v = (k: NutrientKey) => totals[k] ?? 0
   const e = energyDistribution(totals)
   const macro = macroReferences(person?.age ?? 40, person?.sex ?? 'kvinna')
@@ -886,7 +887,7 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
               <td>{r.label}</td>
               <td className="num">{formatNumber(r.grams, 1)}</td>
               <td className="num">{isFiber ? '' : <strong>{formatNumber(r.pct, 1)}</strong>}</td>
-              <td>{isFiber ? `minst ${formatNumber(macro.fiberGPerMJ.min ?? 3, 0)} g/MJ` : r.label === 'Alkohol' ? 'Ingen säker nivå' : rangeText(r.ref)}</td>
+              <td>{isFiber ? (person && teeMJ ? fiberReference(person.age, person.sex, teeMJ).text : 'minst 25–35 g/dag') : r.label === 'Alkohol' ? 'Ingen säker nivå' : rangeText(r.ref)}</td>
             </tr>
           )
         })}

@@ -259,3 +259,17 @@ export function macroReferences(age: number, sex: Sex, repro: Repro | null = nul
 }
 
 export const MIN_SUPPORTED_AGE = 2
+
+/**
+ * Kostfiber i gram per dag enligt NNR 2023 (Livsmedelsverkets sammanfattning, s. 12):
+ * vuxna minst 3 g/MJ, vilket vid referensintaget av energi motsvarar minst 25 g/dag för kvinnor och 35 g/dag för män.
+ * Barn från 2 år: 2–3 g/MJ eller mer (inga grammängder anges) – räknas om till gram med barnets energibehov.
+ */
+export function fiberReference(age: number, sex: Sex, teeMJ: number): { minG: number; maxG?: number; text: string } {
+  if (age >= 18) {
+    const g = sex === 'man' ? 35 : 25
+    return { minG: g, text: `minst ${g} g/dag` }
+  }
+  const lo = Math.round(2 * teeMJ), hi = Math.round(3 * teeMJ)
+  return { minG: lo, maxG: hi, text: `${lo}–${hi} g/dag (2–3 g/MJ)` }
+}
