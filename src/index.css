@@ -638,4 +638,4 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .pl-newrow .pl-new { width: 100%; font-size: 26px; min-height: 88px; padding: 18px 60px; border-radius: 12px; font-weight: 700; box-shadow: 0 3px 10px rgb(0 0 0 / .18) }
 /* Patientens kod och uppgifter i bannern: klick öppnar Patientdata */
 button.pb-infobtn { background: transparent; border: 0; color: inherit; padding: 0; min-height: 0; border-radius: 6px; text-align: left; font: inherit }
-button.pb-infobtn:hover:not(:disabled) .pb-code { text-decoration: underline; text-underline-offset: 3px }
+button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:disabled) .pb-facts { text-decoration: underline; text-underline-offset: 3px }
