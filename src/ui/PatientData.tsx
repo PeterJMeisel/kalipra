@@ -11,10 +11,12 @@ type Props = {
   onPatchPerson: (p: Partial<Person>) => void
   onPatchCalc: (p: Partial<Calculation>) => void
   onDone: () => void
+  /** Referenspatienten (ingen patient vald) */
+  isReference?: boolean
 }
 
 /** Patientdata: justera patientens uppgifter och hälsotillstånd. Ändringar sparas direkt. */
-export function PatientData({ person, calc, onPatchPerson, onPatchCalc, onDone }: Props) {
+export function PatientData({ person, calc, onPatchPerson, onPatchCalc, onDone, isReference = false }: Props) {
   const [healthOpen, setHealthOpen] = useState(true)
   const weight = calc?.weightKg
   const b = weight ? bmi(weight, person.heightCm) : null
@@ -27,6 +29,7 @@ export function PatientData({ person, calc, onPatchPerson, onPatchCalc, onDone }
   return (
     <main className="main narrow pd">
       <h1>Patientdata</h1>
+      {isReference && <p className="muted">Ingen patient vald – det här är referenspatienten som kostregistreringen räknas mot. Ändringar gäller tills programmet startas om; då börjar den om som kvinna 45 år, BMI 23,5, PAL 1,2 utan hälsotillstånd.</p>}
       <section className="pd-card">
         <div className="pd-grid">
           <label>Kod / alias

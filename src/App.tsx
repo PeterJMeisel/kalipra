@@ -65,6 +65,9 @@ export default function App() {
   const fileRef = useRef<HTMLInputElement>(null)
   // Ingen patient är vald när programmet startar
   const [activeId, setActiveId] = useState<string | null>(null)
+  // Referenspatienten (när ingen patient är vald). Går att ändra under Patientdata; börjar om som standard vid varje start.
+  const [refPerson, setRefPerson] = useState<Person>(REF_PERSON)
+  const [refCalc, setRefCalc] = useState<Pick<Calculation, 'weightKg' | 'pal' | 'bmrFormula'>>({ weightKg: REF_WEIGHT, pal: 1.2, bmrFormula: undefined })
   const [pickNew, setPickNew] = useState(false)
   /** Vyn att gå tillbaka till när Patientdata stängs */
   const [prevView, setPrevView] = useState<View>('oversikt')
@@ -335,16 +338,15 @@ export default function App() {
               <span className="pb-facts">{activePerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
             </button>
           ) : (
-            <span className="pb-info pb-ref" title="Ingen patient vald. Behov och RDI räknas för en referensperson: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2.">
-              <span className="pb-code">{REF_PERSON.code}</span>
-              <span className="pb-facts">Kvinna · {REF_PERSON.age} år · BMI {formatNumber(bmi(REF_WEIGHT, REF_PERSON.heightCm), 1)}</span>
-            </span>
-          )}
-          {activePerson && (
-            <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
-              Patientdata
+            <button type="button" className="pb-info pb-infobtn pb-ref" onClick={() => togglePanel('patientdata')}
+              title="Ingen patient vald – referenspatient. Klicka för att se och ändra uppgifterna.">
+              <span className="pb-code">{refPerson.code}</span>
+              <span className="pb-facts">{refPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {refPerson.age} år · BMI {formatNumber(bmi(refCalc.weightKg, refPerson.heightCm), 1)}</span>
             </button>
           )}
+          <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
+            Patientdata
+          </button>
           <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
             Välj patient
           </button>
@@ -378,7 +380,10 @@ export default function App() {
       })()}
 
       {view === 'patientdata' && !activePerson && (
-        <main className="main narrow"><p className="empty">Ingen patient vald.</p></main>
+        <PatientData person={refPerson} calc={{ ...anon, ...refCalc }} isReference
+          onPatchPerson={p => setRefPerson(r => ({ ...r, ...p }))}
+          onPatchCalc={p => setRefCalc(c => ({ weightKg: p.weightKg ?? c.weightKg, pal: p.pal ?? c.pal, bmrFormula: 'bmrFormula' in p ? p.bmrFormula : c.bmrFormula }))}
+          onDone={() => go(prevView === 'patientdata' ? 'oversikt' : prevView)} />
       )}
 
       {view === 'patienter' && (
@@ -581,7 +586,7 @@ export default function App() {
       {view === 'oversikt' && anonMode && (
         <main className="main wsmain">
           <h1 className="ws-title">Kostregistrering</h1>
-          <Workspace key="anon" db={db} person={REF_PERSON} calc={{ ...anon, weightKg: REF_WEIGHT, pal: 1.2, bmrFormula: undefined }} onPatchPerson={() => {}}
+          <Workspace key="anon" db={db} person={refPerson} calc={{ ...anon, ...refCalc }} onPatchPerson={() => {}}
             onPatchCalc={p => setAnon(a => ({ ...a, ...p }))} onPickPatient={openPatientList} />
         </main>
       )}
