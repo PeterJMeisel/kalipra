@@ -632,3 +632,7 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .pd-grid input, .pd-grid select { font-size: 16px; width: 100%; box-sizing: border-box; color: var(--ink) }
 .pd-grid output { font-size: 20px; font-weight: 700; color: var(--ink); padding: 6px 0 }
 @media (max-width: 700px) { .pd-grid, .pd-grid.two { grid-template-columns: 1fr 1fr } }
+/* Ny patient: största och tydligaste knappen i patientlistan */
+.pl-actions { align-items: center }
+.pl-actions .pl-new { font-size: 18px; min-height: 52px; padding: 10px 26px; background: var(--saffron); border-color: var(--saffron); color: #2A1F35; font-weight: 700; box-shadow: 0 2px 6px rgb(0 0 0 / .12) }
+.pl-actions .pl-new:hover:not(:disabled) { border-color: var(--brand) }
