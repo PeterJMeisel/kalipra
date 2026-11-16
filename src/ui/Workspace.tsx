@@ -603,60 +603,71 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
 type ChartBar = { day: number; pct: number; st: string; text: string }
 type ChartGroup = { label: string; bars: ChartBar[] }
 
-/** Grupperat stapeldiagram: en grupp per näringsämne, en stapel per dag, linje vid 100 %. */
+/** Dagfärger: kategoriska, fast ordning (dag 1 = första färgen). Högst 8 dagar i diagrammet. */
+const DAY_COLORS = 8
+
+/** Grupperat stapeldiagram: en grupp per näringsämne, en stapel per dag (färg = dag), skala 0–100 %. */
 function DaysChart({ groups }: { groups: ChartGroup[] }) {
   const [hover, setHover] = useState<{ g: string; b: ChartBar; x: number; y: number } | null>(null)
-  const n = groups[0]?.bars.length ?? 0
-  const barW = n <= 3 ? 12 : n <= 6 ? 8 : 6
+  const all = groups[0]?.bars ?? []
+  const shown = all.slice(0, DAY_COLORS).map(b => b.day)
+  const n = shown.length
+  const barW = n <= 3 ? 12 : n <= 5 ? 9 : 7
   const gapBar = 2, gapGroup = 18
   const groupW = n * barW + (n - 1) * gapBar
-  const left = 40, top = 12, plotH = 190, bottom = 92
-  const maxPct = Math.min(250, Math.max(150, Math.ceil(Math.max(...groups.flatMap(g => g.bars.map(b => b.pct))) / 50) * 50))
+  const left = 40, top = 10, plotH = 190, bottom = 80
   const width = left + groups.length * (groupW + gapGroup) + 8
   const height = top + plotH + bottom
-  const y = (p: number) => top + plotH - (Math.min(p, maxPct) / maxPct) * plotH
-  const ticks = Array.from({ length: maxPct / 50 + 1 }, (_, i) => i * 50)
+  const y = (p: number) => top + plotH - (Math.min(p, 100) / 100) * plotH
+  const ticks = [0, 25, 50, 75, 100]
+  const colorIdx = (day: number) => shown.indexOf(day)
   return (
-    <div className="dv-chartwrap">
-      <svg className="dv-chart" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img"
-        aria-label="Intag per dag i procent av behov och rekommendation" onMouseLeave={() => setHover(null)}>
-        {ticks.map(t => (
-          <g key={t}>
-            <line x1={left} x2={width - 4} y1={y(t)} y2={y(t)} className={t === 100 ? 'ref' : 'grid'} />
-            <text x={left - 6} y={y(t) + 4} className="tick" textAnchor="end">{t} %</text>
-          </g>
-        ))}
-        {groups.map((g, gi) => {
-          const gx = left + 8 + gi * (groupW + gapGroup)
-          return (
-            <g key={g.label}>
-              {g.bars.map((b, bi) => {
-                const x = gx + bi * (barW + gapBar)
-                const top0 = y(b.pct)
-                const h = Math.max(0, top + plotH - top0)
-                return (
-                  <g key={b.day}>
-                    <rect x={x - 1} y={top} width={barW + 2} height={plotH} fill="transparent"
-                      onMouseEnter={() => setHover({ g: g.label, b, x: x + barW / 2, y: top0 })} />
-                    <path className={`dvbar ${b.st}`} pointerEvents="none"
-                      d={h > 0 ? `M${x},${top + plotH} V${top0 + Math.min(3, h)} Q${x},${top0} ${x + Math.min(3, barW / 2)},${top0} H${x + barW - Math.min(3, barW / 2)} Q${x + barW},${top0} ${x + barW},${top0 + Math.min(3, h)} V${top + plotH} Z` : ''} />
-                    {b.pct > maxPct && <text x={x + barW / 2} y={top - 2} className="over" textAnchor="middle">▲</text>}
-                    {n > 1 && <text x={x + barW / 2} y={top + plotH + 12} className="dayno" textAnchor="middle">{b.day}</text>}
-                  </g>
-                )
-              })}
-              <text className="glabel" textAnchor="end" transform={`translate(${gx + groupW / 2 + 4},${top + plotH + (n > 1 ? 22 : 12)}) rotate(-40)`}>{g.label}</text>
+    <div className="dv-chartbox">
+      <div className="dv-legend" aria-label="Dagar">
+        {shown.map(d => <span key={d}><i className={`dc${colorIdx(d)}`} />Dag {d}</span>)}
+        {all.length > DAY_COLORS && <span className="muted">Diagrammet visar de första {DAY_COLORS} dagarna – se tabellen för resten.</span>}
+      </div>
+      <div className="dv-chartwrap">
+        <svg className="dv-chart" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img"
+          aria-label="Intag per dag i procent av behov och rekommendation" onMouseLeave={() => setHover(null)}>
+          {ticks.map(t => (
+            <g key={t}>
+              <line x1={left} x2={width - 4} y1={y(t)} y2={y(t)} className={t === 100 ? 'ref' : 'grid'} />
+              <text x={left - 6} y={y(t) + 4} className="tick" textAnchor="end">{t} %</text>
             </g>
-          )
-        })}
-        <line x1={left} x2={width - 4} y1={top + plotH} y2={top + plotH} className="axis" />
-      </svg>
-      {hover && (
-        <div className="dv-tip" style={{ left: hover.x, top: Math.max(0, hover.y - 8) }}>
-          <strong>{hover.g}, dag {hover.b.day}</strong>
-          <span>{formatNumber(Math.floor(hover.b.pct), 0)} % · {hover.b.text}</span>
-        </div>
-      )}
+          ))}
+          {groups.map((g, gi) => {
+            const gx = left + 8 + gi * (groupW + gapGroup)
+            return (
+              <g key={g.label}>
+                {g.bars.filter(b => shown.includes(b.day)).map((b, bi) => {
+                  const x = gx + bi * (barW + gapBar)
+                  const top0 = y(b.pct)
+                  const h = Math.max(0, top + plotH - top0)
+                  const r = Math.min(3, h, barW / 2)
+                  return (
+                    <g key={b.day}>
+                      <rect x={x - 1} y={top} width={barW + 2} height={plotH} fill="transparent"
+                        onMouseEnter={() => setHover({ g: g.label, b, x: x + barW / 2, y: top0 })} />
+                      <path className={`dvbar dc${colorIdx(b.day)}`} pointerEvents="none"
+                        d={h > 0 ? `M${x},${top + plotH} V${top0 + r} Q${x},${top0} ${x + r},${top0} H${x + barW - r} Q${x + barW},${top0} ${x + barW},${top0 + r} V${top + plotH} Z` : ''} />
+                    </g>
+                  )
+                })}
+                <text className="glabel" textAnchor="end" transform={`translate(${gx + groupW / 2 + 4},${top + plotH + 14}) rotate(-40)`}>{g.label}</text>
+              </g>
+            )
+          })}
+          <line x1={left} x2={width - 4} y1={top + plotH} y2={top + plotH} className="axis" />
+        </svg>
+        {hover && (
+          // Rutan placeras ovanför stapeln, eller bredvid när stapeln når toppen (så att den inte klipps)
+          <div className={`dv-tip ${hover.y < 60 ? 'side' : ''}`} style={hover.y < 60 ? { left: hover.x + 12, top: Math.max(4, hover.y) } : { left: hover.x, top: hover.y - 8 }}>
+            <strong><i className={`dc${colorIdx(hover.b.day)}`} />{hover.g}, dag {hover.b.day}</strong>
+            <span>{formatNumber(Math.floor(hover.b.pct), 0)} % · {hover.b.text}</span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -592,3 +592,23 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-daystable td.hm.near { background: color-mix(in srgb, var(--orange) 24%, var(--panel)) }
 .ws-daystable td.hm.low, .ws-daystable td.hm.high { background: color-mix(in srgb, var(--red) 24%, var(--panel)) }
 .ws-daystable td.hm .dv-sub { color: var(--ink); opacity: .75 }
+/* Dagfärger (kategorisk palett, fast ordning) */
+:root {
+  --day0: light-dark(#2a78d6, #3987e5); --day1: light-dark(#eb6834, #d95926); --day2: light-dark(#1baf7a, #199e70); --day3: light-dark(#eda100, #c98500);
+  --day4: light-dark(#e87ba4, #d55181); --day5: light-dark(#008300, #0ca30c); --day6: light-dark(#6250d6, #9085e9); --day7: light-dark(#e34948, #e66767);
+}
+.dv-chart .dvbar.dc0, .dv-legend i.dc0, .dv-tip i.dc0 { fill: var(--day0); background: var(--day0) }
+.dv-chart .dvbar.dc1, .dv-legend i.dc1, .dv-tip i.dc1 { fill: var(--day1); background: var(--day1) }
+.dv-chart .dvbar.dc2, .dv-legend i.dc2, .dv-tip i.dc2 { fill: var(--day2); background: var(--day2) }
+.dv-chart .dvbar.dc3, .dv-legend i.dc3, .dv-tip i.dc3 { fill: var(--day3); background: var(--day3) }
+.dv-chart .dvbar.dc4, .dv-legend i.dc4, .dv-tip i.dc4 { fill: var(--day4); background: var(--day4) }
+.dv-chart .dvbar.dc5, .dv-legend i.dc5, .dv-tip i.dc5 { fill: var(--day5); background: var(--day5) }
+.dv-chart .dvbar.dc6, .dv-legend i.dc6, .dv-tip i.dc6 { fill: var(--day6); background: var(--day6) }
+.dv-chart .dvbar.dc7, .dv-legend i.dc7, .dv-tip i.dc7 { fill: var(--day7); background: var(--day7) }
+.dv-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 8px; font-size: 14px; font-weight: 600 }
+.dv-legend span { display: inline-flex; align-items: center; gap: 7px }
+.dv-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block }
+.dv-legend .muted { font-weight: 400; color: var(--muted); font-size: 13px }
+.dv-tip i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 6px }
+.dv-tip.side { transform: none }
+.dv-chartbox { position: relative }

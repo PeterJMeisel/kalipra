@@ -16,6 +16,7 @@ import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
 import { Workspace } from './ui/Workspace'
+import { DEMO_DATA, demoDiary } from './core/demo'
 
 const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData, nutrition as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
@@ -24,6 +25,8 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT',
 const ACTIVE_KEY = 'kalipra.activePatient'
 const ANON_KEY = 'kalipra.anonCalc'
 const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
+/** Startinnehåll för en ny kostregistrering: tom, eller testdata i artefakten. */
+const startDiary = () => (DEMO_DATA ? demoDiary(db) : { days: 1, entries: [] })
 type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
@@ -143,14 +146,14 @@ export default function App() {
     if (activePerson) {
       const last = calculationsFor(state, activePerson.id)[0]
       const w = currentWeight(state, activePerson.id)?.kg ?? last?.weightKg ?? 70
-      const c: Calculation = { id: newId(), personId: activePerson.id, createdAt: now(), updatedAt: now(), weightKg: w, pal: last?.pal ?? 1.2, goal: null, bmrFormula: last?.bmrFormula, days: 1, entries: [] }
+      const c: Calculation = { id: newId(), personId: activePerson.id, createdAt: now(), updatedAt: now(), weightKg: w, pal: last?.pal ?? 1.2, goal: null, bmrFormula: last?.bmrFormula, ...startDiary() }
       setState(s => ({ ...s, calculations: [...s.calculations, c] }))
       activate(activePerson.id)
       setAnonMode(false)
       setCalcId(c.id)
       go('oversikt')
     } else {
-      setAnon(emptyAnon())
+      setAnon({ ...emptyAnon(), ...startDiary() })
       setAnonMode(true)
       setCalcId(null)
       go('oversikt')
@@ -166,7 +169,7 @@ export default function App() {
   function createPerson(form: Omit<Client, 'id' | 'createdAt'>): { personId: string; calcId: string } {
     const { person, calc } = splitClient(form)
     const p: Person = { ...person, id: newId(), createdAt: now(), updatedAt: now() }
-    const c: Calculation = { ...calc, id: newId(), personId: p.id, createdAt: now(), updatedAt: now(), days: 1, entries: [] }
+    const c: Calculation = { ...calc, id: newId(), personId: p.id, createdAt: now(), updatedAt: now(), ...startDiary() }
     setState(s => ({ ...s, persons: [...s.persons, { ...p, lastOpenedAt: now() }], calculations: [...s.calculations, c] }))
     setActiveId(p.id)
     return { personId: p.id, calcId: c.id }
