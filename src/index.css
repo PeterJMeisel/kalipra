@@ -653,3 +653,16 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 /* Kopiera måltid: lite mer synlig */
 .ws-totals .ws-copybtn { font-size: 14px !important; font-weight: 600; min-height: 38px; padding: 6px 16px; border-color: var(--brand); color: var(--brand) }
 .ws-totals .ws-copybtn:hover:not(:disabled) { background: var(--tint) }
+/* Energifördelning: cirkeldiagram bredvid tabellen */
+.ef-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap }
+.ef-wrap .ws-macro { flex: 1 1 420px }
+.ef-pie { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 0 0 auto }
+.ef-pie path { stroke: var(--panel); stroke-width: 2 }
+.ef0 { fill: var(--day0); stroke: var(--day0) } .ef1 { fill: var(--day1) } .ef2 { fill: var(--day2) } .ef3 { fill: var(--day3) }
+.ef-pie path.ef0 { stroke: var(--panel) }
+.ef-pie circle.efs.ef0 { fill: none; stroke: var(--day0) } .ef-pie circle.efs.ef1 { fill: none; stroke: var(--day1) } .ef-pie circle.efs.ef2 { fill: none; stroke: var(--day2) } .ef-pie circle.efs.ef3 { fill: none; stroke: var(--day3) }
+.ef-legend { list-style: none; margin: 0; padding: 0; font-size: 13px; display: grid; gap: 4px; min-width: 150px }
+.ef-legend li { display: flex; align-items: center; gap: 8px }
+.ef-legend li strong { margin-left: auto; font-weight: 600 }
+.ef-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block }
+.ef-legend i.ef0 { background: var(--day0) } .ef-legend i.ef1 { background: var(--day1) } .ef-legend i.ef2 { background: var(--day2) } .ef-legend i.ef3 { background: var(--day3) }

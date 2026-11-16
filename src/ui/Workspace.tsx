@@ -816,6 +816,37 @@ const rangeText = (r: Range): string => {
   return `högst ${f(r.max!)} E%`
 }
 
+/** Cirkeldiagram (ring) över energifördelningen mellan makronutrienterna. Fast färgordning. */
+function EnergyPie({ parts }: { parts: { label: string; pct: number }[] }) {
+  const shown = parts.filter(p => p.pct > 0.05)
+  const total = shown.reduce((a, p) => a + p.pct, 0)
+  const R = 70, r = 44, C = 80
+  let a0 = -Math.PI / 2
+  const arc = (a1: number, a2: number) => {
+    const large = a2 - a1 > Math.PI ? 1 : 0
+    const p = (rad: number, ang: number) => `${C + rad * Math.cos(ang)},${C + rad * Math.sin(ang)}`
+    return `M${p(R, a1)} A${R},${R} 0 ${large} 1 ${p(R, a2)} L${p(r, a2)} A${r},${r} 0 ${large} 0 ${p(r, a1)} Z`
+  }
+  return (
+    <div className="ef-pie">
+      <svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Energifördelning i E%">
+        {total <= 0 ? <circle cx={C} cy={C} r={(R + r) / 2} fill="none" stroke="var(--line)" strokeWidth={R - r} /> :
+          shown.length === 1 ? <circle cx={C} cy={C} r={(R + r) / 2} fill="none" className={`efs ef${parts.indexOf(shown[0])}`} strokeWidth={R - r} /> :
+          shown.map(p => {
+            const a1 = a0, a2 = a0 + (p.pct / total) * Math.PI * 2
+            a0 = a2
+            return <path key={p.label} d={arc(a1, a2)} className={`ef${parts.indexOf(p)}`}><title>{`${p.label}: ${formatNumber(p.pct, 1)} E%`}</title></path>
+          })}
+      </svg>
+      <ul className="ef-legend">
+        {parts.map((p, i) => (p.pct > 0.05 || i < 3) && (
+          <li key={p.label}><i className={`ef${i}`} />{p.label}<strong>{formatNumber(p.pct, 0)} E%</strong></li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 function MacroView({ person, totals }: { person: Person | null; totals: NutrientTotals }) {
   const v = (k: NutrientKey) => totals[k] ?? 0
   const e = energyDistribution(totals)
@@ -835,6 +866,7 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
       </table>
     )
   }
+  const pieParts = [{ label: 'Protein', pct: e.protein }, { label: 'Fett', pct: e.fat }, { label: 'Kolhydrater', pct: e.carbohydrate }, { label: 'Alkohol', pct: e.alcohol }]
   const rows: { label: string; pct: number; grams: number; ref: Range }[] = [
     { label: 'Protein', pct: e.protein, grams: v('PROT'), ref: macro.protein },
     { label: 'Fett', pct: e.fat, grams: v('FAT'), ref: macro.fat },
@@ -845,6 +877,8 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
   ]
   if (e.alcohol > 0.05) rows.push({ label: 'Alkohol', pct: e.alcohol, grams: v('ALC'), ref: { max: 0 } })
   return (
+    <div className="ef-wrap">
+    <EnergyPie parts={pieParts} />
     <table className="ref ws-macro">
       <thead><tr><th>Näringsämne</th><th className="num">Gram</th><th className="num">E%</th><th>Rekommendation</th><th>Läge</th></tr></thead>
       <tbody>
@@ -863,6 +897,7 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
         })}
       </tbody>
     </table>
+    </div>
   )
 }
 
