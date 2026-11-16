@@ -19,16 +19,18 @@ type Props = {
   onPatchPerson: (patch: Partial<Person>) => void
   onPatchCalc: (patch: Partial<Calculation>) => void
   onPickPatient?: () => void
+  /** Produktionsläge: öppna jämförelsen mellan dagar som diagram */
+  startInDays?: boolean
 }
 
 
 /** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
-export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPickPatient }: Props) {
+export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPickPatient, startInDays }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
   const [rightTab, setRightTab] = useState<'livsmedel' | 'patient'>('livsmedel')
   const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
-  const [scope, setScope] = useState<'dag' | 'maltid' | 'dagar'>('dag')
+  const [scope, setScope] = useState<'dag' | 'maltid' | 'dagar'>(startInDays ? 'dagar' : 'dag')
 
   const currentDay = Math.min(day, calc.days)
   const entries = calc.entries
@@ -234,7 +236,7 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => setScope('dagar')}>Dagar</button>
           </span>
         </nav>
-        {scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} average={summary.perDay} />}
+        {scope === 'dagar' && <DaysView startDiagram={startInDays} db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} average={summary.perDay} />}
         {scope !== 'dagar' && bottomTab === 'rdi' && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
           : <IntakeView scoped={scoped} />)}
@@ -484,7 +486,8 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
 
 /* ---------- Nertill: jämförelse mellan dagar ---------- */
 
-function DaysView({ db, entries, days, person, repro, weightKg, need, average }: {
+function DaysView({ db, entries, days, person, repro, weightKg, need, average, startDiagram }: {
+  startDiagram?: boolean
   db: FoodDatabase; entries: DiaryEntry[]; days: number; person: Person | null; repro: Repro | null
   weightKg: number; need: EnergyNeed | null; average: NutrientTotals
 }) {
@@ -525,7 +528,10 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   ]
   const microKeys: NutrientKey[] = micro ? micro.map(m => m.key) : ['VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
-  const [mode, setMode] = useState<'diagram' | 'tabell'>(() => { try { return localStorage.getItem('kalipra.daysMode2') === 'diagram' ? 'diagram' : 'tabell' } catch { return 'diagram' } })
+  const [mode, setMode] = useState<'diagram' | 'tabell'>(() => {
+    if (startDiagram) return 'diagram'
+    try { return localStorage.getItem('kalipra.daysMode2') === 'diagram' ? 'diagram' : 'tabell' } catch { return 'tabell' }
+  })
   useEffect(() => { try { localStorage.setItem('kalipra.daysMode2', mode) } catch { /* ignorera */ } }, [mode])
 
   if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>

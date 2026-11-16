@@ -3,8 +3,7 @@ import type { DiaryEntry } from './types'
 import { mealName } from './types'
 import { newId } from './storage'
 
-/** Testdata bara i artefakten (byggs med --mode single), så att funktioner kan provas utan att mata in kost. */
-export const DEMO_DATA = import.meta.env.MODE === 'single'
+/** Testkost för produktionsläget, så att funktioner kan provas utan att mata in kost. */
 
 // [dag, måltid, sökord, gram]
 const DEMO: [number, number, string, number][] = [
