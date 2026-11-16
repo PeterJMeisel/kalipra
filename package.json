@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:site": "rm -rf dist && tsc -b && vite build --outDir dist/app && cp site/index.html public/CNAME dist/",
     "build:single": "tsc -b && vite build --mode single",
     "test": "vitest run",
     "update-data": "node scripts/update-livsmedel.mjs",

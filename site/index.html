@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalipra – Verktyg för dietister</title>
+<meta name="description" content="Kalipra är ett verktyg för dietister i vården: kostberäkning anpassad efter patientens diagnos och hälsotillstånd, och bedömning av undernäring med GLIM.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B2A4A'/%3E%3Cg transform='translate(8 8) scale(.75)'%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M32 10 A22 22 0 0 1 54 32 L32 32 Z' fill='%23fff'/%3E%3Cpath d='M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z' fill='%23fff' opacity='.55'/%3E%3Cpath d='M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z' fill='%23E8A33D'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F7F5}
+a{color:#3B2A4A}a:hover{color:#1C1622}
+</style>
+
+</head>
+<body>
+
+<div style="font-family: Inter, system-ui, sans-serif; color: #1C1622; background: linear-gradient(180deg, #E8F6EF 0%, #F7F7F5 70%); line-height: 1.55; font-size: 17px; min-height: 900px; display: flex; flex-direction: column">
+
+  <header style="max-width: 1160px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 28px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="44" height="44" viewBox="0 0 64 64" role="img" aria-label="Kalipra logotyp">
+        <rect width="64" height="64" rx="14" fill="#3B2A4A"></rect>
+        <g transform="translate(8 8) scale(.75)">
+          <circle cx="32" cy="32" r="29" fill="none" stroke="#FFFFFF" stroke-width="4"></circle>
+          <path d="M32 10 A22 22 0 0 1 54 32 L32 32 Z" fill="#FFFFFF"></path>
+          <path d="M54 32 A22 22 0 0 1 20.5 50.8 L32 32 Z" fill="#FFFFFF" opacity=".55"></path>
+          <path d="M20.5 50.8 A22 22 0 0 1 32 10 L32 32 Z" fill="#E8A33D"></path>
+        </g>
+      </svg>
+      <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px">Kalipra</span>
+    </div>
+    <a href="app/" style="text-decoration: none; background: #3B2A4A; color: #FFFFFF; padding: 12px 22px; border-radius: 8px; font-weight: 600; font-size: 16px">Öppna Kalipra</a>
+  </header>
+
+  <main style="flex: 1 1 auto; max-width: 1160px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; align-items: center; gap: 64px">
+
+    <div style="flex: 1 1 420px; min-width: 0">
+      <p style="margin: 0 0 16px; font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8A5A00">Verktyg för dietister i vården</p>
+      <h1 style="margin: 0 0 24px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 54px; line-height: 1.06; letter-spacing: -0.02em">Kostberäkning som utgår från patienten</h1>
+      <ul style="list-style: none; margin: 0 0 36px; padding: 0; display: flex; flex-direction: column; gap: 18px">
+        <li style="display: flex; gap: 14px; align-items: flex-start">
+          <span aria-hidden="true" style="flex: none; width: 32px; height: 32px; border-radius: 8px; background: #3B2A4A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+          <span><strong style="display: block; font-size: 19px">Anpassade rekommendationer</strong><span style="color: #4A4252">utifrån patientens diagnos och hälsotillstånd.</span></span>
+        </li>
+        <li style="display: flex; gap: 14px; align-items: flex-start">
+          <span aria-hidden="true" style="flex: none; width: 32px; height: 32px; border-radius: 8px; background: #3B2A4A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+          <span><strong style="display: block; font-size: 19px">Bedöm undernäring med GLIM</strong><span style="color: #4A4252">snabbt och enkelt, med viktförloppet framräknat.</span></span>
+        </li>
+        <li style="display: flex; gap: 14px; align-items: flex-start">
+          <span aria-hidden="true" style="flex: none; width: 32px; height: 32px; border-radius: 8px; background: #3B2A4A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+          <span><strong style="display: block; font-size: 19px">Användarvänligt</strong><span style="color: #4A4252">från ny patient till färdig bedömning på några minuter.</span></span>
+        </li>
+      </ul>
+      <a href="app/" style="text-decoration: none; background: #3B2A4A; color: #FFFFFF; padding: 17px 32px; border-radius: 8px; font-weight: 600; font-size: 18px; display: inline-block">Prova Kalipra</a>
+    </div>
+
+    <!-- Skiftande bilder från gränssnittet -->
+    <div style="flex: 1 1 500px; min-width: 0">
+      <div role="img" id="shot" aria-label="" style="background: #FFFFFF; border: 1px solid #E4E1E8; border-radius: 16px; box-shadow: 0 28px 70px rgba(59, 42, 74, 0.16); overflow: hidden">
+        <div style="background: #3B2A4A; color: #FFFFFF; padding: 13px 20px; display: flex; align-items: center; gap: 10px; font-size: 14px">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px">Kalipra</span>
+          <span style="opacity: .75">· <span id="stitle"></span></span>
+        </div>
+        <div style="padding: 26px; height: 380px; box-sizing: border-box">
+
+          <div class="slide" data-slide="0">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #EEEBF1; padding-bottom: 10px">
+                <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px">Hälsotillstånd</span>
+                <span style="font-size: 13px; color: #5A5262">Kalle Kalleson</span>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6B6373; margin-bottom: 4px">Metabola och endokrina</div>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 8px; font-size: 14px">
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>Diabetes typ 2</div>
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; background: #E8F6EF; font-weight: 600"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; border-radius: 4px; background: #3B2A4A; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>Hypertoni</div>
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; background: #E8F6EF; font-weight: 600"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; border-radius: 4px; background: #3B2A4A; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>Höga blodfetter</div>
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>Prediabetes</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6B6373; margin-bottom: 4px">Hjärta och kärl</div>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 8px; font-size: 14px">
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>Hjärt-kärlsjukdom</div>
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>Hjärtsvikt</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6B6373; margin-bottom: 4px">Nutritionsrisk</div>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 8px; font-size: 14px">
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>Sarkopeni</div>
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; border: 2px solid #A79FB0; background: #FFFFFF"></span>KOL</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide" data-slide="1" hidden>
+            <div style="display: flex; flex-direction: column; gap: 18px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+                <div>
+                  <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 26px">Kalle Kalleson</div>
+                  <div style="font-size: 14px; color: #5A5262">Man, 68 år · 70,0 kg · 165 cm</div>
+                </div>
+                <span style="background: #FDEBEA; color: #9B2C24; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600">Hypertoni</span>
+              </div>
+              <div style="background: #F7F7F5; border-radius: 12px; padding: 18px">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px">
+                  <span style="font-size: 14px; color: #5A5262">Totalt energibehov</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-size: 28px">1 820 kcal</strong>
+                </div>
+                <div style="display: flex; height: 14px; border-radius: 7px; overflow: hidden">
+                  <div style="width: 71%; background: #3B2A4A"></div>
+                  <div style="width: 29%; background: #E8A33D"></div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 10px; font-size: 13px; color: #4A4252">
+                  <span>BMR <strong>1 300 kcal</strong></span>
+                  <span>Aktivitet <strong>520 kcal</strong></span>
+                </div>
+              </div>
+              <div style="border: 2px solid #C0392B; border-radius: 10px; padding: 14px 16px; background: #FFF8F7; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600; color: #9B2C24">Salt – viktigt vid hypertoni</div>
+                  <div style="font-size: 13px; color: #5A5262">Rekommendation högst 5,75 g/dag</div>
+                </div>
+                <strong style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; color: #9B2C24">7,8 g</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide" data-slide="2" hidden>
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px">GLIM-bedömning</span><span style="font-size: 13px; color: #5A5262">Kalle Kalleson</span></div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; font-size: 14px">
+                <div style="background: #F7F7F5; border-radius: 10px; padding: 14px">
+                  <div style="font-weight: 600; margin-bottom: 8px">Fenotypiska kriterier</div>
+                  <div style="color: #1F5A41; font-weight: 600">● Viktförlust 8,1 % / 6 mån</div>
+                  <div style="color: #6B6373">○ Lågt BMI</div>
+                  <div style="color: #6B6373">○ Minskad muskelmassa</div>
+                </div>
+                <div style="background: #F7F7F5; border-radius: 10px; padding: 14px">
+                  <div style="font-weight: 600; margin-bottom: 8px">Etiologiska kriterier</div>
+                  <div style="color: #1F5A41; font-weight: 600">● Minskat intag</div>
+                  <div style="color: #6B6373">○ Inflammation / sjukdom</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; font-size: 14px">
+                <div style="flex: 1; background: #F7F7F5; border-radius: 10px; padding: 10px 12px">74,0 kg <span style="color: #6B6373">maj</span></div>
+                <div style="flex: 1; background: #F7F7F5; border-radius: 10px; padding: 10px 12px">71,5 kg <span style="color: #6B6373">aug</span></div>
+                <div style="flex: 1; background: #F7F7F5; border-radius: 10px; padding: 10px 12px">68,0 kg <span style="color: #6B6373">nov</span></div>
+              </div>
+              <div style="background: #FBF0DC; border-radius: 10px; padding: 14px 16px">
+                <div style="font-size: 13px; color: #7A4F00; font-weight: 600">Resultat</div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; color: #5C3B00">Måttlig undernäring (stadium 1)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide" data-slide="3" hidden>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 4px">Kostregistrering</div>
+              <div style="background: #FFFFFF; border: 2px solid #3B2A4A; border-radius: 8px; padding: 11px 14px; font-size: 16px">havregryn</div>
+              <ul style="list-style: none; margin: 0; padding: 6px; border: 1px solid #E4E1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 2px; font-size: 15px">
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 10px; border-radius: 6px; background: #E8F6EF"><span>Havregryn fullkorn</span><span style="color: #5A5262">375 kcal</span></li>
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 10px"><span>Havregrynsgröt, lättmjölk</span><span style="color: #5A5262">100 kcal</span></li>
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 10px"><span>Havregrynsgröt kokt m. mjölk</span><span style="color: #5A5262">89 kcal</span></li>
+              </ul>
+              <div style="display: flex; justify-content: space-between; font-size: 14px; color: #5A5262; padding: 6px 2px">
+                <span>Frukost · 60 g</span>
+                <span>Dag 1: <strong style="color: #1C1622">1 640 kcal</strong></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 18px">
+        <span id="dots"></span>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+const slides=[
+ {title:'Hälsotillstånd',label:'Hälsotillstånd för Kalle Kalleson, där hypertoni och höga blodfetter är ikryssade'},
+ {title:'Ny beräkning',label:'Energibehov för Kalle Kalleson med hypertoni, där saltintaget är markerat'},
+ {title:'Bedöm undernäring',label:'GLIM-bedömning med viktförlopp och resultatet måttlig undernäring'},
+ {title:'Kostregistrering',label:'Sökning efter livsmedel i kostregistreringen'}];
+let cur=0,timer;
+const dots=document.getElementById('dots');
+slides.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Visa '+x.title);b.onclick=()=>{clearInterval(timer);show(i)};dots.appendChild(b)});
+function show(i){cur=i;document.querySelectorAll('.slide').forEach(el=>el.hidden=Number(el.dataset.slide)!==i);
+ document.getElementById('stitle').textContent=slides[i].title;document.getElementById('shot').setAttribute('aria-label',slides[i].label);
+ [...dots.children].forEach((b,j)=>b.style.cssText='width:'+(j===i?28:12)+'px;height:12px;border-radius:6px;border:0;padding:0;margin:0 4px;cursor:pointer;background:'+(j===i?'#3B2A4A':'#CFC8D6'))}
+show(0);timer=setInterval(()=>show((cur+1)%slides.length),4000);
+</script>
+</body>
+</html>

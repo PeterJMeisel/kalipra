@@ -424,3 +424,73 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .jhead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px }
 .jhead h4 { margin: 0; font-size: 17px }
 .journal textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); font: 15px/1.5 Inter, system-ui, sans-serif; resize: vertical }
+
+/* Betaspärr */
+.gate { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(180deg, var(--tint), var(--bg) 70%) }
+.gatebox { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 36px 32px; width: min(100%, 380px); display: flex; flex-direction: column; gap: 12px; text-align: center; box-shadow: 0 24px 60px rgba(59,42,74,.12) }
+.gatebox svg { margin: 0 auto }
+.gatebox h1 { margin: 4px 0 0 }
+.gatebox .field { text-align: left; display: flex; flex-direction: column; gap: 4px }
+.gatebox .field input { font-size: 17px; padding: 10px 12px }
+.gateback { font-size: 14px; color: var(--muted) }
+
+/* Patientöversikt – arbetsyta */
+.main.wsmain { max-width: 1500px }
+.ws-head { margin-bottom: 14px }
+.ws { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); grid-template-areas: "meals right" "bottom bottom"; gap: 14px }
+.panelbox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 0 }
+.ws-meals { grid-area: meals; display: flex; flex-direction: column; min-height: 380px }
+.ws-right { grid-area: right; display: flex; flex-direction: column; min-height: 380px; max-height: 560px }
+.ws-bottom { grid-area: bottom }
+.ws-mealtabs, .ws-tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px }
+.ws-mealtabs button, .ws-tabs button { min-height: 36px; padding: 6px 12px; font-size: 14px }
+.ws-mealtabs button.on, .ws-tabs > button.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); font-weight: 600 }
+.ws-mealtabs .count { margin-left: 6px; background: var(--saffron); color: #1C1622; border-radius: 9px; padding: 0 6px; font-size: 12px; font-weight: 700 }
+.ws-days, .ws-scope { margin-left: auto; display: flex; gap: 10px; align-items: center; font-size: 14px }
+.ws-scope { gap: 0 }
+.ws-scope button { border-radius: 0; min-height: 34px }
+.ws-scope button:first-child { border-radius: 8px 0 0 8px }
+.ws-scope button:last-child { border-radius: 0 8px 8px 0; border-left: 0 }
+.ws-scope button.on { background: var(--tint); border-color: var(--brand); font-weight: 600 }
+.ws-tablewrap { flex: 1; overflow: auto }
+.ws-entries { width: 100% }
+.ws-entries th { text-align: left; font-size: 13px; color: var(--muted); font-weight: 600; padding: 4px 6px; border-bottom: 1px solid var(--line) }
+.ws-entries input { width: 70px; text-align: right }
+.ws-totals { margin: 10px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted) }
+.ws-totals strong { color: var(--ink) }
+.ws-totals .sep { margin: 0 8px }
+.ws-picker { display: flex; flex-direction: column; gap: 8px; min-height: 0; flex: 1 }
+.ws-search { width: 100%; font-size: 15px; padding: 9px 11px; box-sizing: border-box }
+.ws-sources { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px }
+.ws-hits { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; min-height: 160px; border: 1px solid var(--line); border-radius: 8px }
+.ws-hits li:nth-child(even) button { background: color-mix(in srgb, var(--tint) 45%, transparent) }
+.ws-hits button { width: 100%; display: flex; justify-content: space-between; gap: 8px; text-align: left; border: 0; border-radius: 0; min-height: 30px; padding: 4px 10px; font-size: 14px; background: transparent }
+.ws-hits button.on { background: var(--brand) !important; color: var(--brand-ink) }
+.ws-hits small { color: inherit; opacity: .7; white-space: nowrap }
+.ws-hits .empty { padding: 10px }
+.ws-addrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.ws-addrow .pickedname { flex: 1 1 100%; font-size: 14px; font-weight: 600 }
+.ws-addrow input { width: 70px }
+.ws-patient { overflow: auto; display: flex; flex-direction: column; gap: 12px }
+.ws-pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px }
+.ws-pgrid label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--muted) }
+.ws-pgrid input, .ws-pgrid select { font-size: 15px; width: 100%; box-sizing: border-box }
+.ws-pgrid output { font-size: 18px; font-weight: 700; color: var(--ink); padding: 6px 0 }
+.ws-kcalrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px }
+.ws-kcalbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px }
+.ws-kcalbox .lbl { font-size: 13px; color: var(--muted) }
+.ws-kcalbox .val { font-size: 26px; font-weight: 700 }
+.ws-kcalbox .val small { font-size: 14px; font-weight: 500; color: var(--muted) }
+.ws-kcalbox .sub { font-size: 13px; color: var(--muted) }
+.ws-kcalbox .meter .fill.low { background: var(--amber) }
+.ws-h4 { margin: 18px 0 8px }
+.ws-micros { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 18px }
+.ws-micro { display: grid; grid-template-columns: 96px 1fr 48px; gap: 8px; align-items: center; font-size: 13px }
+.ws-micro .bar { margin: 0 }
+.ws-micro .mp { text-align: right; font-weight: 600 }
+.ws-micro .mp.low { color: var(--red) } .ws-micro .mp.near, .ws-micro .mp.high { color: var(--amber) } .ws-micro .mp.ok { color: var(--ok) }
+@media (max-width: 900px) {
+  .ws { grid-template-columns: 1fr; grid-template-areas: "right" "meals" "bottom" }
+  .ws-kcalrow { grid-template-columns: 1fr }
+  .ws-right { max-height: none }
+}

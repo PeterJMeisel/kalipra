@@ -13,6 +13,7 @@ import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
+import { Workspace } from './ui/Workspace'
 
 const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
@@ -72,6 +73,18 @@ export default function App() {
     setCalcId(id)
     setTab(startTab)
     go('berakning')
+  }
+  /** Öppnar patienten i översikten: senaste beräkningen, eller en ny om det inte finns någon. */
+  function openOverview(personId: string) {
+    setMessage('')
+    const last = calculationsFor(state, personId)[0]
+    if (last) { setCalcId(last.id); return }
+    const p = personById(personId)
+    const w = p ? sortWeights(p.weights ?? []).at(-1)?.kg : undefined
+    const c: Calculation = { id: newId(), personId, createdAt: now(), updatedAt: now(), weightKg: w ?? 70, pal: 1.2, goal: null, days: 1, entries: [] }
+    setState(s => ({ ...s, calculations: [...s.calculations, c] }))
+    setCalcId(c.id)
+    setMessage(w === undefined ? 'Ny beräkning skapad. Kontrollera vikten under fliken Patient.' : `Ny beräkning skapad med senaste vikten ${formatNumber(w, 1)} kg.`)
   }
   function startNewCalc(personId: string | null) {
     setNyMode('lista')
@@ -210,7 +223,7 @@ export default function App() {
           {view !== 'start' && (
             <nav className="topnav">
               <button className={navOn(['ny'])} onClick={() => startNewCalc(null)}>Ny beräkning</button>
-              <button className={navOn(['oversikt'])} onClick={() => go('oversikt')}>Patientöversikt</button>
+              <button className={navOn(['oversikt'])} onClick={() => { setCalcId(null); go('oversikt') }}>Patientöversikt</button>
               <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => go('undernaring')}>Bedöm undernäring</button>
             </nav>
           )}
@@ -238,7 +251,7 @@ export default function App() {
               <span className="bt">Ny beräkning</span>
               <span className="bs">För en ny eller befintlig patient</span>
             </button>
-            <button className="bigbtn" onClick={() => go('oversikt')}>
+            <button className="bigbtn" onClick={() => { setCalcId(null); go('oversikt') }}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M5 40c1.5-8 6.5-12 13-12s11.5 4 13 12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M32 14h11M32 22h11M36 30h7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
               <span className="bt">Patientöversikt</span>
             </button>
@@ -367,11 +380,59 @@ export default function App() {
         </main>
       )}
 
-      {view === 'oversikt' && (
+      {view === 'oversikt' && !(calculation && calcPerson) && (
         <main className="main narrow">
           <h1>Patientöversikt</h1>
-          <p className="empty">Den här delen byggs i en senare version.</p>
-          <div className="actions"><button onClick={() => go('start')}>Till startsidan</button></div>
+          {message && <p className="msg">{message}</p>}
+          {state.persons.length === 0 ? (
+            <>
+              <p className="empty">Inga patienter ännu.</p>
+              <div className="actions">
+                <button className="primary" onClick={() => startNewCalc(null)}>Ny beräkning</button>
+                <button onClick={() => fileRef.current?.click()}>Hämta patient från fil …</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="note">Välj patient att öppna i översikten.</p>
+              <PersonPicker weightOf={p => currentWeight(state, p.id)?.kg} persons={state.persons} actionLabel="Öppna"
+                detail={p => plural(state.calculations.filter(c => c.personId === p.id).length, 'kostberäkning', 'kostberäkningar')}
+                onPick={openOverview} />
+            </>
+          )}
+        </main>
+      )}
+
+      {view === 'oversikt' && calculation && calcPerson && (
+        <main className="main wsmain">
+          <section className="clienthead ws-head">
+            <div className="chtop">
+              <div>
+                <h1>{calcPerson.code}</h1>
+                <p className="facts">
+                  {calcPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'}, {calcPerson.age} år · {formatNumber(calculation.weightKg, 1)} kg · {formatNumber(calcPerson.heightCm, 0)} cm · BMI {formatNumber(bmi(calculation.weightKg, calcPerson.heightCm), 1)} · PAL {formatNumber(calculation.pal, 2)}
+                </p>
+              </div>
+              <div className="actions">
+                {personCalcs.length > 1 && (
+                  <select aria-label="Beräkning" value={calculation.id} onChange={e => setCalcId(e.target.value)}>
+                    {personCalcs.map((c, i) => <option key={c.id} value={c.id}>{dayText(c.createdAt)}{i === 0 ? ' (senaste)' : ''}</option>)}
+                  </select>
+                )}
+                <button className="small" onClick={() => open(calculation.id, 'resultat')}>Fullständigt resultat →</button>
+                <button className="small" onClick={() => { setAssessPersonId(calcPerson.id); go('undernaring') }}>Bedöm undernäring</button>
+                <button className="small" onClick={() => setCalcId(null)}>Byt patient</button>
+              </div>
+            </div>
+          </section>
+          <Workspace
+            key={calculation.id}
+            db={db}
+            person={calcPerson}
+            calc={calculation}
+            onPatchPerson={p => patchPerson(calcPerson.id, p)}
+            onPatchCalc={p => patchCalc(calculation.id, p)}
+          />
         </main>
       )}
 
