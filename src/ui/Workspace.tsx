@@ -806,9 +806,6 @@ function IntakeView({ scoped }: { scoped: Scoped }) {
 
 /* ---------- Nertill: energifördelning ---------- */
 
-type Status = 'ok' | 'near' | 'low' | 'high'
-const STATUS_TEXT: Record<Status, string> = { ok: 'Inom', near: 'Nära', low: 'Under', high: 'Över' }
-const rangeStatus = (val: number, r: Range): Status => (r.min !== undefined && val < r.min ? 'low' : r.max !== undefined && val > r.max ? 'high' : 'ok')
 const rangeText = (r: Range): string => {
   const f = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 1)
   if (r.min !== undefined && r.max !== undefined) return `${f(r.min)}–${f(r.max)} E%`
@@ -880,18 +877,16 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
     <div className="ef-wrap">
     <EnergyPie parts={pieParts} />
     <table className="ref ws-macro">
-      <thead><tr><th>Näringsämne</th><th className="num">Gram</th><th className="num">E%</th><th>Rekommendation</th><th>Läge</th></tr></thead>
+      <thead><tr><th>Näringsämne</th><th className="num">Gram</th><th className="num">E%</th><th>Rekommendation</th></tr></thead>
       <tbody>
         {rows.map(r => {
           const isFiber = r.label === 'Fiber'
-          const st = isFiber ? null : rangeStatus(r.pct, r.ref)
           return (
             <tr key={r.label} className={r.label.startsWith('–') ? 'subrow' : ''}>
               <td>{r.label}</td>
               <td className="num">{formatNumber(r.grams, 1)}</td>
               <td className="num">{isFiber ? '' : <strong>{formatNumber(r.pct, 1)}</strong>}</td>
               <td>{isFiber ? `minst ${formatNumber(macro.fiberGPerMJ.min ?? 3, 0)} g/MJ` : r.label === 'Alkohol' ? 'Ingen säker nivå' : rangeText(r.ref)}</td>
-              <td>{st && <span className={`pill ${st}`}>{STATUS_TEXT[st]}</span>}</td>
             </tr>
           )
         })}
