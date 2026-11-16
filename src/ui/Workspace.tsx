@@ -606,7 +606,7 @@ type ChartGroup = { label: string; bars: ChartBar[] }
 /** Dagfärger: kategoriska, fast ordning (dag 1 = första färgen). Högst 8 dagar i diagrammet. */
 const DAY_COLORS = 8
 
-/** Grupperat stapeldiagram: en grupp per näringsämne, en stapel per dag (färg = dag). Över 100 % ritas som 110 %. */
+/** Grupperat stapeldiagram: en grupp per näringsämne, en stapel per dag (färg = dag). Hoptryckt skala 100–200 %. */
 function DaysChart({ groups }: { groups: ChartGroup[] }) {
   const [hover, setHover] = useState<{ g: string; b: ChartBar; x: number; y: number } | null>(null)
   const all = groups[0]?.bars ?? []
@@ -615,14 +615,19 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
   const barW = n <= 3 ? 12 : n <= 5 ? 9 : 7
   const gapBar = 2, gapGroup = 18
   const groupW = n * barW + (n - 1) * gapBar
-  const left = 52, top = 34, plotH = 200, bottom = 80
+  const left = 52, top = 34, plotH = 230, bottom = 80
   const width = left + groups.length * (groupW + gapGroup) + 8
   const height = top + plotH + bottom
-  // Skalan går till 112 %. Värden över 100 % ritas avkortade vid 110 % med ett avbrott i stapeln
-  // och det verkliga värdet skrivet ovanför.
-  const CAP = 112, OVER = 110
-  const y = (p: number) => top + plotH - (Math.min(p, CAP) / CAP) * plotH
-  const ticks = [0, 25, 50, 75, 100]
+  // Skala: 0–100 % i steg om 25 % (steghöjd S). Över 100 % är skalan hoptryckt: stegen 150 och 200 %
+  // är värda 50 % men bara S/2 höga. Värden över 200 % går till toppen och får sitt värde utskrivet.
+  const S = plotH / 5
+  const MAX = 200
+  const y = (p: number) => {
+    const v = Math.max(0, Math.min(p, MAX))
+    const h = v <= 100 ? (v / 25) * S : 4 * S + ((v - 100) / 50) * (S / 2)
+    return top + plotH - h
+  }
+  const ticks = [0, 25, 50, 75, 100, 150, 200]
   const colorIdx = (day: number) => shown.indexOf(day)
   return (
     <div className="dv-chartbox">
@@ -633,7 +638,7 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
       <div className="dv-chartwrap">
         <svg className="dv-chart" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img"
           aria-label="Intag per dag i procent av behov och rekommendation" onMouseLeave={() => setHover(null)}>
-          <rect x={left} y={y(CAP)} width={width - 4 - left} height={y(100) - y(CAP)} className="overzone" />
+          <rect x={left} y={y(MAX)} width={width - 4 - left} height={y(100) - y(MAX)} className="overzone" />
           {ticks.map(t => (
             <g key={t}>
               <line x1={left} x2={width - 4} y1={y(t)} y2={y(t)} className={t === 100 ? 'ref' : 'grid'} />
@@ -646,7 +651,7 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
               <g key={g.label}>
                 {g.bars.filter(b => shown.includes(b.day)).map((b, bi) => {
                   const x = gx + bi * (barW + gapBar)
-                  const top0 = y(Math.min(b.pct, OVER))
+                  const top0 = y(b.pct)
                   const h = Math.max(0, top + plotH - top0)
                   const r = Math.min(3, h, barW / 2)
                   return (
@@ -655,13 +660,9 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
                         onMouseEnter={() => setHover({ g: g.label, b, x: x + barW / 2, y: top0 })} />
                       <path className={`dvbar dc${colorIdx(b.day)}`} pointerEvents="none"
                         d={h > 0 ? `M${x},${top + plotH} V${top0 + r} Q${x},${top0} ${x + r},${top0} H${x + barW - r} Q${x + barW},${top0} ${x + barW},${top0 + r} V${top + plotH} Z` : ''} />
-                      {b.pct > 100 && (
-                        <g pointerEvents="none">
-                          {/* Avbrott: två snedstreck i ytans färg tvärs över stapeln */}
-                          <line x1={x - 2} x2={x + barW + 2} y1={y(103) + 3} y2={y(103) - 3} className="brk" />
-                          <line x1={x - 2} x2={x + barW + 2} y1={y(106) + 3} y2={y(106) - 3} className="brk" />
-                          <text className="overval" textAnchor="start" transform={`translate(${x + barW / 2 + 3},${y(OVER) - 3}) rotate(-90)`}>{formatNumber(Math.floor(b.pct), 0)} %</text>
-                        </g>
+                      {b.pct > MAX && (
+                        <text className="overval" textAnchor="start" pointerEvents="none"
+                          transform={`translate(${x + barW / 2 + 3},${top - 3}) rotate(-90)`}>{formatNumber(Math.floor(b.pct), 0)} %</text>
                       )}
                     </g>
                   )
