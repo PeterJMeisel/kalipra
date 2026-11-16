@@ -91,6 +91,8 @@ export type Person = {
   glim?: import('./glim').GlimAnswers
   createdAt: string
   updatedAt?: string
+  /** När patienten senast laddades i programmet (för sortering i patientlistan). */
+  lastOpenedAt?: string
 }
 
 /** En beräkning (ett tillfälle) för en person: vikt och aktivitet vid tillfället samt kostregistrering. */

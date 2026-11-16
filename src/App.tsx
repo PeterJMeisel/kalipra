@@ -20,7 +20,8 @@ const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as F
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
-type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt'
+const ACTIVE_KEY = 'kalipra.activePatient'
+type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
 const now = () => new Date().toISOString()
@@ -52,6 +53,13 @@ export default function App() {
     try { localStorage.setItem('kalipra.theme', theme) } catch { /* lagring kan saknas */ }
   }, [theme])
   const fileRef = useRef<HTMLInputElement>(null)
+  const [activeId, setActiveId] = useState<string | null>(() => {
+    try { return localStorage.getItem(ACTIVE_KEY) } catch { return null }
+  })
+  const [pickNew, setPickNew] = useState(false)
+  useEffect(() => {
+    try { if (activeId) localStorage.setItem(ACTIVE_KEY, activeId); else localStorage.removeItem(ACTIVE_KEY) } catch { /* ignorera */ }
+  }, [activeId])
 
   useEffect(() => { setSaved(saveState(state)) }, [state])
   useEffect(() => { window.scrollTo(0, 0) }, [view])
@@ -69,15 +77,30 @@ export default function App() {
   const client: Client | null = calculation && calcPerson ? toClient(calcPerson, calculation) : null
   const diary: Diary | null = calculation ? { clientId: calculation.id, days: calculation.days, entries: calculation.entries } : null
   const personCalcs = calcPerson ? calculationsFor(state, calcPerson.id) : []
+  const activePerson = personById(activeId)
+
+  /** Laddar patienten: den visas i bannern och används av Patientöversikt och Bedöm undernäring. */
+  function activate(personId: string) {
+    setActiveId(personId)
+    const t = now()
+    setState(s => ({ ...s, persons: s.persons.map(p => (p.id === personId ? { ...p, lastOpenedAt: t } : p)) }))
+  }
+  function openPatientList() {
+    setPickNew(false)
+    go('patienter')
+  }
 
   function open(id: string, startTab: Tab = 'resultat') {
+    const c = state.calculations.find(x => x.id === id)
+    if (c) activate(c.personId)
     setCalcId(id)
     setTab(startTab)
     go('berakning')
   }
   /** Öppnar patienten i översikten: senaste beräkningen, eller en ny om det inte finns någon. */
   function openOverview(personId: string) {
-    setMessage('')
+    activate(personId)
+    go('oversikt')
     const last = calculationsFor(state, personId)[0]
     if (last) { setCalcId(last.id); return }
     const p = personById(personId)
@@ -98,7 +121,8 @@ export default function App() {
     const { person, calc } = splitClient(form)
     const p: Person = { ...person, id: newId(), createdAt: now(), updatedAt: now() }
     const c: Calculation = { ...calc, id: newId(), personId: p.id, createdAt: now(), updatedAt: now(), days: 1, entries: [] }
-    setState(s => ({ ...s, persons: [...s.persons, p], calculations: [...s.calculations, c] }))
+    setState(s => ({ ...s, persons: [...s.persons, { ...p, lastOpenedAt: now() }], calculations: [...s.calculations, c] }))
+    setActiveId(p.id)
     return { personId: p.id, calcId: c.id }
   }
   function createCalcFor(personId: string, form: Omit<Client, 'id' | 'createdAt'>) {
@@ -161,11 +185,11 @@ export default function App() {
       const newPatients = imported.persons.filter(p => !existing.has(p.id)).length
       const { state: next } = mergeImport(state, imported)
       setState(next)
-      setNyMode('lista'); setNyPersonId(null); setView('ny')
+      setPickNew(false); setView('patienter')
       setMessage(`Hämtade ${plural(imported.persons.length, 'patient', 'patienter')} med ${plural(imported.calculations.length, 'beräkning', 'beräkningar')} från filen`
         + ` (${newPatients} nya, ${imported.persons.length - newPatients} uppdaterade).`)
     } catch (e) {
-      setNyMode('lista'); setNyPersonId(null); setView('ny')
+      setPickNew(false); setView('patienter')
       setMessage(e instanceof Error && e.message.includes('giltig') ? e.message : 'Filen kunde inte läsas. Välj en fil som har exporterats från Kalipra.')
     }
     if (fileRef.current) fileRef.current.value = ''
@@ -175,6 +199,7 @@ export default function App() {
   const assessPerson = personById(assessPersonId)
   const assessLatestCalc = assessPerson ? calculationsFor(state, assessPerson.id)[0] : undefined
   function linkToExisting(personId: string) {
+    activate(personId)
     const r = linkDraft(state, personId)
     setState(r.state)
     setAssessPersonId(personId)
@@ -209,6 +234,11 @@ export default function App() {
       })()
     : undefined
 
+  const activeWeight = activePerson ? (currentWeight(state, activePerson.id)?.kg ?? calculationsFor(state, activePerson.id)[0]?.weightKg) : undefined
+  const activeBmi = activePerson && activeWeight && activePerson.heightCm ? bmi(activeWeight, activePerson.heightCm) : null
+  const sortedPersons = [...state.persons].sort((a, b) =>
+    (b.lastOpenedAt ?? b.updatedAt ?? b.createdAt).localeCompare(a.lastOpenedAt ?? a.updatedAt ?? a.createdAt))
+
   const navOn = (v: View[]) => (v.includes(view) ? 'on' : '')
 
   return (
@@ -220,12 +250,25 @@ export default function App() {
           <Logo size={34} />
           <span>Kalipra<span className="tag">Verktyg för dietister</span></span>
         </button>
+        <div className="patientbar" aria-label="Laddad patient">
+          {activePerson ? (
+            <span className="pb-info">
+              <span className="pb-code">{activePerson.code}</span>
+              <span className="pb-facts">{activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
+            </span>
+          ) : (
+            <span className="pb-none">Ingen patient vald</span>
+          )}
+          <button type="button" className={`pb-btn ${view === 'patienter' ? 'on' : ''}`} onClick={openPatientList}>
+            Välj patient
+          </button>
+        </div>
         <div className="topright">
           {view !== 'start' && (
             <nav className="topnav">
               <button className={navOn(['ny'])} onClick={() => startNewCalc(null)}>Ny beräkning</button>
-              <button className={navOn(['oversikt'])} onClick={() => { setCalcId(null); go('oversikt') }}>Patientöversikt</button>
-              <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => go('undernaring')}>Bedöm undernäring</button>
+              <button className={navOn(['oversikt'])} onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>Patientöversikt</button>
+              <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
             </nav>
           )}
           <button type="button" className="themeswitch" role="switch" aria-checked={theme === 'dark'} aria-label="Mörkt läge"
@@ -238,6 +281,50 @@ export default function App() {
       </header>
 
       {!saved && <p className="savewarn">Webbläsaren tillåter inte lokal lagring här. Exportera beräkningen till fil för att behålla den.</p>}
+
+      {view === 'patienter' && (
+        <main className="main narrow">
+          <h1>Välj patient</h1>
+          {pickNew ? (
+            <>
+              <p><button type="button" className="linkback" onClick={() => setPickNew(false)}>← Tillbaka till patientlistan</button></p>
+              <h2 className="sub">Ny patient</h2>
+              <ClientForm key="ny-patient" submitLabel="Skapa patient" onCancel={() => setPickNew(false)}
+                onSave={f => { const r = createPerson(f); go('oversikt'); setCalcId(r.calcId) }} />
+            </>
+          ) : (
+            <>
+              <div className="loadactions pl-actions">
+                <button className="primary" onClick={() => { setMessage(''); setPickNew(true) }}>+ Ny patient</button>
+                <button onClick={() => fileRef.current?.click()}>Importera patienter …</button>
+                {state.persons.length > 0 && !exportSel && <button onClick={() => { setMessage(''); setExportSel(new Set()) }}>Exportera …</button>}
+                {activePerson && <button onClick={() => { setActiveId(null); setCalcId(null); setAssessPersonId(null); setMessage('Ingen patient är laddad.') }}>Stäng patient</button>}
+              </div>
+              {exportSel && (
+                <div className="exportbar">
+                  <span>Kryssa i de patienter du vill exportera.</span>
+                  <button className="small" onClick={() => setExportSel(exportSel.size === state.persons.length ? new Set() : new Set(state.persons.map(p => p.id)))}>
+                    {exportSel.size === state.persons.length ? 'Avmarkera alla' : 'Markera alla'}
+                  </button>
+                  <button className="small primary" disabled={exportSel.size === 0} onClick={() => { exportPatients([...exportSel]); setExportSel(null) }}>
+                    Exportera {exportSel.size > 0 ? `(${exportSel.size})` : ''}
+                  </button>
+                  <button className="small" onClick={() => setExportSel(null)}>Avbryt</button>
+                </div>
+              )}
+              {message && <p className="msg">{message}</p>}
+              <h2 className="sub">Mina patienter <span className="muted">· senast öppnad först</span></h2>
+              {sortedPersons.length === 0
+                ? <p className="empty">Inga patienter ännu. Skapa en ny patient eller importera från fil.</p>
+                : <PersonPicker weightOf={p => currentWeight(state, p.id)?.kg} persons={sortedPersons} actionLabel="Ladda" keepOrder
+                    detail={p => (p.id === activeId ? 'Laddad nu · ' : '') + (p.lastOpenedAt ? `öppnad ${dayText(p.lastOpenedAt)}` : `skapad ${dayText(p.createdAt)}`)}
+                    onPick={id => openOverview(id)}
+                    selected={exportSel ?? undefined}
+                    onToggle={id => setExportSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })} />}
+            </>
+          )}
+        </main>
+      )}
 
       {view === 'start' && (
         <main className="start">
@@ -252,11 +339,11 @@ export default function App() {
               <span className="bt">Ny beräkning</span>
               <span className="bs">För en ny eller befintlig patient</span>
             </button>
-            <button className="bigbtn" onClick={() => { setCalcId(null); go('oversikt') }}>
+            <button className="bigbtn" onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M5 40c1.5-8 6.5-12 13-12s11.5 4 13 12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M32 14h11M32 22h11M36 30h7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
               <span className="bt">Patientöversikt</span>
             </button>
-            <button className="bigbtn" onClick={() => go('undernaring')}>
+            <button className="bigbtn" onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M24 8v20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M10 18h28l-4 14H14z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /><circle cx="24" cy="8" r="3" fill="currentColor" /></svg>
               <span className="bt">Bedöm undernäring</span>
             </button>
@@ -422,7 +509,7 @@ export default function App() {
                 )}
                 <button className="small" onClick={() => open(calculation.id, 'resultat')}>Fullständigt resultat →</button>
                 <button className="small" onClick={() => { setAssessPersonId(calcPerson.id); go('undernaring') }}>Bedöm undernäring</button>
-                <button className="small" onClick={() => setCalcId(null)}>Byt patient</button>
+                <button className="small" onClick={openPatientList}>Byt patient</button>
               </div>
             </div>
           </section>

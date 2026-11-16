@@ -25,16 +25,18 @@ type PickerProps = {
   onToggle?: (id: string) => void
   /** Aktuell vikt i kg att visa per patient */
   weightOf?: (p: Person) => number | undefined
+  /** Behåll ordningen i persons (annars senast ändrad först) */
+  keepOrder?: boolean
 }
 
-export function PersonPicker({ persons, detail, actionLabel, onPick, selected, onToggle, weightOf }: PickerProps) {
+export function PersonPicker({ persons, detail, actionLabel, onPick, selected, onToggle, weightOf, keepOrder }: PickerProps) {
   const meta = (p: Person) => {
     const kg = weightOf?.(p)
     return `${p.sex === 'kvinna' ? 'Kvinna' : 'Man'}, ${p.age} år · ${kg !== undefined ? `${formatNumber(kg, 1)} kg · ` : ''}${formatNumber(p.heightCm, 0)} cm`
   }
   const [q, setQ] = useState('')
   const list = [...persons]
-    .sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt))
+    .sort((a, b) => (keepOrder ? 0 : (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt)))
     .filter(p => p.code.toLowerCase().includes(q.trim().toLowerCase()))
   if (persons.length === 0) return <p className="empty">Det finns inga sparade patienter ännu.</p>
   return (
