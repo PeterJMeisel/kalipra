@@ -566,3 +566,23 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-daystable .sect th { text-align: left; padding-top: 16px; font-weight: 700; color: var(--brand); border-bottom: 2px solid var(--line) }
 .ws-daystable .pct { font-weight: 600 }
 .ws-daystable .pct.near { color: var(--orange) }
+/* Diagram: jämförelse mellan dagar */
+.dv-modes { display: inline-flex; margin: 0 0 10px }
+.dv-modes button { border-radius: 0; min-height: 32px; padding: 4px 12px; font-size: 13px }
+.dv-modes button:first-child { border-radius: 8px 0 0 8px }
+.dv-modes button:last-child { border-radius: 0 8px 8px 0; border-left: 0 }
+.dv-modes button.on { background: var(--tint); border-color: var(--brand); font-weight: 600 }
+.dv-chartwrap { position: relative; overflow-x: auto }
+.dv-chart { display: block }
+.dv-chart .grid { stroke: var(--line); stroke-width: 1 }
+.dv-chart .ref { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: .7 }
+.dv-chart .axis { stroke: var(--muted); stroke-width: 1 }
+.dv-chart .tick { font-size: 11px; fill: var(--muted) }
+.dv-chart .dayno { font-size: 10px; fill: var(--muted) }
+.dv-chart .glabel { font-size: 12px; fill: var(--ink) }
+.dv-chart .over { font-size: 9px; fill: var(--muted) }
+.dv-chart .dvbar.ok { fill: var(--ok) }
+.dv-chart .dvbar.near { fill: var(--orange) }
+.dv-chart .dvbar.low, .dv-chart .dvbar.high { fill: var(--red) }
+.dv-chart .dvbar.energy { fill: var(--brand) }
+.dv-tip { position: absolute; transform: translate(-50%, -100%); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.12); pointer-events: none; white-space: nowrap; display: flex; flex-direction: column; gap: 2px }
