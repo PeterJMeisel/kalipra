@@ -641,3 +641,7 @@ button.pb-infobtn { background: transparent; border: 0; color: inherit; padding:
 button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:disabled) .pb-facts { text-decoration: underline; text-underline-offset: 3px }
 .ws-kcalrow2 { margin-top: 12px }
 .ws-kcalbox .meter .fill.high { background: var(--red) }
+/* Fliken Måltid: exakt mängd och neutral andel av dagens RDI */
+.ws-mealmicro { grid-template-columns: 1fr auto 44px }
+.ws-mealmicro .mv { font-weight: 600; text-align: right }
+.ws-mealmicro .mp { color: var(--muted); font-weight: 400 }

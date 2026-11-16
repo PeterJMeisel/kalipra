@@ -485,17 +485,28 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
       </div>
 
       <div className="ws-h4row">
-        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {`RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
-        <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
+        <h4 className="ws-h4">{sh < 1 ? <>Vitaminer och mineraler <span className="muted">· mängd och andel av dagens RDI (NNR 2023)</span></> : `Vitaminer och mineraler i förhållande till RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
+        {sh === 1 && <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
-        </button>
+        </button>}
       </div>
-      <div className={`ws-micros ${detailed ? 'detailed' : ''}`}>
+      <div className={`ws-micros ${detailed && sh === 1 ? 'detailed' : ''}`}>
         {micro.map(m => {
           const d = NUTRIENTS[m.key]
           const val = v(m.key)
           const p = m.value > 0 ? (val / m.value) * 100 : 0
           const st = microStatus(m, val)
+          if (sh < 1) {
+            // Fliken Måltid: exakt mängd och neutral andel av dagens RDI (ingen stapel, ingen färg)
+            const dayRef = m.value / sh
+            return (
+              <div className="ws-micro ws-mealmicro" key={m.key}>
+                <span className="mn">{d.label}</span>
+                <span className="mv">{formatNumber(val, d.decimals)} {d.unit}</span>
+                <span className="mp">{formatNumber(dayRef > 0 ? (val / dayRef) * 100 : 0, 0)} %</span>
+              </div>
+            )
+          }
           return (
             <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? 'högst ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
               <span className="mn">{d.label}</span>
