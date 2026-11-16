@@ -667,9 +667,9 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
                       <path className={`dvbar dc${colorIdx(b.day)}`} pointerEvents="none"
                         d={h > 0 ? `M${x},${top + plotH} V${top0 + r} Q${x},${top0} ${x + r},${top0} H${x + barW - r} Q${x + barW},${top0} ${x + barW},${top0 + r} V${top + plotH} Z` : ''} />
                       {b.pct > MAX && (
-                        // ">" vriden uppåt: stapeln fortsätter över 200 %
+                        // ">" som det skrivs: stapeln fortsätter över 200 %
                         <polyline className="overmark" pointerEvents="none"
-                          points={`${x + barW / 2 - 4},${top - 4} ${x + barW / 2},${top - 9} ${x + barW / 2 + 4},${top - 4}`} />
+                          points={`${x + barW / 2 - 2.5},${top - 13} ${x + barW / 2 + 2.5},${top - 8} ${x + barW / 2 - 2.5},${top - 3}`} />
                       )}
                     </g>
                   )
