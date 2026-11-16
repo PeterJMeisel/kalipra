@@ -159,3 +159,14 @@ describe('AR och färger enligt NNR 2023', () => {
     expect(ms(salt, 4)).toBe('ok'); expect(ms(salt, 7)).toBe('high')
   })
 })
+
+describe('AI och UL', () => {
+  it('AI: grön vid ≥ AI annars röd; över UL röd', () => {
+    const se = mr(40, 'kvinna', 8).find(m => m.key === 'SE')!
+    expect(se.kind).toBe('AI')
+    expect(ms(se, 75)).toBe('ok'); expect(ms(se, 65)).toBe('low'); expect(ms(se, 300)).toBe('high')
+    const d = mr(40, 'man', 10).find(m => m.key === 'VITD')!
+    expect(d.ul).toBe(100); expect(ms(d, 120)).toBe('high')
+    expect(mr(10, 'man', 7).find(m => m.key === 'VITD')!.ul).toBeUndefined()
+  })
+})

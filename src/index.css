@@ -549,3 +549,4 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-legend span { display: inline-flex; align-items: center; gap: 6px }
 .ws-legend i { width: 18px; height: 8px; border-radius: 4px; display: inline-block }
 .ws-legend i.ok { background: var(--ok) } .ws-legend i.near { background: var(--orange) } .ws-legend i.low { background: var(--red) }
+.ws-micro .mp.high { color: var(--red) }

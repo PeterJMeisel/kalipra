@@ -396,7 +396,7 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
   const micro = microReferences(person.age, person.sex, need.teeMJ)
     .map(m => {
       const f = scope === 'maltid' ? scoped.needMJ / need.teeMJ : 1
-      return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined }
+      return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined }
     })
 
   return (
@@ -446,12 +446,6 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
         </button>
       </div>
-      <p className="ws-legend">
-        <span><i className="ok" /> Minst RDI</span>
-        <span><i className="near" /> Över AR men under RDI</span>
-        <span><i className="low" /> Under AR</span>
-        {detailed && <span className="muted">* provisoriskt AR</span>}
-      </p>
       <div className={`ws-micros ${detailed ? 'detailed' : ''}`}>
         {micro.map(m => {
           const d = NUTRIENTS[m.key]
@@ -468,7 +462,7 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
               {detailed && (
                 <span className="md">
                   {formatNumber(val, d.decimals)} {d.unit}{' '}
-                  <span className="ref">({m.kind === 'max' ? 'högst ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.ar !== undefined && <>, AR{m.arProvisional ? '*' : ''} {formatNumber(m.ar, d.decimals)} {d.unit}</>})</span>
+                  <span className="ref">({m.kind === 'max' ? 'högst ' : m.kind === 'AI' ? 'AI ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.kind === 'RI' && m.ar !== undefined && <>, AR {formatNumber(m.ar, d.decimals)} {d.unit}</>}{m.ul !== undefined && <>, UL {formatNumber(m.ul, d.decimals)} {d.unit}</>})</span>
                 </span>
               )}
             </div>

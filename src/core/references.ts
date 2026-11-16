@@ -93,6 +93,8 @@ export type MicroReference = {
   ar?: number
   /** AR är provisoriskt (0,8 × AI) */
   arProvisional?: boolean
+  /** Övre gräns för intag (UL), vuxna. Intag över UL = röd. */
+  ul?: number
   note?: string
 }
 
@@ -113,35 +115,43 @@ export function microReferences(age: number, sex: Sex, energyMJ: number): MicroR
       : undefined
     : undefined
   const p = true // provisoriskt AR
+  // UL enligt NNR 2023 tabell 16 (gäller vuxna). Magnesium, folsyra och niacin har UL bara för tillskott/vissa former och tas inte med.
+  const adult = age >= 18
+  const ul = (v: number) => (adult ? v : undefined)
   return [
-    { key: 'VITA', kind: 'RI', value: r[0], ar: a[0] },
-    { key: 'VITD', kind: 'RI', value: vitD, ar: a[1], note: age >= 75 ? '20 µg från 75 år.' : undefined },
-    { key: 'VITE', kind: 'AI', value: r[6], ar: a[6], arProvisional: p },
+    { key: 'VITA', kind: 'RI', value: r[0], ar: a[0], ul: ul(3000) },
+    { key: 'VITD', kind: 'RI', value: vitD, ar: a[1], note: age >= 75 ? '20 µg från 75 år.' : undefined, ul: ul(100) },
+    { key: 'VITE', kind: 'AI', value: r[6], ar: a[6], arProvisional: p, ul: ul(300) },
     { key: 'THIACLHCL', kind: 'RI', value: 0.1 * energyMJ, ar: 0.07 * energyMJ, note: '0,1 mg/MJ av energibehovet (AR 0,07 mg/MJ).' },
     { key: 'RIBF', kind: 'RI', value: r[2], ar: a[2] },
     { key: 'NIAEQ', kind: 'RI', value: 1.6 * energyMJ, ar: 1.3 * energyMJ, note: '1,6 NE/MJ av energibehovet (AR 1,3 NE/MJ).' },
-    { key: 'VITB6', kind: 'RI', value: r[3], ar: a[3] },
+    { key: 'VITB6', kind: 'RI', value: r[3], ar: a[3], ul: ul(12) },
     { key: 'FOL', kind: 'RI', value: r[4], ar: a[4], note: sex === 'kvinna' && age >= 18 && age <= 50 ? 'Vid planerad graviditet: 400 µg folsyra som tillskott.' : undefined },
     { key: 'VITB12', kind: 'AI', value: r[7], ar: a[7], arProvisional: p },
     { key: 'VITC', kind: 'RI', value: r[5], ar: a[5] },
-    { key: 'CA', kind: 'RI', value: r[8], ar: a[8] },
-    { key: 'P', kind: 'AI', value: r[11], ar: a[11], arProvisional: p },
+    { key: 'CA', kind: 'RI', value: r[8], ar: a[8], ul: ul(2500) },
+    { key: 'P', kind: 'AI', value: r[11], ar: a[11], arProvisional: p, ul: ul(3000) },
     { key: 'K', kind: 'AI', value: r[12], ar: a[12], arProvisional: p },
     { key: 'MG', kind: 'AI', value: r[13], ar: a[13], arProvisional: p },
-    { key: 'FE', kind: 'RI', value: r[9], ar: a[9], note: ironNote },
-    { key: 'ZN', kind: 'RI', value: r[10], ar: a[10] },
-    { key: 'ID', kind: 'AI', value: r[14], ar: a[14], arProvisional: p },
-    { key: 'SE', kind: 'AI', value: r[15], ar: a[15], arProvisional: p },
+    { key: 'FE', kind: 'RI', value: r[9], ar: a[9], note: ironNote, ul: ul(60) },
+    { key: 'ZN', kind: 'RI', value: r[10], ar: a[10], ul: ul(25) },
+    { key: 'ID', kind: 'AI', value: r[14], ar: a[14], arProvisional: p, ul: ul(600) },
+    { key: 'SE', kind: 'AI', value: r[15], ar: a[15], arProvisional: p, ul: ul(255) },
     { key: 'NACL', kind: 'max', value: r[16], note: 'Rekommenderat högsta intag.' },
   ]
 }
 
 export type MicroStatus = 'ok' | 'near' | 'low' | 'high'
-/** Grön vid ≥ 100 % av RI/AI, orange mellan AR och RI, röd under AR (eller under RI när AR saknas). */
-export function microStatus(m: Pick<MicroReference, 'kind' | 'value' | 'ar'>, intake: number): MicroStatus {
+/**
+ * RI: grön vid ≥ RI, orange mellan AR och RI, röd under AR.
+ * AI: grön vid ≥ AI, röd under AI.
+ * Över UL eller över rekommenderat maxintag: röd.
+ */
+export function microStatus(m: Pick<MicroReference, 'kind' | 'value' | 'ar' | 'ul'>, intake: number): MicroStatus {
   if (m.kind === 'max') return intake > m.value ? 'high' : 'ok'
+  if (m.ul !== undefined && intake > m.ul) return 'high'
   if (intake >= m.value) return 'ok'
-  if (m.ar !== undefined && intake >= m.ar) return 'near'
+  if (m.kind === 'RI' && m.ar !== undefined && intake >= m.ar) return 'near'
   return 'low'
 }
 
