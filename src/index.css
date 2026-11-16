@@ -523,3 +523,9 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-add { border-style: dashed !important; color: var(--brand); font-weight: 600 }
 .ws-remove { border: 0 !important; background: none !important; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 4px 6px !important }
 .ws-rtitle { margin: 2px 0 10px; font-size: 16px }
+.ws-copybtn { font-size: 13px !important }
+.ws-copybtn.on { background: var(--tint); border-color: var(--brand) }
+.ws-copy { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; margin-bottom: 10px; background: var(--tint); border: 1px solid var(--line); border-radius: 10px; font-size: 14px }
+.ws-copy select { font: inherit; font-size: 14px; padding: 5px 8px }
+.ws-copy .lbl { font-weight: 600 }
+.ws-copy .muted { color: var(--muted); font-size: 13px }

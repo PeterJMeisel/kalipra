@@ -32,12 +32,18 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
 
   const currentDay = Math.min(day, calc.days)
   const entries = calc.entries
-  // Måltid 1 … n, plus eventuella äldre namngivna måltider i sparade beräkningar
-  const numbered = Array.from({ length: Math.max(1, calc.meals ?? 1) }, (_, i) => mealName(i + 1))
-  const meals = sortMeals([...numbered, ...entries.map(e => e.meal)])
+  // Måltid 1 … n per dag, plus eventuella äldre namngivna måltider i sparade beräkningar
+  const mealNo = (m: string) => Number(/^Måltid (\d+)$/.exec(m)?.[1] ?? 0)
+  const countFor = (d: number) => Math.max(1, calc.mealCounts?.[d - 1] ?? calc.meals ?? 1, ...entries.filter(e => e.day === d).map(e => mealNo(e.meal)))
+  const mealsFor = (d: number) => sortMeals([
+    ...Array.from({ length: countFor(d) }, (_, i) => mealName(i + 1)),
+    ...entries.filter(e => e.day === d).map(e => e.meal),
+  ])
+  const meals = mealsFor(currentDay)
   const meal = meals.includes(mealSel) ? mealSel : meals[0]
   const mealEntries = entries.filter(e => e.day === currentDay && e.meal === meal)
   const dayEntries = entries.filter(e => e.day === currentDay)
+  const allCounts = () => Array.from({ length: calc.days }, (_, i) => countFor(i + 1))
 
   function setEntries(next: DiaryEntry[]) {
     onPatchCalc({ entries: next })
@@ -45,35 +51,58 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
   function addEntry(food: Food, grams: number) {
     setEntries([...entries, { id: newId(), day: currentDay, meal, foodNumber: food.number, ...(food.source !== 'lmv' ? { source: food.source } : {}), grams }])
   }
-  function addMeal() {
-    const n = Math.max(numbered.length, ...meals.map(m => Number(/^Måltid (\d+)$/.exec(m)?.[1] ?? 0))) + 1
-    onPatchCalc({ meals: n })
-    setMeal(mealName(n))
+  function addMeal(): Meal {
+    const counts = allCounts()
+    counts[currentDay - 1] += 1
+    onPatchCalc({ mealCounts: counts })
+    const m = mealName(counts[currentDay - 1])
+    setMeal(m)
+    return m
   }
   function removeMeal(m: Meal) {
-    const count = entries.filter(e => e.meal === m).length
-    if (count && !confirm(`Ta bort ${m.toLowerCase()} och ${count} registrerade livsmedel i den, alla dagar?`)) return
-    // Numrerade måltider efter den borttagna flyttas ner ett steg
-    const k = Number(/^Måltid (\d+)$/.exec(m)?.[1] ?? 0)
-    const next = entries.filter(e => e.meal !== m).map(e => {
-      const j = Number(/^Måltid (\d+)$/.exec(e.meal)?.[1] ?? 0)
-      return k && j > k ? { ...e, meal: mealName(j - 1) } : e
+    const inMeal = entries.filter(e => e.day === currentDay && e.meal === m)
+    if (inMeal.length && !confirm(`Ta bort ${m.toLowerCase()} på dag ${currentDay} och ${inMeal.length} registrerade livsmedel i den?`)) return
+    // Numrerade måltider efter den borttagna flyttas ner ett steg (bara denna dag)
+    const k = mealNo(m)
+    const next = entries.filter(e => !(e.day === currentDay && e.meal === m)).map(e => {
+      const j = mealNo(e.meal)
+      return e.day === currentDay && k && j > k ? { ...e, meal: mealName(j - 1) } : e
     })
-    onPatchCalc({ entries: next, meals: k ? Math.max(1, numbered.length - 1) : calc.meals })
-    setMeal(meals[Math.max(0, meals.indexOf(m) - 1)] === m ? meals[0] : meals[Math.max(0, meals.indexOf(m) - 1)])
+    const counts = allCounts()
+    if (k) counts[currentDay - 1] = Math.max(1, counts[currentDay - 1] - 1)
+    onPatchCalc({ entries: next, mealCounts: counts })
+    setMeal(k > 1 ? mealName(k - 1) : mealName(1))
   }
   function addDay() {
     if (calc.days >= 14) return
-    onPatchCalc({ days: calc.days + 1 })
+    onPatchCalc({ days: calc.days + 1, mealCounts: [...allCounts(), 1] })
     setDay(calc.days + 1)
+    setMeal(mealName(1))
   }
   function removeDay() {
     const d = calc.days
     const count = entries.filter(e => e.day === d).length
     if (count && !confirm(`Ta bort dag ${d} och ${count} registrerade livsmedel?`)) return
-    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d) })
+    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d), mealCounts: allCounts().slice(0, d - 1) })
     if (day >= d) setDay(d - 1)
   }
+  /** Kopierar alla livsmedel i en måltid till en annan (befintlig eller ny) måltid. */
+  function copyMeal(fromDay: number, fromMeal: Meal, toDay: number, toMeal: Meal | 'ny') {
+    const src = entries.filter(e => e.day === fromDay && e.meal === fromMeal)
+    if (!src.length) return
+    const counts = allCounts()
+    let target = toMeal
+    if (toMeal === 'ny') {
+      counts[toDay - 1] += 1
+      target = mealName(counts[toDay - 1])
+    }
+    const copies = src.map(e => ({ ...e, id: newId(), day: toDay, meal: target as Meal }))
+    onPatchCalc({ entries: [...entries, ...copies], mealCounts: counts })
+    setDay(toDay)
+    setMeal(target as Meal)
+    setCopyOpen(false)
+  }
+  const [copyOpen, setCopyOpen] = useState(false)
 
   const weightKg = calc.weightKg
   const need = useMemo(
@@ -121,8 +150,13 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             )
           })}
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
+          <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)} aria-expanded={copyOpen}>Kopiera måltid …</button>
           {meals.length > 1 && <button type="button" className="ws-remove" onClick={() => removeMeal(meal)} title={`Ta bort ${meal.toLowerCase()}`}>Ta bort {meal.toLowerCase()}</button>}
         </div>
+        {copyOpen && (
+          <CopyMealPanel days={calc.days} mealsFor={mealsFor} entries={entries} fromDay={currentDay} fromMeal={meal}
+            onCopy={copyMeal} onClose={() => setCopyOpen(false)} />
+        )}
         <div className="ws-tablewrap">
           {mealEntries.length === 0 ? (
             <p className="empty">Inget registrerat för {meal.toLowerCase()}, dag {currentDay}. Lägg till livsmedel från listan till höger.</p>
@@ -193,6 +227,41 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
         {bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
         {bottomTab === 'maltider' && <MealView summary={summary} />}
       </section>
+    </div>
+  )
+}
+
+/* ---------- Kopiera måltid ---------- */
+
+function CopyMealPanel({ days, mealsFor, entries, fromDay: d0, fromMeal: m0, onCopy, onClose }: {
+  days: number; mealsFor: (d: number) => Meal[]; entries: DiaryEntry[]; fromDay: number; fromMeal: Meal
+  onCopy: (fromDay: number, fromMeal: Meal, toDay: number, toMeal: Meal | 'ny') => void; onClose: () => void
+}) {
+  const [fromDay, setFromDay] = useState(d0)
+  const [fromMeal, setFromMeal] = useState<Meal>(m0)
+  const [toDay, setToDay] = useState(d0)
+  const [toMeal, setToMeal] = useState<Meal | 'ny'>('ny')
+  const dayOpts = Array.from({ length: days }, (_, i) => i + 1)
+  const srcMeals = mealsFor(fromDay)
+  const fm = srcMeals.includes(fromMeal) ? fromMeal : srcMeals[0]
+  const n = entries.filter(e => e.day === fromDay && e.meal === fm).length
+  const tm = toMeal === 'ny' || mealsFor(toDay).includes(toMeal) ? toMeal : 'ny'
+  return (
+    <div className="ws-copy" role="group" aria-label="Kopiera måltid">
+      <span className="lbl">Kopiera</span>
+      <select aria-label="Från dag" value={fromDay} onChange={e => setFromDay(Number(e.target.value))}>{dayOpts.map(d => <option key={d} value={d}>Dag {d}</option>)}</select>
+      <select aria-label="Från måltid" value={fm} onChange={e => setFromMeal(e.target.value)}>{srcMeals.map(m => <option key={m} value={m}>{m}</option>)}</select>
+      <span className="lbl">till</span>
+      <select aria-label="Till dag" value={toDay} onChange={e => setToDay(Number(e.target.value))}>{dayOpts.map(d => <option key={d} value={d}>Dag {d}</option>)}</select>
+      <select aria-label="Till måltid" value={tm} onChange={e => setToMeal(e.target.value)}>
+        <option value="ny">Ny måltid</option>
+        {mealsFor(toDay).filter(m => !(toDay === fromDay && m === fm)).map(m => <option key={m} value={m}>{m}</option>)}
+      </select>
+      <button type="button" className="primary small" disabled={n === 0} onClick={() => onCopy(fromDay, fm, toDay, tm)}>
+        Kopiera {n > 0 ? `(${n} livsmedel)` : ''}
+      </button>
+      <button type="button" className="small" onClick={onClose}>Avbryt</button>
+      {n === 0 && <span className="muted">Måltiden är tom.</span>}
     </div>
   )
 }

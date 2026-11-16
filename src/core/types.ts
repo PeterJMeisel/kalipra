@@ -107,8 +107,10 @@ export type Person = {
 
 /** En beräkning (ett tillfälle) för en person: vikt och aktivitet vid tillfället samt kostregistrering. */
 export type Calculation = {
-  /** Antal måltider i kostregistreringen (Måltid 1 … n) */
+  /** Antal måltider i kostregistreringen (Måltid 1 … n), gemensamt (äldre format) */
   meals?: number
+  /** Antal måltider per dag; index 0 = dag 1. En ny dag börjar med 1 måltid. */
+  mealCounts?: number[]
   id: string
   personId: string
   createdAt: string
