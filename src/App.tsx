@@ -528,17 +528,6 @@ export default function App() {
 
       {view === 'oversikt' && anonMode && (
         <main className="main wsmain">
-          <section className="clienthead ws-head">
-            <div className="chtop">
-              <div>
-                <h1>Kostregistrering</h1>
-                <p className="facts">Ingen patient vald – intaget visas utan behov och rekommendationer.</p>
-              </div>
-              <div className="actions">
-                <button className="small primary" onClick={openPatientList}>Välj patient</button>
-              </div>
-            </div>
-          </section>
           <Workspace key="anon" db={db} person={null} calc={anon} onPatchPerson={() => {}}
             onPatchCalc={p => setAnon(a => ({ ...a, ...p }))} onPickPatient={openPatientList} />
         </main>
