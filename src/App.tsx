@@ -328,14 +328,17 @@ export default function App() {
           <Logo size={34} />
           <span>Kalipra</span>
         </button>
-        <div className="patientbar" aria-label="Laddad patient">
+        <div className={`patientbar ${activePerson ? '' : 'pb-clickable'}`} aria-label="Laddad patient"
+          // Referenspatienten: ett klick var som helst på brickan leder till Välj patient (knapparna sköter sig själva)
+          onClick={activePerson ? undefined : e => { if (!(e.target as HTMLElement).closest('button')) togglePanel('patienter') }}>
           {activePerson ? (
             <span className="pb-info">
               <span className="pb-code">{activePerson.code}</span>
               <span className="pb-facts">{activePerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
             </span>
           ) : (
-            <span className="pb-info pb-ref" title="Ingen patient vald. Behov och RDI räknas för en referensperson: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2.">
+            <span className="pb-info pb-ref"
+              title="Ingen patient vald. Behov och RDI räknas för en referensperson: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2. Klicka för att välja patient.">
               <span className="pb-code">{REF_PERSON.code}</span>
               <span className="pb-facts">Kvinna · {REF_PERSON.age} år · BMI {formatNumber(bmi(REF_WEIGHT, REF_PERSON.heightCm), 1)}</span>
             </span>
