@@ -344,9 +344,6 @@ export default function App() {
               <span className="pb-facts">{refPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {refPerson.age} år · BMI {formatNumber(bmi(refCalc.weightKg, refPerson.heightCm), 1)}</span>
             </button>
           )}
-          <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
-            Klientdata
-          </button>
           <button type="button" className={`pb-btn pb-data ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
             Välj klient
           </button>
