@@ -458,7 +458,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · {v('PROT') > 0 ? `${formatNumber(v('PROT'), 0)} g totalt` : 'inget registrerat'} · <span className={`pill ${proteinPerKg >= protRef ? 'ok' : 'low'}`}>{proteinPerKg >= protRef ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · <span className={`pill ${proteinPerKg >= protRef ? 'ok' : 'low'}`}>{proteinPerKg >= protRef ? 'Inom' : 'Under'}</span></span>
             </>
           ) : (
             <>
