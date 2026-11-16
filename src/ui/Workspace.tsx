@@ -26,7 +26,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
   const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
-  const [scope, setScope] = useState<'dag' | 'maltid' | 'dagar'>('dag')
+  const [scope, setScope] = useState<'dag' | 'dagar'>('dag')
 
   const currentDay = Math.min(day, calc.days)
   const entries = calc.entries
@@ -119,17 +119,10 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const filledDays = new Set(entries.map(e => e.day)).size
   const summary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
 
-  /** Intag och behov för vald omfattning (dag eller vald måltid). */
-  const scoped = useMemo(() => {
-    if (scope === 'dag' || scope === 'dagar') return { totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
-    const share = 1 / meals.length
-    return {
-      totals: summary.perMeal[meal] ?? {},
-      needKcal: (need?.teeKcal ?? 0) * share,
-      needMJ: (need?.teeMJ ?? 0) * share,
-      label: `${meal.toLowerCase()} (${formatNumber(share * 100, 0)} % av dagsbehovet, jämnt fördelat på ${meals.length} måltider)`,
-    }
-  }, [scope, summary, need, meal, meals.length])
+  /** Intag och behov för dagen (snitt över registrerade dagar). */
+  const scoped = useMemo(() => ({ totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }), [summary, need])
+  // Alla måltider som finns någon dag (Måltid 1 … n)
+  const allMeals = sortMeals([...new Set(Array.from({ length: calc.days }, (_, i) => mealsFor(i + 1)).flat())])
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
@@ -229,16 +222,15 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           </>}
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
             <button role="radio" aria-checked={scope === 'dag'} className={scope === 'dag' ? 'on' : ''} onClick={() => setScope('dag')}>Dag</button>
-            <button role="radio" aria-checked={scope === 'maltid'} className={scope === 'maltid' ? 'on' : ''} onClick={() => setScope('maltid')}>Måltid</button>
             <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => setScope('dagar')}>Dagar</button>
           </span>
         </nav>
-        {scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} average={summary.perDay} />}
+        {scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} />}
         {scope !== 'dagar' && bottomTab === 'rdi' && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
           : <IntakeView scoped={scoped} />)}
         {scope !== 'dagar' && bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
-        {scope !== 'dagar' && bottomTab === 'maltider' && <MealView summary={summary} />}
+        {scope !== 'dagar' && bottomTab === 'maltider' && <MealsCompareView meals={allMeals} summary={summary} entries={entries} person={person} repro={repro} weightKg={weightKg} need={need} />}
       </section>
     </div>
   )
@@ -357,7 +349,7 @@ type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label:
 function RdiView({ person, repro, weightKg, need, scoped, scope }: {
   person: Person; repro: Repro | null; weightKg: number
   need: EnergyNeed
-  scoped: Scoped; scope: 'dag' | 'maltid' | 'dagar'
+  scoped: Scoped; scope: 'dag' | 'dagar'
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
   const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
@@ -369,7 +361,7 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
   const proteinPerKg = scope === 'dag' ? v('PROT') / weightKg : null
   const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
     .map(m => {
-      const f = scope === 'maltid' ? scoped.needMJ / need.teeMJ : 1
+      const f = 1
       return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined }
     })
 
@@ -448,11 +440,14 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
   )
 }
 
-/* ---------- Nertill: jämförelse mellan dagar ---------- */
+/* ---------- Nertill: jämförelse mellan dagar och mellan måltider ---------- */
 
-function DaysView({ db, entries, days, person, repro, weightKg, need, average }: {
+/** En kolumn i jämförelsen. share = andel av dagsbehovet som kolumnen jämförs mot (1 för en dag). */
+type CompareCol = { label: string; name: string; totals: NutrientTotals; empty: boolean; share: number; extra?: boolean }
+
+function DaysView({ db, entries, days, person, repro, weightKg, need }: {
   db: FoodDatabase; entries: DiaryEntry[]; days: number; person: Person | null; repro: Repro | null
-  weightKg: number; need: EnergyNeed | null; average: NutrientTotals
+  weightKg: number; need: EnergyNeed | null
 }) {
   const perDay = useMemo(
     () => Array.from({ length: days }, (_, i) => {
@@ -465,25 +460,55 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   const filled = perDay.filter(d => d.count > 0)
   const avg: NutrientTotals = {}
   for (const d of filled) for (const [k, val] of Object.entries(d.totals) as [NutrientKey, number][]) avg[k] = (avg[k] ?? 0) + val / filled.length
-  void average
-  const cols = [...perDay.map(d => ({ label: `Dag ${d.day}`, totals: d.totals, empty: d.count === 0 })), ...(filled.length > 1 ? [{ label: `Snitt (${filled.length} dagar)`, totals: avg, empty: false }] : [])]
+  const cols: CompareCol[] = [
+    ...perDay.map(d => ({ label: `Dag ${d.day}`, name: `dag ${d.day}`, totals: d.totals, empty: d.count === 0, share: 1 })),
+    ...(filled.length > 1 ? [{ label: `Snitt (${filled.length} dagar)`, name: 'snitt', totals: avg, empty: false, share: 1, extra: true }] : []),
+  ]
+  if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
+  return <CompareView cols={cols} person={person} repro={repro} weightKg={weightKg} need={need} what="dagar" />
+}
+
+function MealsCompareView({ meals, summary, entries, person, repro, weightKg, need }: {
+  meals: Meal[]; summary: ReturnType<typeof summarizeDiary>; entries: DiaryEntry[]; person: Person | null; repro: Repro | null
+  weightKg: number; need: EnergyNeed | null
+}) {
+  if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
+  const share = 1 / Math.max(1, meals.length)
+  const cols: CompareCol[] = [
+    ...meals.map(m => ({ label: m, name: m.toLowerCase(), totals: summary.perMeal[m] ?? {}, empty: !summary.perMeal[m], share })),
+    { label: 'Hela dagen', name: 'hela dagen', totals: summary.perDay, empty: false, share: 1, extra: true },
+  ]
+  return (
+    <>
+      <p className="muted ws-intakenote">
+        Snitt över {summary.daysCounted} {summary.daysCounted === 1 ? 'dag' : 'dagar'}. Varje måltid jämförs med {formatNumber(share * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på {meals.length} {meals.length === 1 ? 'måltid' : 'måltider'}).
+      </p>
+      <CompareView cols={cols} person={person} repro={repro} weightKg={weightKg} need={need} what="måltider" />
+    </>
+  )
+}
+
+/** Tabell (värmekarta) eller grupperat stapeldiagram för kolumnerna. Samma funktion för dagar och måltider. */
+function CompareView({ cols, person, repro, weightKg, need, what }: {
+  cols: CompareCol[]; person: Person | null; repro: Repro | null; weightKg: number; need: EnergyNeed | null; what: 'dagar' | 'måltider'
+}) {
   const macro = person ? macroReferences(person.age, person.sex, repro, weightKg) : null
   const micro = person && need ? microReferences(person.age, person.sex, need.teeMJ, repro) : null
   const v = (t: NutrientTotals, k: NutrientKey) => t[k] ?? 0
 
-  type Row = { label: string; cell: (t: NutrientTotals) => { main: string; sub?: string; st?: string } }
+  type Row = { label: string; cell: (t: NutrientTotals, share: number) => { main: string; sub?: string; st?: string } }
   const rows: Row[] = [
-    { label: 'Energi', cell: t => {
+    { label: 'Energi', cell: (t, sh) => {
       const k = v(t, 'ENERC|kcal')
       if (!need) return { main: `${formatNumber(k, 0)} kcal` }
-      const p = (k / need.teeKcal) * 100
+      const p = (k / (need.teeKcal * sh)) * 100
       return { main: `${formatNumber(k, 0)} kcal`, sub: `${formatNumber(p, 0)} % av behovet` }
     } },
-    { label: 'Protein', cell: t => {
+    { label: 'Protein', cell: (t, sh) => {
       const g = v(t, 'PROT')
       if (!macro) return { main: `${formatNumber(g, 0)} g` }
       const gk = g / weightKg
-      return { main: `${formatNumber(g, 0)} g`, sub: `${formatNumber(gk, 2)} g/kg`, st: gk >= macro.proteinGPerKg ? 'ok' : 'low' }
+      return { main: `${formatNumber(g, 0)} g`, sub: `${formatNumber(gk, 2)} g/kg`, st: gk >= macro.proteinGPerKg * sh ? 'ok' : 'low' }
     } },
     { label: 'Fett', cell: t => ({ main: `${formatNumber(v(t, 'FAT'), 0)} g`, sub: `${formatNumber(energyDistribution(t).fat, 0)} E%` }) },
     { label: 'Kolhydrater', cell: t => ({ main: `${formatNumber(v(t, 'CHO'), 0)} g`, sub: `${formatNumber(energyDistribution(t).carbohydrate, 0)} E%` }) },
@@ -496,25 +521,25 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   })
   useEffect(() => { try { localStorage.setItem('kalipra.daysMode2', mode) } catch { /* ignorera */ } }, [mode])
 
-  if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
-
-  // Underlag för diagrammet: procent av behov/rekommendation per dag (bara dagar med registreringar)
+  // Underlag för diagrammet: procent av behov/rekommendation per kolumn (bara kolumner med registreringar, utan snitt/hela dagen)
+  const series = cols.map((c, i) => ({ ...c, idx: i })).filter(c => !c.empty && !c.extra)
   const chartGroups: ChartGroup[] = []
   if (need && macro && micro) {
-    chartGroups.push({ label: 'Energi', bars: filled.map(d => ({ day: d.day, pct: (v(d.totals, 'ENERC|kcal') / need.teeKcal) * 100, st: 'energy', text: `${formatNumber(v(d.totals, 'ENERC|kcal'), 0)} kcal` })) })
-    chartGroups.push({ label: 'Protein', bars: filled.map(d => {
-      const gk = v(d.totals, 'PROT') / weightKg
-      return { day: d.day, pct: (gk / macro.proteinGPerKg) * 100, st: gk >= macro.proteinGPerKg ? 'ok' : 'low', text: `${formatNumber(gk, 2)} g/kg` }
+    chartGroups.push({ label: 'Energi', bars: series.map(c => ({ idx: c.idx, name: c.name, pct: (v(c.totals, 'ENERC|kcal') / (need.teeKcal * c.share)) * 100, st: 'energy', text: `${formatNumber(v(c.totals, 'ENERC|kcal'), 0)} kcal` })) })
+    chartGroups.push({ label: 'Protein', bars: series.map(c => {
+      const gk = v(c.totals, 'PROT') / weightKg
+      return { idx: c.idx, name: c.name, pct: (gk / (macro.proteinGPerKg * c.share)) * 100, st: gk >= macro.proteinGPerKg * c.share ? 'ok' : 'low', text: `${formatNumber(gk, 2)} g/kg` }
     }) })
     for (const m of micro) {
       const d0 = NUTRIENTS[m.key]
-      chartGroups.push({ label: d0.label, bars: filled.map(d => {
-        const val = v(d.totals, m.key)
-        return { day: d.day, pct: m.value > 0 ? (val / m.value) * 100 : 0, st: microStatus(m, val), text: `${formatNumber(val, d0.decimals)} ${d0.unit}` }
+      chartGroups.push({ label: d0.label, bars: series.map(c => {
+        const val = v(c.totals, m.key)
+        return { idx: c.idx, name: c.name, pct: m.value > 0 ? (val / (m.value * c.share)) * 100 : 0, st: microStatus(m, val / c.share), text: `${formatNumber(val, d0.decimals)} ${d0.unit}` }
       }) })
     }
   }
   const canChart = chartGroups.length > 0
+  const legend = series.map(c => ({ idx: c.idx, label: c.label }))
 
   return (
     <div className="ws-daysview">
@@ -524,18 +549,18 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
           <button role="radio" aria-checked={mode === 'diagram'} className={mode === 'diagram' ? 'on' : ''} onClick={() => setMode('diagram')}>Diagram</button>
         </div>
       )}
-      {canChart && mode === 'diagram' ? <DaysChart groups={chartGroups} /> : (
+      {canChart && mode === 'diagram' ? <DaysChart groups={chartGroups} legend={legend} what={what} /> : (
       <table className="ws-daystable">
         <colgroup><col className="dv-label" />{cols.map(c => <col key={c.label} />)}</colgroup>
-        <thead><tr><th></th>{cols.map(c => <th key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}>{c.label}</th>)}</tr></thead>
+        <thead><tr><th></th>{cols.map(c => <th key={c.label} className={c.extra ? 'avg' : ''}>{c.label}</th>)}</tr></thead>
         <tbody>
           {rows.map(r => (
             <tr key={r.label}>
               <th scope="row">{r.label}</th>
               {cols.map(c => {
                 if (c.empty) return <td key={c.label} className="muted">–</td>
-                const x = r.cell(c.totals)
-                return <td key={c.label} className={`${x.st ? `hm ${x.st}` : ''} ${c.label.startsWith('Snitt') ? 'avg' : ''}`}><span className="dv-main">{x.main}</span>{x.sub && <span className="dv-sub">{x.sub}</span>}</td>
+                const x = r.cell(c.totals, c.share)
+                return <td key={c.label} className={`${x.st ? `hm ${x.st}` : ''} ${c.extra ? 'avg' : ''}`}><span className="dv-main">{x.main}</span>{x.sub && <span className="dv-sub">{x.sub}</span>}</td>
               })}
             </tr>
           ))}
@@ -549,12 +574,12 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
                 {cols.map(c => {
                   if (c.empty) return <td key={c.label} className="muted">–</td>
                   const val = v(c.totals, k)
-                  if (!ref) return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}>{formatNumber(val, d.decimals)} {d.unit}</td>
-                  const st = microStatus(ref, val)
+                  if (!ref) return <td key={c.label} className={c.extra ? 'avg' : ''}>{formatNumber(val, d.decimals)} {d.unit}</td>
+                  const st = microStatus(ref, val / c.share)
                   return (
-                    <td key={c.label} className={`hm ${st} ${c.label.startsWith('Snitt') ? 'avg' : ''}`}>
+                    <td key={c.label} className={`hm ${st} ${c.extra ? 'avg' : ''}`}>
                       <span className="dv-main">{formatNumber(val, d.decimals)} {d.unit}</span>
-                      <span className="dv-sub">{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
+                      <span className="dv-sub">{formatNumber(ref.value > 0 ? Math.floor((val / (ref.value * c.share)) * 100) : 0, 0)} %</span>
                     </td>
                   )
                 })}
@@ -568,17 +593,17 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   )
 }
 
-type ChartBar = { day: number; pct: number; st: string; text: string }
+type ChartBar = { idx: number; name: string; pct: number; st: string; text: string }
 type ChartGroup = { label: string; bars: ChartBar[] }
 
-/** Dagfärger: kategoriska, fast ordning (dag 1 = första färgen). Högst 8 dagar i diagrammet. */
+/** Serie­färger: kategoriska, fast ordning (dag/måltid 1 = första färgen). Högst 8 serier i diagrammet. */
 const DAY_COLORS = 8
 
 /** Grupperat stapeldiagram: en grupp per näringsämne, en stapel per dag (färg = dag). Hoptryckt skala 100–200 %. */
-function DaysChart({ groups }: { groups: ChartGroup[] }) {
+function DaysChart({ groups, legend, what }: { groups: ChartGroup[]; legend: { idx: number; label: string }[]; what: 'dagar' | 'måltider' }) {
   const [hover, setHover] = useState<{ g: string; b: ChartBar; x: number; y: number } | null>(null)
-  const all = groups[0]?.bars ?? []
-  const shown = all.slice(0, DAY_COLORS).map(b => b.day)
+  const all = legend
+  const shown = all.slice(0, DAY_COLORS).map(b => b.idx)
   const n = shown.length
   const barW = n <= 3 ? 12 : n <= 5 ? 9 : 7
   const gapBar = 2, gapGroup = 18
@@ -596,16 +621,16 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
     return top + plotH - h
   }
   const ticks = [0, 25, 50, 75, 100, 150, 200]
-  const colorIdx = (day: number) => shown.indexOf(day)
+  const colorIdx = (idx: number) => shown.indexOf(idx)
   return (
     <div className="dv-chartbox">
-      <div className="dv-legend" aria-label="Dagar">
-        {shown.map(d => <span key={d}><i className={`dc${colorIdx(d)}`} />Dag {d}</span>)}
-        {all.length > DAY_COLORS && <span className="muted">Diagrammet visar de första {DAY_COLORS} dagarna – se tabellen för resten.</span>}
+      <div className="dv-legend" aria-label={what === 'dagar' ? 'Dagar' : 'Måltider'}>
+        {all.slice(0, DAY_COLORS).map(l => <span key={l.idx}><i className={`dc${colorIdx(l.idx)}`} />{l.label}</span>)}
+        {all.length > DAY_COLORS && <span className="muted">Diagrammet visar de första {DAY_COLORS} {what} – se tabellen för resten.</span>}
       </div>
       <div className="dv-chartwrap">
         <svg className="dv-chart" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img"
-          aria-label="Intag per dag i procent av behov och rekommendation" onMouseLeave={() => setHover(null)}>
+          aria-label={`Intag per ${what === 'dagar' ? 'dag' : 'måltid'} i procent av behov och rekommendation`} onMouseLeave={() => setHover(null)}>
           <rect x={left} y={y(MAX)} width={width - 4 - left} height={y(100) - y(MAX)} className="overzone" />
           {ticks.map(t => (
             <g key={t}>
@@ -617,16 +642,16 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
             const gx = left + 8 + gi * (groupW + gapGroup)
             return (
               <g key={g.label}>
-                {g.bars.filter(b => shown.includes(b.day)).map((b, bi) => {
+                {g.bars.filter(b => shown.includes(b.idx)).map((b, bi) => {
                   const x = gx + bi * (barW + gapBar)
                   const top0 = y(b.pct)
                   const h = Math.max(0, top + plotH - top0)
                   const r = Math.min(3, h, barW / 2)
                   return (
-                    <g key={b.day}>
+                    <g key={b.idx}>
                       <rect x={x - 1} y={top} width={barW + 2} height={plotH} fill="transparent"
                         onMouseEnter={() => setHover({ g: g.label, b, x: x + barW / 2, y: top0 })} />
-                      <path className={`dvbar dc${colorIdx(b.day)}`} pointerEvents="none"
+                      <path className={`dvbar dc${colorIdx(b.idx)}`} pointerEvents="none"
                         d={h > 0 ? `M${x},${top + plotH} V${top0 + r} Q${x},${top0} ${x + r},${top0} H${x + barW - r} Q${x + barW},${top0} ${x + barW},${top0 + r} V${top + plotH} Z` : ''} />
                     </g>
                   )
@@ -640,7 +665,7 @@ function DaysChart({ groups }: { groups: ChartGroup[] }) {
         {hover && (
           // Rutan placeras ovanför stapeln, eller bredvid när stapeln når toppen (så att den inte klipps)
           <div className={`dv-tip ${hover.y < 60 ? 'side' : ''}`} style={hover.y < 60 ? { left: hover.x + 12, top: Math.max(4, hover.y) } : { left: hover.x, top: hover.y - 8 }}>
-            <strong><i className={`dc${colorIdx(hover.b.day)}`} />{hover.g}, dag {hover.b.day}</strong>
+            <strong><i className={`dc${colorIdx(hover.b.idx)}`} />{hover.g}, {hover.b.name}</strong>
             <span>{formatNumber(Math.floor(hover.b.pct), 0)} % · {hover.b.text}</span>
           </div>
         )}
@@ -747,26 +772,3 @@ function MacroView({ person, totals }: { person: Person | null; totals: Nutrient
 
 /* ---------- Nertill: måltidsfördelning ---------- */
 
-function MealView({ summary }: { summary: ReturnType<typeof summarizeDiary> }) {
-  const dayKcal = summary.perDay['ENERC|kcal'] ?? 0
-  const meals = sortMeals(Object.keys(summary.perMeal))
-  if (meals.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
-  return (
-    <table className="ref">
-      <tbody>
-        {meals.map(m => {
-          const mk = summary.perMeal[m]!['ENERC|kcal'] ?? 0
-          const p = dayKcal > 0 ? (mk / dayKcal) * 100 : 0
-          return (
-            <tr key={m}>
-              <td>{m}</td>
-              <td className="num">{formatNumber(mk, 0)} kcal</td>
-              <td className="num">{formatNumber(p, 0)} %</td>
-              <td className="wide"><div className="hbar"><div style={{ width: `${p}%` }} /></div></td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
