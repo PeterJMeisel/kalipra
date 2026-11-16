@@ -505,19 +505,19 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
   const micro = person && need ? microReferences(person.age, person.sex, need.teeMJ, repro) : null
   const v = (t: NutrientTotals, k: NutrientKey) => t[k] ?? 0
 
-  type Row = { label: string; cell: (t: NutrientTotals) => { main: string; sub?: string; st?: string; bar?: number } }
+  type Row = { label: string; cell: (t: NutrientTotals) => { main: string; sub?: string; st?: string } }
   const rows: Row[] = [
     { label: 'Energi', cell: t => {
       const k = v(t, 'ENERC|kcal')
       if (!need) return { main: `${formatNumber(k, 0)} kcal` }
       const p = (k / need.teeKcal) * 100
-      return { main: `${formatNumber(k, 0)} kcal`, sub: `${formatNumber(p, 0)} % av behovet`, st: 'energy', bar: p }
+      return { main: `${formatNumber(k, 0)} kcal`, sub: `${formatNumber(p, 0)} % av behovet` }
     } },
     { label: 'Protein', cell: t => {
       const g = v(t, 'PROT')
       if (!macro) return { main: `${formatNumber(g, 0)} g` }
       const gk = g / weightKg
-      return { main: `${formatNumber(g, 0)} g`, sub: `${formatNumber(gk, 2)} g/kg`, st: gk >= macro.proteinGPerKg ? 'ok' : 'low', bar: (gk / macro.proteinGPerKg) * 100 }
+      return { main: `${formatNumber(g, 0)} g`, sub: `${formatNumber(gk, 2)} g/kg`, st: gk >= macro.proteinGPerKg ? 'ok' : 'low' }
     } },
     { label: 'Fett', cell: t => ({ main: `${formatNumber(v(t, 'FAT'), 0)} g`, sub: `${formatNumber(energyDistribution(t).fat, 0)} E%` }) },
     { label: 'Kolhydrater', cell: t => ({ main: `${formatNumber(v(t, 'CHO'), 0)} g`, sub: `${formatNumber(energyDistribution(t).carbohydrate, 0)} E%` }) },
@@ -538,9 +538,7 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
               {cols.map(c => {
                 if (c.empty) return <td key={c.label} className="muted">–</td>
                 const x = r.cell(c.totals)
-                return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}><span className="dv-main">{x.main}</span>
-                  {x.bar !== undefined && <span className={`bar ${x.st}`} aria-hidden="true"><span style={{ width: `${Math.min(x.bar, 100)}%` }} /></span>}
-                  {x.sub && <span className={`dv-sub ${x.st ?? ''}`}>{x.sub}</span>}</td>
+                return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}><span className="dv-main">{x.main}</span>{x.sub && <span className={`dv-sub ${x.st ?? ''}`}>{x.sub}</span>}</td>
               })}
             </tr>
           ))}
@@ -558,10 +556,7 @@ function DaysView({ db, entries, days, person, repro, weightKg, need, average }:
                   const st = microStatus(ref, val)
                   return (
                     <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''} title={`${formatNumber(val, d.decimals)} ${d.unit}`}>
-                      <span className="dv-barcell">
-                        <span className={`bar ${st}`} aria-hidden="true"><span style={{ width: `${Math.min(ref.value > 0 ? (val / ref.value) * 100 : 0, 100)}%` }} /></span>
-                        <span className={`pct ${st}`}>{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
-                      </span>
+                      <span className={`pct ${st}`}>{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
                     </td>
                   )
                 })}

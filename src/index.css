@@ -566,14 +566,3 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-daystable .sect th { text-align: left; padding-top: 16px; font-weight: 700; color: var(--brand); border-bottom: 2px solid var(--line) }
 .ws-daystable .pct { font-weight: 600 }
 .ws-daystable .pct.near { color: var(--orange) }
-/* Staplar i Dagar-tabellen */
-.ws-daystable .bar { display: block; width: 100%; margin: 4px 0 2px; height: 7px }
-.ws-daystable .bar > span { display: block; height: 100%; border-radius: 99px }
-.ws-daystable .bar.ok > span { background: var(--ok) }
-.ws-daystable .bar.near > span { background: var(--orange) }
-.ws-daystable .bar.low > span, .ws-daystable .bar.high > span { background: var(--red) }
-.ws-daystable .bar.energy > span { background: var(--brand) }
-.ws-daystable .dv-barcell { display: grid; grid-template-columns: 1fr 46px; gap: 8px; align-items: center }
-.ws-daystable .dv-barcell .bar { margin: 0 }
-.ws-daystable td { vertical-align: middle }
-.ws-daystable .avg .bar { background: var(--panel) }
