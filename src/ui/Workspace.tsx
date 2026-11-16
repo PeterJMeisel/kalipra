@@ -28,7 +28,7 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
   const [rightTab, setRightTab] = useState<'livsmedel' | 'patient'>('livsmedel')
   const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
-  const [scope, setScope] = useState<'dag' | 'maltid'>('dag')
+  const [scope, setScope] = useState<'dag' | 'maltid' | 'dagar'>('dag')
 
   const currentDay = Math.min(day, calc.days)
   const entries = calc.entries
@@ -111,11 +111,13 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
     const n = energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
     return repro ? withExtraEnergy(n, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : n
   }, [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
-  const summary = useMemo(() => summarizeDiary(db, entries, calc.days, SUMMARY_KEYS), [db, entries, calc.days])
+  // Snitt över dagar som har registreringar (tomma dagar räknas inte som noll-dagar)
+  const filledDays = new Set(entries.map(e => e.day)).size
+  const summary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
 
   /** Intag och behov för vald omfattning (dag eller vald måltid). */
   const scoped = useMemo(() => {
-    if (scope === 'dag') return { totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
+    if (scope === 'dag' || scope === 'dagar') return { totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
     const share = 1 / meals.length
     return {
       totals: summary.perMeal[meal] ?? {},
@@ -221,19 +223,23 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
 
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
         <nav className="ws-tabs" role="tablist">
+          {scope === 'dagar' ? <h3 className="ws-daystitle">Jämförelse mellan dagar</h3> : <>
           <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>{person ? 'Näring mot behov' : 'Intag'}</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
           <button role="tab" aria-selected={bottomTab === 'maltider'} className={bottomTab === 'maltider' ? 'on' : ''} onClick={() => setBottomTab('maltider')}>Måltider</button>
+          </>}
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
             <button role="radio" aria-checked={scope === 'dag'} className={scope === 'dag' ? 'on' : ''} onClick={() => setScope('dag')}>Dag</button>
             <button role="radio" aria-checked={scope === 'maltid'} className={scope === 'maltid' ? 'on' : ''} onClick={() => setScope('maltid')}>Måltid</button>
+            <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => setScope('dagar')}>Dagar</button>
           </span>
         </nav>
-        {bottomTab === 'rdi' && (person && need
+        {scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} average={summary.perDay} />}
+        {scope !== 'dagar' && bottomTab === 'rdi' && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
           : <IntakeView scoped={scoped} />)}
-        {bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
-        {bottomTab === 'maltider' && <MealView summary={summary} />}
+        {scope !== 'dagar' && bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
+        {scope !== 'dagar' && bottomTab === 'maltider' && <MealView summary={summary} />}
       </section>
     </div>
   )
@@ -385,7 +391,7 @@ type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label:
 function RdiView({ person, repro, weightKg, need, scoped, scope }: {
   person: Person; repro: Repro | null; weightKg: number
   need: EnergyNeed
-  scoped: Scoped; scope: 'dag' | 'maltid'
+  scoped: Scoped; scope: 'dag' | 'maltid' | 'dagar'
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
   const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
@@ -472,6 +478,93 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+/* ---------- Nertill: jämförelse mellan dagar ---------- */
+
+function DaysView({ db, entries, days, person, repro, weightKg, need, average }: {
+  db: FoodDatabase; entries: DiaryEntry[]; days: number; person: Person | null; repro: Repro | null
+  weightKg: number; need: EnergyNeed | null; average: NutrientTotals
+}) {
+  const perDay = useMemo(
+    () => Array.from({ length: days }, (_, i) => {
+      const list = entries.filter(e => e.day === i + 1)
+      return { day: i + 1, count: list.length, totals: summarizeDiary(db, list, 1, SUMMARY_KEYS).perDay }
+    }),
+    [db, entries, days],
+  )
+  // Snitt över de dagar som har registreringar (tomma dagar räknas inte)
+  const filled = perDay.filter(d => d.count > 0)
+  const avg: NutrientTotals = {}
+  for (const d of filled) for (const [k, val] of Object.entries(d.totals) as [NutrientKey, number][]) avg[k] = (avg[k] ?? 0) + val / filled.length
+  void average
+  const cols = [...perDay.map(d => ({ label: `Dag ${d.day}`, totals: d.totals, empty: d.count === 0 })), ...(filled.length > 1 ? [{ label: `Snitt (${filled.length} dagar)`, totals: avg, empty: false }] : [])]
+  const macro = person ? macroReferences(person.age, person.sex, repro, weightKg) : null
+  const micro = person && need ? microReferences(person.age, person.sex, need.teeMJ, repro) : null
+  const v = (t: NutrientTotals, k: NutrientKey) => t[k] ?? 0
+
+  type Row = { label: string; cell: (t: NutrientTotals) => { main: string; sub?: string; st?: string } }
+  const rows: Row[] = [
+    { label: 'Energi', cell: t => {
+      const k = v(t, 'ENERC|kcal')
+      if (!need) return { main: `${formatNumber(k, 0)} kcal` }
+      const p = (k / need.teeKcal) * 100
+      return { main: `${formatNumber(k, 0)} kcal`, sub: `${formatNumber(p, 0)} % av behovet` }
+    } },
+    { label: 'Protein', cell: t => {
+      const g = v(t, 'PROT')
+      if (!macro) return { main: `${formatNumber(g, 0)} g` }
+      const gk = g / weightKg
+      return { main: `${formatNumber(g, 0)} g`, sub: `${formatNumber(gk, 2)} g/kg`, st: gk >= macro.proteinGPerKg ? 'ok' : 'low' }
+    } },
+    { label: 'Fett', cell: t => ({ main: `${formatNumber(v(t, 'FAT'), 0)} g`, sub: `${formatNumber(energyDistribution(t).fat, 0)} E%` }) },
+    { label: 'Kolhydrater', cell: t => ({ main: `${formatNumber(v(t, 'CHO'), 0)} g`, sub: `${formatNumber(energyDistribution(t).carbohydrate, 0)} E%` }) },
+    { label: 'Fiber', cell: t => ({ main: `${formatNumber(v(t, 'FIBT'), 1)} g` }) },
+  ]
+  const microKeys: NutrientKey[] = micro ? micro.map(m => m.key) : ['VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
+
+  if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
+  return (
+    <div className="ws-daysview">
+      <table className="ws-daystable">
+        <colgroup><col className="dv-label" />{cols.map(c => <col key={c.label} />)}</colgroup>
+        <thead><tr><th></th>{cols.map(c => <th key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}>{c.label}</th>)}</tr></thead>
+        <tbody>
+          {rows.map(r => (
+            <tr key={r.label}>
+              <th scope="row">{r.label}</th>
+              {cols.map(c => {
+                if (c.empty) return <td key={c.label} className="muted">–</td>
+                const x = r.cell(c.totals)
+                return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}><span className="dv-main">{x.main}</span>{x.sub && <span className={`dv-sub ${x.st ?? ''}`}>{x.sub}</span>}</td>
+              })}
+            </tr>
+          ))}
+          <tr className="sect"><th scope="row" colSpan={cols.length + 1}>Vitaminer och mineraler{micro ? ' – % av RDI' : ''}</th></tr>
+          {microKeys.map(k => {
+            const d = NUTRIENTS[k]
+            const ref = micro?.find(m => m.key === k)
+            return (
+              <tr key={k}>
+                <th scope="row">{d.label}</th>
+                {cols.map(c => {
+                  if (c.empty) return <td key={c.label} className="muted">–</td>
+                  const val = v(c.totals, k)
+                  if (!ref) return <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''}>{formatNumber(val, d.decimals)} {d.unit}</td>
+                  const st = microStatus(ref, val)
+                  return (
+                    <td key={c.label} className={c.label.startsWith('Snitt') ? 'avg' : ''} title={`${formatNumber(val, d.decimals)} ${d.unit}`}>
+                      <span className={`pct ${st}`}>{formatNumber(ref.value > 0 ? Math.floor((val / ref.value) * 100) : 0, 0)} %</span>
+                    </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }
