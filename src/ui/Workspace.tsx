@@ -115,14 +115,9 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
     const n = energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
     return repro ? withExtraEnergy(n, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : n
   }, [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
-  // Snitt över dagar som har registreringar (tomma dagar räknas inte som noll-dagar)
-  const filledDays = new Set(entries.map(e => e.day)).size
-  const summary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
-
-  /** Intag och behov för dagen (snitt över registrerade dagar). */
-  const scoped = useMemo(() => ({ totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }), [summary, need])
-  // Alla måltider som finns någon dag (Måltid 1 … n)
-  const allMeals = sortMeals([...new Set(Array.from({ length: calc.days }, (_, i) => mealsFor(i + 1)).flat())])
+  // Läget Dag visar bara den dag som är markerad i kostregistreringen (inte snitt över dagarna)
+  const daySummary = useMemo(() => summarizeDiary(db, entries.filter(e => e.day === currentDay), 1, SUMMARY_KEYS), [db, entries, currentDay])
+  const scoped = useMemo(() => ({ totals: daySummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag ${currentDay}` }), [daySummary, need, currentDay])
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
@@ -230,7 +225,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
           : <IntakeView scoped={scoped} />)}
         {scope !== 'dagar' && bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
-        {scope !== 'dagar' && bottomTab === 'maltider' && <MealsCompareView meals={allMeals} summary={summary} entries={entries} person={person} repro={repro} weightKg={weightKg} need={need} />}
+        {scope !== 'dagar' && bottomTab === 'maltider' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
       </section>
     </div>
   )
@@ -468,11 +463,11 @@ function DaysView({ db, entries, days, person, repro, weightKg, need }: {
   return <CompareView cols={cols} person={person} repro={repro} weightKg={weightKg} need={need} what="dagar" />
 }
 
-function MealsCompareView({ meals, summary, entries, person, repro, weightKg, need }: {
-  meals: Meal[]; summary: ReturnType<typeof summarizeDiary>; entries: DiaryEntry[]; person: Person | null; repro: Repro | null
+function MealsCompareView({ meals, summary, entries, day, person, repro, weightKg, need }: {
+  meals: Meal[]; day: number; summary: ReturnType<typeof summarizeDiary>; entries: DiaryEntry[]; person: Person | null; repro: Repro | null
   weightKg: number; need: EnergyNeed | null
 }) {
-  if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
+  if (entries.length === 0) return <p className="empty">Inget registrerat för dag {day}.</p>
   const share = 1 / Math.max(1, meals.length)
   const cols: CompareCol[] = [
     ...meals.map(m => ({ label: m, name: m.toLowerCase(), totals: summary.perMeal[m] ?? {}, empty: !summary.perMeal[m], share })),
@@ -481,7 +476,7 @@ function MealsCompareView({ meals, summary, entries, person, repro, weightKg, ne
   return (
     <>
       <p className="muted ws-intakenote">
-        Snitt över {summary.daysCounted} {summary.daysCounted === 1 ? 'dag' : 'dagar'}. Varje måltid jämförs med {formatNumber(share * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på {meals.length} {meals.length === 1 ? 'måltid' : 'måltider'}).
+        Dag {day}. Varje måltid jämförs med {formatNumber(share * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på {meals.length} {meals.length === 1 ? 'måltid' : 'måltider'}).
       </p>
       <CompareView cols={cols} person={person} repro={repro} weightKg={weightKg} need={need} what="måltider" />
     </>
