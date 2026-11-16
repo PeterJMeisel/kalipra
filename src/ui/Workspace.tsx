@@ -25,7 +25,7 @@ type Props = {
 export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
-  const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'jamfor'>('rdi')
+  const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'jamfor' | 'maltid'>('rdi')
   const [scope, setScope] = useState<'dag' | 'dagar'>('dag')
 
   const currentDay = Math.min(day, calc.days)
@@ -122,7 +122,14 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const filledDays = new Set(entries.map(e => e.day)).size
   const avgSummary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
   const avgScoped = useMemo(() => ({ totals: avgSummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `snitt över ${filledDays} ${filledDays === 1 ? 'dag' : 'dagar'}` }), [avgSummary, need, filledDays])
-  const view = scope === 'dag' ? scoped : avgScoped
+  // Fliken Måltid: bara den måltid som är vald, jämförd med en lika stor andel av dagsbehovet
+  const mealShare = 1 / Math.max(1, meals.length)
+  const mealScoped = useMemo(() => ({
+    totals: daySummary.perMeal[meal] ?? {}, needKcal: (need?.teeKcal ?? 0) * mealShare, needMJ: (need?.teeMJ ?? 0) * mealShare,
+    label: `${meal.toLowerCase()}, dag ${currentDay}`, share: mealShare,
+    note: `${meal}, dag ${currentDay}. Jämförs med ${formatNumber(mealShare * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på ${meals.length} ${meals.length === 1 ? 'måltid' : 'måltider'}).`,
+  }), [daySummary, meal, need, mealShare, currentDay, meals.length])
+  const view = scope === 'dagar' ? avgScoped : bottomTab === 'maltid' ? mealScoped : scoped
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
@@ -218,12 +225,13 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>Överblick</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
           <button role="tab" aria-selected={bottomTab === 'jamfor'} className={bottomTab === 'jamfor' ? 'on' : ''} onClick={() => setBottomTab('jamfor')}>{scope === 'dag' ? 'Måltider' : 'Per dag'}</button>
+          {scope === 'dag' && <button role="tab" aria-selected={bottomTab === 'maltid'} className={bottomTab === 'maltid' ? 'on' : ''} onClick={() => setBottomTab('maltid')}>Måltid</button>}
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
             <button role="radio" aria-checked={scope === 'dag'} className={scope === 'dag' ? 'on' : ''} onClick={() => setScope('dag')}>Dag</button>
-            <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => setScope('dagar')}>Dagar</button>
+            <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => { setScope('dagar'); if (bottomTab === 'maltid') setBottomTab('rdi') }}>Dagar</button>
           </span>
         </nav>
-        {bottomTab === 'rdi' && (person && need
+        {(bottomTab === 'rdi' || (bottomTab === 'maltid' && scope === 'dag')) && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={view} />
           : <IntakeView scoped={view} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} />}
@@ -344,7 +352,8 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 
 /* ---------- Nertill: näring mot behov ---------- */
 
-type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string }
+/** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
+type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string }
 
 function RdiView({ person, repro, weightKg, need, scoped }: {
   person: Person; repro: Repro | null; weightKg: number
@@ -352,6 +361,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
   scoped: Scoped
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
+  const sh = scoped.share ?? 1
   const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
   useEffect(() => { try { localStorage.setItem('kalipra.microDetail', detailed ? '1' : '0') } catch { /* ignorera */ } }, [detailed])
   const kcal = v('ENERC|kcal')
@@ -359,14 +369,16 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
   const bmrPct = (need.bmrKcal / need.teeKcal) * 100
   const macro = macroReferences(person.age, person.sex, repro, weightKg)
   const proteinPerKg = v('PROT') / weightKg
+  const protRef = macro.proteinGPerKg * sh
   const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
     .map(m => {
-      const f = 1
+      const f = sh
       return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined }
     })
 
   return (
     <div className="ws-rdi">
+      {scoped.note && <p className="muted ws-intakenote">{scoped.note}</p>}
       <div className="ws-kcalrow">
         <div className="ws-kcalbox">
           <span className="lbl">Energi, {scoped.label}</span>
@@ -391,12 +403,12 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           <span className="lbl">Protein</span>
           {proteinPerKg !== null ? (
             <>
-              <span className="val">{formatNumber(proteinPerKg, 2)} <small>g/kg och dag</small></span>
+              <span className="val">{formatNumber(proteinPerKg, 2)} <small>{sh < 1 ? 'g/kg' : 'g/kg och dag'}</small></span>
               <div className="meter" aria-hidden="true">
-                <div className={`fill ${proteinPerKg >= macro.proteinGPerKg ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / macro.proteinGPerKg) * 100, 150) / 1.5}%` }} />
+                <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(macro.proteinGPerKg, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · {v('PROT') > 0 ? `${formatNumber(v('PROT'), 0)} g totalt` : 'inget registrerat'} · <span className={`pill ${proteinPerKg >= macro.proteinGPerKg ? 'ok' : 'low'}`}>{proteinPerKg >= macro.proteinGPerKg ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · {v('PROT') > 0 ? `${formatNumber(v('PROT'), 0)} g totalt` : 'inget registrerat'} · <span className={`pill ${proteinPerKg >= protRef ? 'ok' : 'low'}`}>{proteinPerKg >= protRef ? 'Inom' : 'Under'}</span></span>
             </>
           ) : (
             <>
@@ -412,7 +424,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           // Vätska: vatten i all registrerad mat och dryck (g ≈ ml)
           const ml = v('WATER')
           const mlkg = ml / weightKg
-          const ref = 30
+          const ref = 30 * sh
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Vätska</span>
@@ -421,13 +433,13 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${mlkg >= ref ? '' : 'low'}`} style={{ width: `${Math.min((mlkg / ref) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Vatten i mat och dryck · riktvärde {ref} ml/kg ({formatNumber(ref * weightKg, 0)} ml)</span>
+              <span className="sub">Vatten i mat och dryck · riktvärde {formatNumber(ref, 0)} ml/kg ({formatNumber(ref * weightKg, 0)} ml)</span>
             </div>
           )
         })()}
         {(() => {
           const g = v('FIBT')
-          const refG = (macro.fiberGPerMJ.min ?? 3) * need.teeMJ
+          const refG = (macro.fiberGPerMJ.min ?? 3) * need.teeMJ * sh
           const ok = g >= refG
           return (
             <div className="ws-kcalbox">
