@@ -645,3 +645,8 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ws-mealmicro { grid-template-columns: 1fr auto 44px }
 .ws-mealmicro .mv { font-weight: 600; text-align: right }
 .ws-mealmicro .mp { color: var(--muted); font-weight: 400 }
+/* Källor: diskret knapp längst ner i livsmedelssöket */
+.ws-srcwrap { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px }
+.ws-srcbtn { min-height: 30px; padding: 3px 12px; font-size: 13px; color: var(--muted) }
+.ws-srcbtn.on { color: var(--ink); border-color: var(--brand) }
+.ws-srcwrap .ws-sources { margin: 0 }

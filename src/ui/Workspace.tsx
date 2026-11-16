@@ -289,6 +289,7 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
   const [grams, setGrams] = useState('100')
   const gramsRef = useRef<HTMLInputElement>(null)
   const multi = available.length > 1
+  const [sourcesOpen, setSourcesOpen] = useState(false)
 
   // Som i Dietist Net: utan sökord visas listan i bokstavsordning.
   const hits = useMemo(() => {
@@ -316,16 +317,6 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
     <div className="ws-picker">
       <input className="ws-search" type="search" placeholder="Sök livsmedel …" value={query}
         onChange={e => { setQuery(e.target.value); setPicked(null) }} aria-label="Sök livsmedel" />
-      {multi && (
-        <div className="ws-sources">
-          {available.map(id => (
-            <label key={id} className="check small">
-              <input type="checkbox" checked={sources.includes(id)} disabled={sources.length === 1 && sources[0] === id} onChange={() => toggleSource(id)} />
-              {SOURCES[id].label}
-            </label>
-          ))}
-        </div>
-      )}
       <ul className="ws-hits" role="listbox" aria-label="Sökträffar">
         {hits.map(f => (
           <li key={`${f.source}:${f.number}`} role="option" aria-selected={picked === f}>
@@ -346,6 +337,24 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
         </label>
         <button type="button" className="primary" disabled={!picked} onClick={add}>Lägg till {meal.toLowerCase()}</button>
       </div>
+      {multi && (
+        // Källor: diskret knapp längst ner; öppnas för att bocka i vilka databaser som ska sökas
+        <div className="ws-srcwrap">
+          <button type="button" className={`small ws-srcbtn ${sourcesOpen ? 'on' : ''}`} aria-expanded={sourcesOpen} onClick={() => setSourcesOpen(o => !o)}>
+            Källor
+          </button>
+          {sourcesOpen && (
+            <div className="ws-sources">
+              {available.map(id => (
+                <label key={id} className="check small">
+                  <input type="checkbox" checked={sources.includes(id)} disabled={sources.length === 1 && sources[0] === id} onChange={() => toggleSource(id)} />
+                  {SOURCES[id].label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
