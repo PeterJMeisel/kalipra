@@ -22,10 +22,14 @@ byggs bort från webben. Lägg aldrig in ett hjälpmedel utan den flaggan.
 **Innan webbplatsen publiceras:** gå igenom listan nedan, bygg `npm run build:site` och kontrollera att
 inget av hjälpmedlen finns i `dist/` (t.ex. `grep -r "kycklingfilé" dist/` ska inte ge träff).
 
+### Aktuellt läge: publikationsläge
+
+Inga tillfälliga hjälpmedel är aktiva (testkost och start på dagdiagrammet togs bort 2026-11-16).
+Peter säger till när vi går över till produktionsläge igen. Då läggs hjälpmedel in bakom `PRODUCTION` och listas här.
+
 ### Produktionsläge – aktiva hjälpmedel
 
-- Testkost: två dagar med tre måltider läggs in automatiskt i nya beräkningar (`src/core/demo.ts`).
-- Start: programmet öppnar testpatienten Kalle Kalleson på stapeldiagrammet i Dagar (`App.tsx`, `startInDays`).
+(inga)
 
 ### Skillnader artefakt/webb som inte är hjälpmedel
 

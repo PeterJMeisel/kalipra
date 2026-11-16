@@ -9,15 +9,13 @@ import { FoodDatabase, SOURCES, summarizeDiary, type FoodData } from './core/foo
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
 import { calculationsFor, currentWeight, linkDraft, loadState, mergeImport, newId, parseState, saveState, subsetPersons, type AppState } from './core/storage'
-import { KNOWN_CONDITIONS, splitClient, toClient, type Calculation, type Client, type Diary, type Person, emptyHealth } from './core/types'
+import { KNOWN_CONDITIONS, splitClient, toClient, type Calculation, type Client, type Diary, type Person } from './core/types'
 import { sortWeights } from './core/weights'
 import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
 import { Workspace } from './ui/Workspace'
-import { demoDiary } from './core/demo'
-import { PRODUCTION } from './core/mode'
 
 const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData, nutrition as unknown as FoodData])
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'SUGFR', 'VITA', 'VITD', 'VITE',
@@ -26,8 +24,8 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT',
 const ACTIVE_KEY = 'kalipra.activePatient'
 const ANON_KEY = 'kalipra.anonCalc'
 const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
-/** Startinnehåll för en ny kostregistrering: tom, eller testdata i artefakten. */
-const startDiary = () => (PRODUCTION ? demoDiary(db) : { days: 1, entries: [] })
+/** Startinnehåll för en ny kostregistrering. */
+const startDiary = () => ({ days: 1, entries: [] })
 type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
@@ -78,32 +76,6 @@ export default function App() {
 
   useEffect(() => { setSaved(saveState(state)) }, [state])
 
-  // Produktionsläge (bara artefakten): starta på stapeldiagrammet i Dagar med testpatient och testkost.
-  const prodStarted = useRef(false)
-  useEffect(() => {
-    if (!PRODUCTION || prodStarted.current) return
-    prodStarted.current = true
-    const code = 'Kalle Kalleson'
-    let person = state.persons.find(p => p.code === code)
-    let calcs = person ? calculationsFor(state, person.id) : []
-    const t = now()
-    if (!person) {
-      person = { id: newId(), code, age: 72, sex: 'man', heightCm: 178, health: emptyHealth(), weights: [], createdAt: t, updatedAt: t, lastOpenedAt: t }
-      const c: Calculation = { id: newId(), personId: person.id, createdAt: t, updatedAt: t, weightKg: 68, pal: 1.2, goal: null, ...demoDiary(db) }
-      const p0 = person
-      setState(s => ({ ...s, persons: [...s.persons, p0], calculations: [...s.calculations, c] }))
-      calcs = [c]
-    } else if (!calcs[0] || calcs[0].entries.length === 0) {
-      const c: Calculation = { id: newId(), personId: person.id, createdAt: t, updatedAt: t, weightKg: calcs[0]?.weightKg ?? 68, pal: calcs[0]?.pal ?? 1.2, goal: null, ...demoDiary(db) }
-      setState(s => ({ ...s, calculations: [...s.calculations, c] }))
-      calcs = [c]
-    }
-    setActiveId(person.id)
-    setCalcId(calcs[0].id)
-    setAnonMode(false)
-    setView('oversikt')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
   useEffect(() => { window.scrollTo(0, 0) }, [view])
 
   function go(v: View) {
@@ -622,7 +594,6 @@ export default function App() {
           </section>
           <Workspace
             key={calculation.id}
-            startInDays={PRODUCTION}
             db={db}
             person={calcPerson}
             calc={calculation}
