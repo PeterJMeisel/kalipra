@@ -59,9 +59,14 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
     setMeal(m)
     return m
   }
+  // Bekräftelse på knappen i stället för confirm() (blockeras i artefakter): första klick frågar, andra tar bort
+  const [armed, setArmed] = useState<string | null>(null)
+  useEffect(() => { if (!armed) return; const t = setTimeout(() => setArmed(null), 3000); return () => clearTimeout(t) }, [armed])
   function removeMeal(m: Meal) {
     const inMeal = entries.filter(e => e.day === currentDay && e.meal === m)
-    if (inMeal.length && !confirm(`Ta bort ${m.toLowerCase()} på dag ${currentDay} och ${inMeal.length} registrerade livsmedel i den?`)) return
+    const key = `meal:${currentDay}:${m}`
+    if (inMeal.length && armed !== key) { setArmed(key); return }
+    setArmed(null)
     // Numrerade måltider efter den borttagna flyttas ner ett steg (bara denna dag)
     const k = mealNo(m)
     const next = entries.filter(e => !(e.day === currentDay && e.meal === m)).map(e => {
@@ -82,7 +87,8 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
   function removeDay() {
     const d = calc.days
     const count = entries.filter(e => e.day === d).length
-    if (count && !confirm(`Ta bort dag ${d} och ${count} registrerade livsmedel?`)) return
+    if (count && armed !== `day:${d}`) { setArmed(`day:${d}`); return }
+    setArmed(null)
     onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d), mealCounts: allCounts().slice(0, d - 1) })
     if (day >= d) setDay(d - 1)
   }
@@ -142,7 +148,11 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             )
           })}
           {calc.days < 14 && <button type="button" className="ws-add" onClick={addDay}>+ Lägg till dag</button>}
-          {calc.days > 1 && <button type="button" className="ws-remove" onClick={removeDay} title={`Ta bort dag ${calc.days}`}>Ta bort dag {calc.days}</button>}
+          {calc.days > 1 && (
+            <button type="button" className={`ws-remove ${armed === `day:${calc.days}` ? 'armed' : ''}`} onClick={removeDay}>
+              {armed === `day:${calc.days}` ? `Ta bort dag ${calc.days} med ${entries.filter(e => e.day === calc.days).length} livsmedel? Klicka igen` : `Ta bort dag ${calc.days}`}
+            </button>
+          )}
         </div>
         <div className="ws-mealtabs" role="tablist" aria-label="Måltid">
           {meals.map(m => {
@@ -154,7 +164,11 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             )
           })}
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
-          {meals.length > 1 && <button type="button" className="ws-remove" onClick={() => removeMeal(meal)} title={`Ta bort ${meal.toLowerCase()}`}>Ta bort {meal.toLowerCase()}</button>}
+          {meals.length > 1 && (
+            <button type="button" className={`ws-remove ${armed === `meal:${currentDay}:${meal}` ? 'armed' : ''}`} onClick={() => removeMeal(meal)}>
+              {armed === `meal:${currentDay}:${meal}` ? `Ta bort ${meal.toLowerCase()} med ${mealEntries.length} livsmedel? Klicka igen` : `Ta bort ${meal.toLowerCase()}`}
+            </button>
+          )}
         </div>
         <div className="ws-tablewrap">
           {mealEntries.length === 0 ? (
