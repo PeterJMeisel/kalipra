@@ -25,7 +25,7 @@ type Props = {
 export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
-  const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'maltider'>('rdi')
+  const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'jamfor'>('rdi')
   const [scope, setScope] = useState<'dag' | 'dagar'>('dag')
 
   const currentDay = Math.min(day, calc.days)
@@ -118,6 +118,11 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   // Läget Dag visar bara den dag som är markerad i kostregistreringen (inte snitt över dagarna)
   const daySummary = useMemo(() => summarizeDiary(db, entries.filter(e => e.day === currentDay), 1, SUMMARY_KEYS), [db, entries, currentDay])
   const scoped = useMemo(() => ({ totals: daySummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag ${currentDay}` }), [daySummary, need, currentDay])
+  // Läget Dagar: genomsnitt över de dagar som har registreringar (tomma dagar räknas inte)
+  const filledDays = new Set(entries.map(e => e.day)).size
+  const avgSummary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
+  const avgScoped = useMemo(() => ({ totals: avgSummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `snitt över ${filledDays} ${filledDays === 1 ? 'dag' : 'dagar'}` }), [avgSummary, need, filledDays])
+  const view = scope === 'dag' ? scoped : avgScoped
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
 
@@ -210,22 +215,20 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
 
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
         <nav className="ws-tabs" role="tablist">
-          {scope === 'dagar' ? <h3 className="ws-daystitle">Jämförelse mellan dagar</h3> : <>
-          <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>{person ? 'Näring mot behov' : 'Intag'}</button>
+          <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>Överblick</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
-          <button role="tab" aria-selected={bottomTab === 'maltider'} className={bottomTab === 'maltider' ? 'on' : ''} onClick={() => setBottomTab('maltider')}>Måltider</button>
-          </>}
+          <button role="tab" aria-selected={bottomTab === 'jamfor'} className={bottomTab === 'jamfor' ? 'on' : ''} onClick={() => setBottomTab('jamfor')}>{scope === 'dag' ? 'Måltider' : 'Per dag'}</button>
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
             <button role="radio" aria-checked={scope === 'dag'} className={scope === 'dag' ? 'on' : ''} onClick={() => setScope('dag')}>Dag</button>
             <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => setScope('dagar')}>Dagar</button>
           </span>
         </nav>
-        {scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} />}
-        {scope !== 'dagar' && bottomTab === 'rdi' && (person && need
-          ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
-          : <IntakeView scoped={scoped} />)}
-        {scope !== 'dagar' && bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
-        {scope !== 'dagar' && bottomTab === 'maltider' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
+        {bottomTab === 'rdi' && (person && need
+          ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={view} />
+          : <IntakeView scoped={view} />)}
+        {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} />}
+        {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
+        {bottomTab === 'jamfor' && scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} />}
       </section>
     </div>
   )
@@ -341,10 +344,10 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 
 type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string }
 
-function RdiView({ person, repro, weightKg, need, scoped, scope }: {
+function RdiView({ person, repro, weightKg, need, scoped }: {
   person: Person; repro: Repro | null; weightKg: number
   need: EnergyNeed
-  scoped: Scoped; scope: 'dag' | 'dagar'
+  scoped: Scoped
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
   const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
@@ -353,7 +356,7 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
   const pct = scoped.needKcal > 0 ? (kcal / scoped.needKcal) * 100 : 0
   const bmrPct = (need.bmrKcal / need.teeKcal) * 100
   const macro = macroReferences(person.age, person.sex, repro, weightKg)
-  const proteinPerKg = scope === 'dag' ? v('PROT') / weightKg : null
+  const proteinPerKg = v('PROT') / weightKg
   const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
     .map(m => {
       const f = 1
@@ -373,7 +376,7 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
           <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av behovet · skillnad {kcal - scoped.needKcal >= 0 ? '+' : '−'}{formatNumber(Math.abs(kcal - scoped.needKcal), 0)} kcal</span>
         </div>
         <div className="ws-kcalbox">
-          <span className="lbl">Energibehov per dag ({formatNumber(weightKg, 1)} kg{repro ? `, ${REPRO_LABEL(repro)}` : ''})</span>
+          <span className="lbl">Energibehov per dag{repro ? ` (${REPRO_LABEL(repro)})` : ''}</span>
           <span className="val">{formatNumber(need.teeKcal, 0)} <small>kcal</small></span>
           <div className="splitbar" aria-hidden="true">
             <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
@@ -403,7 +406,7 @@ function RdiView({ person, repro, weightKg, need, scoped, scope }: {
       </div>
 
       <div className="ws-h4row">
-        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {scope === 'dag' ? `RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})` : 'måltidens andel av RDI'}</h4>
+        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {`RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
         <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
         </button>
