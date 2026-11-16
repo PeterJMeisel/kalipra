@@ -150,13 +150,8 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             )
           })}
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
-          <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)} aria-expanded={copyOpen}>Kopiera måltid …</button>
           {meals.length > 1 && <button type="button" className="ws-remove" onClick={() => removeMeal(meal)} title={`Ta bort ${meal.toLowerCase()}`}>Ta bort {meal.toLowerCase()}</button>}
         </div>
-        {copyOpen && (
-          <CopyMealPanel days={calc.days} mealsFor={mealsFor} entries={entries} fromDay={currentDay} fromMeal={meal}
-            onCopy={copyMeal} onClose={() => setCopyOpen(false)} />
-        )}
         <div className="ws-tablewrap">
           {mealEntries.length === 0 ? (
             <p className="empty">Inget registrerat för {meal.toLowerCase()}, dag {currentDay}. Lägg till livsmedel från listan till höger.</p>
@@ -187,10 +182,21 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
             </table>
           )}
         </div>
-        <p className="ws-totals">
-          {meal}: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
-          <span className="sep">·</span> Dag {currentDay}: <strong>{formatNumber(kcalOf(dayEntries), 0)} kcal</strong>
-        </p>
+        {copyOpen && (
+          <CopyMealPanel days={calc.days} mealsFor={mealsFor} entries={entries} fromDay={currentDay} fromMeal={meal}
+            onCopy={copyMeal} onClose={() => setCopyOpen(false)} />
+        )}
+        <div className="ws-totals">
+          <span>
+            {meal}: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
+            <span className="sep">·</span> Dag {currentDay}: <strong>{formatNumber(kcalOf(dayEntries), 0)} kcal</strong>
+          </span>
+          <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
+            aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
+            title={mealEntries.length === 0 ? 'Måltiden är tom' : `Kopiera ${meal.toLowerCase()} till en annan måltid`}>
+            Kopiera {meal.toLowerCase()} …
+          </button>
+        </div>
       </section>
 
       <section className="ws-right panelbox" aria-label="Livsmedelssök och patientuppgifter">

@@ -529,3 +529,8 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-copy select { font: inherit; font-size: 14px; padding: 5px 8px }
 .ws-copy .lbl { font-weight: 600 }
 .ws-copy .muted { color: var(--muted); font-size: 13px }
+.ws-totals { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap }
+.ws-totals .ws-copybtn { min-height: 34px; padding: 4px 12px }
+.ws-copy { margin: 8px 0 0 }
+.ws-copy select { width: auto; min-width: 0; flex: 0 0 auto }
+.ws-copy > * { flex: 0 0 auto }
