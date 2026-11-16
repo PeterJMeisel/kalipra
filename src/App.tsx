@@ -330,10 +330,10 @@ export default function App() {
         </button>
         <div className="patientbar" aria-label="Laddad patient">
           {activePerson ? (
-            <span className="pb-info">
+            <button type="button" className="pb-info pb-infobtn" onClick={() => togglePanel('patientdata')} title="Visa patientdata">
               <span className="pb-code">{activePerson.code}</span>
               <span className="pb-facts">{activePerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
-            </span>
+            </button>
           ) : (
             <span className="pb-info pb-ref" title="Ingen patient vald. Behov och RDI räknas för en referensperson: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2.">
               <span className="pb-code">{REF_PERSON.code}</span>
