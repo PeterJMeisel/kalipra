@@ -7,7 +7,7 @@ import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type
 import { newId } from '../core/storage'
 import { SourceTag } from './DiaryEditor'
 
-const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
+const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
 type Props = {
@@ -403,6 +403,58 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
             </>
           )}
         </div>
+      </div>
+
+      <div className="ws-kcalrow ws-kcalrow2">
+        {(() => {
+          // Vätska: vatten i all registrerad mat och dryck (g ≈ ml)
+          const ml = v('WATER')
+          const mlkg = ml / weightKg
+          const ref = 30
+          return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Vätska</span>
+              <span className="val">{formatNumber(ml, 0)} <small>ml · {formatNumber(mlkg, 0)} ml/kg</small></span>
+              <div className="meter" aria-hidden="true">
+                <div className={`fill ${mlkg >= ref ? '' : 'low'}`} style={{ width: `${Math.min((mlkg / ref) * 100, 150) / 1.5}%` }} />
+                <div className="mark" style={{ left: `${100 / 1.5}%` }} />
+              </div>
+              <span className="sub">Vatten i mat och dryck · riktvärde {ref} ml/kg ({formatNumber(ref * weightKg, 0)} ml)</span>
+            </div>
+          )
+        })()}
+        {(() => {
+          const g = v('FIBT')
+          const refG = (macro.fiberGPerMJ.min ?? 3) * need.teeMJ
+          const ok = g >= refG
+          return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Fiber</span>
+              <span className="val">{formatNumber(g, 1)} <small>g</small></span>
+              <div className="meter" aria-hidden="true">
+                <div className={`fill ${ok ? '' : 'low'}`} style={{ width: `${Math.min((g / refG) * 100, 150) / 1.5}%` }} />
+                <div className="mark" style={{ left: `${100 / 1.5}%` }} />
+              </div>
+              <span className="sub">Rekommendation minst {formatNumber(macro.fiberGPerMJ.min ?? 3, 0)} g/MJ ({formatNumber(refG, 0)} g) · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
+            </div>
+          )
+        })()}
+        {(() => {
+          const g = v('NACL')
+          const maxG = micro.find(m => m.key === 'NACL')?.value ?? 6
+          const over = g > maxG
+          return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Salt</span>
+              <span className="val">{formatNumber(g, 1)} <small>g</small></span>
+              <div className="meter" aria-hidden="true">
+                <div className={`fill ${over ? 'high' : ''}`} style={{ width: `${Math.min((g / maxG) * 100, 150) / 1.5}%` }} />
+                <div className="mark" style={{ left: `${100 / 1.5}%` }} />
+              </div>
+              <span className="sub">Rekommendation högst {formatNumber(maxG, 0)} g · <span className={`pill ${over ? 'high' : 'ok'}`}>{over ? 'Över' : 'Inom'}</span></span>
+            </div>
+          )
+        })()}
       </div>
 
       <div className="ws-h4row">
