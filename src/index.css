@@ -650,3 +650,6 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ws-srcbtn { min-height: 30px; padding: 3px 12px; font-size: 13px; color: var(--muted) }
 .ws-srcbtn.on { color: var(--ink); border-color: var(--brand) }
 .ws-srcwrap .ws-sources { margin: 0 }
+/* Kopiera måltid: lite mer synlig */
+.ws-totals .ws-copybtn { font-size: 14px !important; font-weight: 600; min-height: 38px; padding: 6px 16px; border-color: var(--brand); color: var(--brand) }
+.ws-totals .ws-copybtn:hover:not(:disabled) { background: var(--tint) }
