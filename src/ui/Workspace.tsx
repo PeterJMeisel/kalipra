@@ -243,12 +243,13 @@ function CopyMealPanel({ days, mealsFor, entries, fromDay: d0, fromMeal: m0, onC
   const [fromDay, setFromDay] = useState(d0)
   const [fromMeal, setFromMeal] = useState<Meal>(m0)
   const [toDay, setToDay] = useState(d0)
-  const [toMeal, setToMeal] = useState<Meal | 'ny'>('ny')
+  // Målmåltiden måste väljas aktivt innan man kan kopiera
+  const [toMeal, setToMeal] = useState<Meal | 'ny' | ''>('')
   const dayOpts = Array.from({ length: days }, (_, i) => i + 1)
   const srcMeals = mealsFor(fromDay)
   const fm = srcMeals.includes(fromMeal) ? fromMeal : srcMeals[0]
   const n = entries.filter(e => e.day === fromDay && e.meal === fm).length
-  const tm = toMeal === 'ny' || mealsFor(toDay).includes(toMeal) ? toMeal : 'ny'
+  const tm = toMeal === 'ny' || toMeal === '' || mealsFor(toDay).includes(toMeal) ? toMeal : ''
   return (
     <div className="ws-copy" role="group" aria-label="Kopiera måltid">
       <span className="lbl">Kopiera</span>
@@ -257,10 +258,11 @@ function CopyMealPanel({ days, mealsFor, entries, fromDay: d0, fromMeal: m0, onC
       <span className="lbl">till</span>
       <select aria-label="Till dag" value={toDay} onChange={e => setToDay(Number(e.target.value))}>{dayOpts.map(d => <option key={d} value={d}>Dag {d}</option>)}</select>
       <select aria-label="Till måltid" value={tm} onChange={e => setToMeal(e.target.value)}>
+        <option value="" disabled>Välj måltid</option>
         <option value="ny">Ny måltid</option>
         {mealsFor(toDay).filter(m => !(toDay === fromDay && m === fm)).map(m => <option key={m} value={m}>{m}</option>)}
       </select>
-      <button type="button" className="primary small" disabled={n === 0} onClick={() => onCopy(fromDay, fm, toDay, tm)}>
+      <button type="button" className="primary small" disabled={n === 0 || tm === ''} onClick={() => tm !== '' && onCopy(fromDay, fm, toDay, tm)}>
         Kopiera {n > 0 ? `(${n} livsmedel)` : ''}
       </button>
       <button type="button" className="small" onClick={onClose}>Avbryt</button>
