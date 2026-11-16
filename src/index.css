@@ -577,6 +577,3 @@ h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 .ws-daystable .dv-barcell .bar { margin: 0 }
 .ws-daystable td { vertical-align: middle }
 .ws-daystable .avg .bar { background: var(--panel) }
-/* Samma stapelbredd som i Dag/Måltid (max ~150 px), högerställt */
-.ws-daystable .dv-barcell { grid-template-columns: minmax(0, 150px) 46px; justify-content: end }
-.ws-daystable td > .bar { max-width: 150px; margin-left: auto }
