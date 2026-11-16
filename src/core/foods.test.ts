@@ -142,3 +142,20 @@ describe('nutritionsprodukter', () => {
     expect(ndb.search('althéra', 5)[0].unit).toBe('g')
   })
 })
+
+import { microReferences as mr, microStatus as ms } from './references'
+describe('AR och färger enligt NNR 2023', () => {
+  it('har AR för kvinna 25–50 och ger grön/orange/röd', () => {
+    const fe = mr(30, 'kvinna', 8).find(m => m.key === 'FE')!
+    expect(fe.value).toBe(15); expect(fe.ar).toBe(9)
+    expect(ms(fe, 15)).toBe('ok'); expect(ms(fe, 10)).toBe('near'); expect(ms(fe, 8)).toBe('low')
+    const a = mr(80, 'man', 8).find(m => m.key === 'VITA')!
+    expect(a.value).toBe(750); expect(a.ar).toBe(590)
+    const se = mr(8, 'kvinna', 7).find(m => m.key === 'SE')!
+    expect(se.ar).toBe(35); expect(se.arProvisional).toBe(true)
+    const thi = mr(40, 'man', 10).find(m => m.key === 'THIACLHCL')!
+    expect(thi.ar).toBeCloseTo(0.7)
+    const salt = mr(40, 'man', 10).find(m => m.key === 'NACL')!
+    expect(ms(salt, 4)).toBe('ok'); expect(ms(salt, 7)).toBe('high')
+  })
+})

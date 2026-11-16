@@ -5,6 +5,7 @@ import type { Sex } from './types'
  * Referensvärden enligt NNR 2023 (rev. 003), så som de återges i Livsmedelsverkets
  * "Referensvärden för energi och näringsämnen" och Helsedirektoratets sammanfattning.
  * Gäller friska personer från 2 år. Graviditet och amning ingår inte ännu.
+ * Kontrollerat mot Livsmedelsverkets slutleverans (2025), tabell 5 och 7–15.
  */
 
 export type AgeGroup = '2-3' | '4-6' | '7-10' | '11-14' | '15-17' | '18-24' | '25-50' | '51-70' | '71+'
@@ -53,8 +54,47 @@ const BY_SEX: Record<Sex, Record<OlderGroup, Row>> = {
   },
 }
 
+/**
+ * Genomsnittsbehov (AR) enligt NNR 2023, tabell 12–15. Samma kolumnordning som Row (utan salt).
+ * E, B12, P, K, Mg, jod och selen är provisoriska AR (0,8 × AI).
+ */
+type ArRow = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number]
+const AR_CHILD: Record<'2-3' | '4-6' | '7-10', ArRow> = {
+  '2-3': [240, 7.5, 0.5, 0.5, 90, 20, 6, 1.2, 400, 6, 3.8, 200, 700, 136, 80, 15],
+  '4-6': [270, 7.5, 0.6, 0.6, 110, 30, 7, 1.4, 700, 5, 4.8, 350, 900, 184, 80, 20],
+  '7-10': [340, 7.5, 0.8, 0.9, 160, 45, 7, 2.0, 675, 7, 6.4, 350, 1450, 184, 80, 35],
+}
+const AR_BY_SEX: Record<Sex, Record<OlderGroup, ArRow>> = {
+  kvinna: {
+    '11-14': [490, 7.5, 1.2, 1.1, 220, 60, 8, 2.8, 980, 10, 9.0, 510, 1900, 200, 100, 50],
+    '15-17': [500, 7.5, 1.3, 1.3, 240, 75, 9, 3.1, 980, 9, 10.2, 510, 2250, 200, 100, 55],
+    '18-24': [540, 7.5, 1.3, 1.3, 250, 75, 8, 3.2, 870, 9, 8.1, 440, 2800, 240, 120, 60],
+    '25-50': [540, 7.5, 1.3, 1.3, 250, 75, 8, 3.2, 750, 9, 8.1, 420, 2800, 240, 120, 60],
+    '51-70': [530, 7.5, 1.3, 1.3, 250, 75, 8, 3.2, 750, 6, 7.9, 420, 2800, 240, 120, 60],
+    '71+': [510, 7.5, 1.3, 1.3, 250, 75, 8, 3.2, 750, 6, 7.7, 420, 2800, 240, 120, 60],
+  },
+  man: {
+    '11-14': [520, 7.5, 1.1, 1.2, 200, 65, 9, 2.6, 980, 9, 9.2, 510, 2050, 240, 100, 50],
+    '15-17': [600, 7.5, 1.3, 1.5, 250, 85, 10, 3.2, 980, 9, 11.7, 510, 2700, 240, 110, 70],
+    '18-24': [630, 7.5, 1.3, 1.5, 250, 90, 9, 3.2, 870, 7, 10.6, 440, 2800, 280, 120, 70],
+    '25-50': [630, 7.5, 1.3, 1.5, 250, 90, 9, 3.2, 750, 7, 10.6, 420, 2800, 280, 120, 70],
+    '51-70': [610, 7.5, 1.3, 1.5, 250, 90, 9, 3.2, 750, 7, 10.4, 420, 2800, 280, 120, 70],
+    '71+': [590, 7.5, 1.3, 1.5, 250, 90, 9, 3.2, 750, 7, 10.1, 420, 2800, 280, 120, 70],
+  },
+}
+
 export type RefKind = 'RI' | 'AI' | 'max'
-export type MicroReference = { key: NutrientKey; kind: RefKind; value: number; note?: string }
+export type MicroReference = {
+  key: NutrientKey
+  kind: RefKind
+  /** RI, AI eller rekommenderat maxintag */
+  value: number
+  /** Genomsnittsbehov (AR). Intag under AR = röd, mellan AR och RI = orange. */
+  ar?: number
+  /** AR är provisoriskt (0,8 × AI) */
+  arProvisional?: boolean
+  note?: string
+}
 
 /**
  * Referensvärden för vitaminer, mineraler och salt för en person.
@@ -62,7 +102,9 @@ export type MicroReference = { key: NutrientKey; kind: RefKind; value: number; n
  */
 export function microReferences(age: number, sex: Sex, energyMJ: number): MicroReference[] {
   const g = ageGroup(age)
-  const r: Row = g === '2-3' || g === '4-6' || g === '7-10' ? CHILD[g] : BY_SEX[sex][g]
+  const child = g === '2-3' || g === '4-6' || g === '7-10'
+  const r: Row = child ? CHILD[g] : BY_SEX[sex][g]
+  const a: ArRow = child ? AR_CHILD[g] : AR_BY_SEX[sex][g]
   const vitD = age >= 75 ? 20 : r[1]
   const ironNote = sex === 'kvinna'
     ? g === '51-70' ? 'Vid pågående menstruation gäller 15 mg.'
@@ -70,27 +112,37 @@ export function microReferences(age: number, sex: Sex, energyMJ: number): MicroR
       : g === '15-17' || g === '18-24' || g === '25-50' ? 'Vid kraftiga menstruationer: kontrollera järnstatus.'
       : undefined
     : undefined
+  const p = true // provisoriskt AR
   return [
-    { key: 'VITA', kind: 'RI', value: r[0] },
-    { key: 'VITD', kind: 'RI', value: vitD, note: age >= 75 ? '20 µg från 75 år.' : undefined },
-    { key: 'VITE', kind: 'AI', value: r[6] },
-    { key: 'THIACLHCL', kind: 'RI', value: 0.1 * energyMJ, note: '0,1 mg/MJ av energibehovet.' },
-    { key: 'RIBF', kind: 'RI', value: r[2] },
-    { key: 'NIAEQ', kind: 'RI', value: 1.6 * energyMJ, note: '1,6 NE/MJ av energibehovet.' },
-    { key: 'VITB6', kind: 'RI', value: r[3] },
-    { key: 'FOL', kind: 'RI', value: r[4], note: sex === 'kvinna' && age >= 18 && age <= 50 ? 'Vid planerad graviditet: 400 µg folsyra som tillskott.' : undefined },
-    { key: 'VITB12', kind: 'AI', value: r[7] },
-    { key: 'VITC', kind: 'RI', value: r[5] },
-    { key: 'CA', kind: 'RI', value: r[8] },
-    { key: 'P', kind: 'AI', value: r[11] },
-    { key: 'K', kind: 'AI', value: r[12] },
-    { key: 'MG', kind: 'AI', value: r[13] },
-    { key: 'FE', kind: 'RI', value: r[9], note: ironNote },
-    { key: 'ZN', kind: 'RI', value: r[10] },
-    { key: 'ID', kind: 'AI', value: r[14] },
-    { key: 'SE', kind: 'AI', value: r[15] },
+    { key: 'VITA', kind: 'RI', value: r[0], ar: a[0] },
+    { key: 'VITD', kind: 'RI', value: vitD, ar: a[1], note: age >= 75 ? '20 µg från 75 år.' : undefined },
+    { key: 'VITE', kind: 'AI', value: r[6], ar: a[6], arProvisional: p },
+    { key: 'THIACLHCL', kind: 'RI', value: 0.1 * energyMJ, ar: 0.07 * energyMJ, note: '0,1 mg/MJ av energibehovet (AR 0,07 mg/MJ).' },
+    { key: 'RIBF', kind: 'RI', value: r[2], ar: a[2] },
+    { key: 'NIAEQ', kind: 'RI', value: 1.6 * energyMJ, ar: 1.3 * energyMJ, note: '1,6 NE/MJ av energibehovet (AR 1,3 NE/MJ).' },
+    { key: 'VITB6', kind: 'RI', value: r[3], ar: a[3] },
+    { key: 'FOL', kind: 'RI', value: r[4], ar: a[4], note: sex === 'kvinna' && age >= 18 && age <= 50 ? 'Vid planerad graviditet: 400 µg folsyra som tillskott.' : undefined },
+    { key: 'VITB12', kind: 'AI', value: r[7], ar: a[7], arProvisional: p },
+    { key: 'VITC', kind: 'RI', value: r[5], ar: a[5] },
+    { key: 'CA', kind: 'RI', value: r[8], ar: a[8] },
+    { key: 'P', kind: 'AI', value: r[11], ar: a[11], arProvisional: p },
+    { key: 'K', kind: 'AI', value: r[12], ar: a[12], arProvisional: p },
+    { key: 'MG', kind: 'AI', value: r[13], ar: a[13], arProvisional: p },
+    { key: 'FE', kind: 'RI', value: r[9], ar: a[9], note: ironNote },
+    { key: 'ZN', kind: 'RI', value: r[10], ar: a[10] },
+    { key: 'ID', kind: 'AI', value: r[14], ar: a[14], arProvisional: p },
+    { key: 'SE', kind: 'AI', value: r[15], ar: a[15], arProvisional: p },
     { key: 'NACL', kind: 'max', value: r[16], note: 'Rekommenderat högsta intag.' },
   ]
+}
+
+export type MicroStatus = 'ok' | 'near' | 'low' | 'high'
+/** Grön vid ≥ 100 % av RI/AI, orange mellan AR och RI, röd under AR (eller under RI när AR saknas). */
+export function microStatus(m: Pick<MicroReference, 'kind' | 'value' | 'ar'>, intake: number): MicroStatus {
+  if (m.kind === 'max') return intake > m.value ? 'high' : 'ok'
+  if (intake >= m.value) return 'ok'
+  if (m.ar !== undefined && intake >= m.ar) return 'near'
+  return 'low'
 }
 
 export type Range = { min?: number; max?: number }

@@ -1,6 +1,6 @@
 import type { DiarySummary } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey } from '../core/nutrients'
-import { macroReferences, microReferences, type Range } from '../core/references'
+import { macroReferences, microReferences, microStatus, type Range } from '../core/references'
 import { sortMeals, type Client } from '../core/types'
 import { kcalToKj, type EnergyNeed, type GoalPlan } from '../core/energy'
 
@@ -125,7 +125,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
             const d = NUTRIENTS[m.key]
             const val = v(m.key)
             const pct = m.value > 0 ? (val / m.value) * 100 : 0
-            const st: Status = m.kind === 'max' ? (val > m.value ? 'high' : 'ok') : pct >= 100 ? 'ok' : pct >= 67 ? 'near' : 'low'
+            const st: Status = microStatus(m, val)
             return (
               <div className={`micro${highlight.has(m.key) ? ' hl' : ''}`} key={m.key}>
                 {highlight.has(m.key) && <span className="hltag">Viktig vid {highlight.get(m.key)!.toLowerCase()}</span>}

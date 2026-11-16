@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { macroReferences, microReferences, type Range } from '../core/references'
+import { macroReferences, microReferences, microStatus, type Range } from '../core/references'
 import { energyNeed, normalizeFormula, bmi } from '../core/energy'
 import { emptyHealth, mealName, sortMeals, type Calculation, type DiaryEntry, type Health, type Meal, type Person } from '../core/types'
 import { HealthSection } from './HealthSection'
@@ -394,7 +394,10 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
   const macro = macroReferences(person.age, person.sex)
   const proteinPerKg = scope === 'dag' ? v('PROT') / weightKg : null
   const micro = microReferences(person.age, person.sex, need.teeMJ)
-    .map(m => ({ ...m, value: scope === 'maltid' ? m.value * (scoped.needMJ / need.teeMJ) : m.value }))
+    .map(m => {
+      const f = scope === 'maltid' ? scoped.needMJ / need.teeMJ : 1
+      return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined }
+    })
 
   return (
     <div className="ws-rdi">
@@ -443,12 +446,18 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
         </button>
       </div>
+      <p className="ws-legend">
+        <span><i className="ok" /> Minst RDI</span>
+        <span><i className="near" /> Över AR men under RDI</span>
+        <span><i className="low" /> Under AR</span>
+        {detailed && <span className="muted">* provisoriskt AR</span>}
+      </p>
       <div className={`ws-micros ${detailed ? 'detailed' : ''}`}>
         {micro.map(m => {
           const d = NUTRIENTS[m.key]
           const val = v(m.key)
           const p = m.value > 0 ? (val / m.value) * 100 : 0
-          const st = m.kind === 'max' ? (val > m.value ? 'high' : 'ok') : p >= 100 ? 'ok' : p >= 67 ? 'near' : 'low'
+          const st = microStatus(m, val)
           return (
             <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? 'högst ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
               <span className="mn">{d.label}</span>
@@ -458,7 +467,8 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
               <span className={`mp ${st}`}>{formatNumber(p, 0)} %</span>
               {detailed && (
                 <span className="md">
-                  {formatNumber(val, d.decimals)} {d.unit} <span className="ref">({m.kind === 'max' ? 'högst ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit})</span>
+                  {formatNumber(val, d.decimals)} {d.unit}{' '}
+                  <span className="ref">({m.kind === 'max' ? 'högst ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.ar !== undefined && <>, AR{m.arProvisional ? '*' : ''} {formatNumber(m.ar, d.decimals)} {d.unit}</>})</span>
                 </span>
               )}
             </div>
