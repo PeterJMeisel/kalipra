@@ -18,7 +18,15 @@ export function HealthSection({ health, onChange, open, onToggle }: Props) {
 
   function toggle(c: string) {
     const on = has(c)
-    const next: Health = { ...health, conditions: on ? health.conditions.filter(x => x !== c) : [...health.conditions, c] }
+    let conditions = on ? health.conditions.filter(x => x !== c) : [...health.conditions, c]
+    // Gravid och Ammande utesluter varandra
+    if (!on && c === 'Gravid') conditions = conditions.filter(x => x !== 'Ammande')
+    if (!on && c === 'Ammande') conditions = conditions.filter(x => x !== 'Gravid')
+    const next: Health = { ...health, conditions }
+    if (c === 'Gravid') next.trimester = on ? undefined : (health.trimester ?? 1)
+    if (c === 'Ammande') next.lactationPeriod = on ? undefined : (health.lactationPeriod ?? '0-6')
+    if (!on && c === 'Gravid') next.lactationPeriod = undefined
+    if (!on && c === 'Ammande') next.trimester = undefined
     if (c === 'Amputation' && on) next.amputations = []
     if (c === 'Kronisk njursjukdom') next.ckdStage = on ? undefined : (health.ckdStage ?? 3)
     onChange(next)
@@ -50,6 +58,25 @@ export function HealthSection({ health, onChange, open, onToggle }: Props) {
                     <input type="checkbox" checked={has(c)} onChange={() => toggle(c)} />
                     <span>{c}</span>
                   </label>
+                  {c === 'Gravid' && has(c) && (
+                    <label className="subfield">
+                      Trimester
+                      <select value={health.trimester ?? 1} onChange={e => onChange({ ...health, trimester: Number(e.target.value) as 1 | 2 | 3 })}>
+                        <option value={1}>1 (v. 1–12)</option>
+                        <option value={2}>2 (v. 13–27)</option>
+                        <option value={3}>3 (v. 28–)</option>
+                      </select>
+                    </label>
+                  )}
+                  {c === 'Ammande' && has(c) && (
+                    <label className="subfield">
+                      Tid efter förlossning
+                      <select value={health.lactationPeriod ?? '0-6'} onChange={e => onChange({ ...health, lactationPeriod: e.target.value as '0-6' | '6+' })}>
+                        <option value="0-6">0–6 månader</option>
+                        <option value="6+">Över 6 månader</option>
+                      </select>
+                    </label>
+                  )}
                   {c === 'Kronisk njursjukdom' && has(c) && (
                     <label className="subfield">
                       Stadium

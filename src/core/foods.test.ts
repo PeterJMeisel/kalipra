@@ -177,3 +177,25 @@ describe('protein för äldre', () => {
     expect(macroReferences(65, 'man').proteinGPerKg).toBe(0.83)
   })
 })
+
+import { reproFrom, reproEnergyMJ } from './references'
+describe('graviditet och amning', () => {
+  const h = (c: string[], extra = {}) => ({ conditions: c, amputations: [], ...extra })
+  it('gravid trimester 3: energi, protein och RI', () => {
+    const r = reproFrom(h(['Gravid'], { trimester: 3 }), 'kvinna')!
+    expect(reproEnergyMJ(r)).toBe(2.3)
+    const m = macroReferences(30, 'kvinna', r, 70)
+    expect(m.proteinGPerKg).toBeCloseTo(0.83 + 28 / 70)
+    const mi = mr(30, 'kvinna', 9, r)
+    expect(mi.find(x => x.key === 'FE')!.value).toBe(26)
+    expect(mi.find(x => x.key === 'FOL')!.kind).toBe('AI')
+    expect(mi.find(x => x.key === 'ID')!.value).toBe(200)
+  })
+  it('ammande 0–6 mån: +2 MJ och +19 g protein; män ignoreras', () => {
+    const r = reproFrom(h(['Ammande'], { lactationPeriod: '0-6' }), 'kvinna')!
+    expect(reproEnergyMJ(r)).toBe(2)
+    expect(macroReferences(30, 'kvinna', r, 60).proteinAddG).toBe(19)
+    expect(mr(30, 'kvinna', 9, r).find(x => x.key === 'VITA')!.value).toBe(1400)
+    expect(reproFrom(h(['Gravid']), 'man')).toBeNull()
+  })
+})

@@ -3,7 +3,8 @@ import data from './data/livsmedel.json'
 import fineli from './data/fineli.json'
 import usda from './data/usda.json'
 import nutrition from './data/nutrition.json'
-import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PAL_OPTIONS } from './core/energy'
+import { bmi, BMR_FORMULAS, energyNeed, goalPlan, kcalToKj, normalizeFormula, PAL_OPTIONS, withExtraEnergy } from './core/energy'
+import { reproEnergyMJ, reproFrom } from './core/references'
 import { FoodDatabase, SOURCES, summarizeDiary, type FoodData } from './core/foods'
 import { formatNumber, type NutrientKey } from './core/nutrients'
 import { AGE_GROUP_LABEL, ageGroup } from './core/references'
@@ -263,7 +264,9 @@ export default function App() {
   const calc = useMemo(() => {
     if (!client || !diary) return null
     const formula = normalizeFormula(client.bmrFormula)
-    const need = energyNeed(client.sex, client.age, client.weightKg, client.heightCm, client.pal, formula)
+    const repro = reproFrom(client.health, client.sex)
+    const baseNeed = energyNeed(client.sex, client.age, client.weightKg, client.heightCm, client.pal, formula)
+    const need = repro ? withExtraEnergy(baseNeed, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : baseNeed
     const plan = client.goal ? goalPlan(client.sex, client.age, client.weightKg, client.heightCm, client.pal, client.goal, formula) : null
     const summary = summarizeDiary(db, diary.entries, diary.days, SUMMARY_KEYS)
     return { need, plan, summary }

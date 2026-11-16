@@ -86,6 +86,9 @@ export const PAL_OPTIONS: PalOption[] = [
 export type EnergyNeed = {
   bmrMJ: number
   bmrKcal: number
+  /** Tillägg för graviditet/amning i kcal (ingår i tee) */
+  extraKcal?: number
+  extraLabel?: string
   teeMJ: number
   teeKcal: number
 }
@@ -96,6 +99,12 @@ export function energyNeed(
   const bmr = bmrMJ(sex, age, weightKg, heightCm, formula)
   const tee = bmr * pal
   return { bmrMJ: bmr, bmrKcal: mjToKcal(bmr), teeMJ: tee, teeKcal: mjToKcal(tee) }
+}
+
+/** Lägger till energitillägg (t.ex. graviditet/amning) på totalt energibehov. */
+export function withExtraEnergy(need: EnergyNeed, extraMJ: number, label: string): EnergyNeed {
+  if (!extraMJ) return need
+  return { ...need, teeMJ: need.teeMJ + extraMJ, teeKcal: need.teeKcal + mjToKcal(extraMJ), extraKcal: mjToKcal(extraMJ), extraLabel: label }
 }
 
 export type GoalPlan = {

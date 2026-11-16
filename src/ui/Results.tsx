@@ -1,6 +1,6 @@
 import type { DiarySummary } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey } from '../core/nutrients'
-import { macroReferences, microReferences, microStatus, type Range } from '../core/references'
+import { macroReferences, microReferences, microStatus, reproFrom, type Range } from '../core/references'
 import { sortMeals, type Client } from '../core/types'
 import { kcalToKj, type EnergyNeed, type GoalPlan } from '../core/energy'
 
@@ -39,12 +39,13 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
   const compareKcal = goalKcal ?? need.teeKcal
   const pctOfNeed = (kcal / compareKcal) * 100
   const e = energyDistribution(t)
-  const macro = macroReferences(client.age, client.sex)
+  const repro = reproFrom(client.health, client.sex)
+  const macro = macroReferences(client.age, client.sex, repro, client.weightKg)
   const conditions = client.health?.conditions ?? []
   const highlight = new Map<NutrientKey, string>()
   // Godkänt (rad 9 i att göra-listan): hypertoni → NNR:s maxgräns för salt, raden lyfts fram
   if (conditions.includes('Hypertoni')) highlight.set('NACL', 'Hypertoni')
-  const micro = microReferences(client.age, client.sex, need.teeMJ)
+  const micro = microReferences(client.age, client.sex, need.teeMJ, repro)
     .sort((a, b) => Number(highlight.has(b.key)) - Number(highlight.has(a.key)))
   const intakeMJ = kj / 1000
   const fiberPerMJ = intakeMJ > 0 ? v('FIBT') / intakeMJ : 0

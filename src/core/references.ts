@@ -1,5 +1,5 @@
 import type { NutrientKey } from './nutrients'
-import type { Sex } from './types'
+import type { Health, Sex } from './types'
 
 /**
  * Referensvärden enligt NNR 2023 (rev. 003), så som de återges i Livsmedelsverkets
@@ -83,6 +83,51 @@ const AR_BY_SEX: Record<Sex, Record<OlderGroup, ArRow>> = {
   },
 }
 
+/* ---------- Graviditet och amning (NNR 2023) ---------- */
+
+export type Repro = { kind: 'gravid'; trimester: 1 | 2 | 3 } | { kind: 'ammande'; period: '0-6' | '6+' }
+
+/** Graviditet/amning utifrån hälsotillstånden. Gäller bara kvinnor. */
+export function reproFrom(health: Health | undefined, sex: Sex): Repro | null {
+  if (sex !== 'kvinna' || !health) return null
+  if (health.conditions.includes('Gravid')) return { kind: 'gravid', trimester: health.trimester ?? 1 }
+  if (health.conditions.includes('Ammande')) return { kind: 'ammande', period: health.lactationPeriod ?? '0-6' }
+  return null
+}
+
+export const REPRO_LABEL = (r: Repro) => (r.kind === 'gravid' ? `gravid, trimester ${r.trimester}` : `ammande, ${r.period === '0-6' ? '0–6 mån' : 'över 6 mån'}`)
+
+/**
+ * Energitillägg i MJ/dag. Graviditet: 0,29 / 1,2 / 2,3 MJ per trimester.
+ * Helamning 0–6 månader: 2,0 MJ. NNR 2023 anger ingen ökning efter 6 månader – bedöms individuellt.
+ */
+export function reproEnergyMJ(r: Repro | null): number {
+  if (!r) return 0
+  if (r.kind === 'gravid') return [0.29, 1.2, 2.3][r.trimester - 1]
+  return r.period === '0-6' ? 2.0 : 0
+}
+
+/**
+ * Proteintillägg i g/dag (NNR 2023). Graviditet RI +1/+9/+28 g, AR +0,5/+7,2/+23 g per trimester.
+ * Amning RI +19 g de första 6 månaderna och +13 g därefter (AR +15/+10 g).
+ * Obs: Livsmedelsverkets tabell 5 (2025) anger 13/19 i omvänd ordning; NNR 2023 och EFSA anger 19 g för 0–6 mån.
+ */
+export function reproProteinAddG(r: Repro | null): { ri: number; ar: number } {
+  if (!r) return { ri: 0, ar: 0 }
+  if (r.kind === 'gravid') return { ri: [1, 9, 28][r.trimester - 1], ar: [0.5, 7.2, 23][r.trimester - 1] }
+  return r.period === '0-6' ? { ri: 19, ar: 15 } : { ri: 13, ar: 10 }
+}
+
+// RI/AI (tabell 7–11) och AR (tabell 12–15) för gravida och ammande, samma kolumnordning som Row/ArRow
+const REPRO_RI: Record<Repro['kind'], Row> = {
+  gravid: [750, 10, 1.9, 1.9, 600, 105, 11, 4.5, 950, 26, 11.3, 530, 3500, 300, 200, 90, 5.75],
+  ammande: [1400, 10, 2.0, 1.7, 490, 155, 12, 5.5, 950, 15, 12.6, 530, 3500, 300, 200, 85, 5.75],
+}
+const REPRO_AR: Record<Repro['kind'], ArRow> = {
+  gravid: [590, 7.5, 1.6, 1.5, 480, 75, 9, 3.6, 800, 20, 9.4, 430, 2800, 240, 160, 75],
+  ammande: [1060, 7.5, 1.6, 1.4, 380, 75, 10, 4.2, 800, 9, 10.5, 430, 2800, 240, 160, 70],
+}
+
 export type RefKind = 'RI' | 'AI' | 'max'
 export type MicroReference = {
   key: NutrientKey
@@ -102,13 +147,15 @@ export type MicroReference = {
  * Referensvärden för vitaminer, mineraler och salt för en person.
  * Tiamin (0,1 mg/MJ) och niacin (1,6 NE/MJ) räknas om från energibehovet i MJ.
  */
-export function microReferences(age: number, sex: Sex, energyMJ: number): MicroReference[] {
+export function microReferences(age: number, sex: Sex, energyMJ: number, repro: Repro | null = null): MicroReference[] {
   const g = ageGroup(age)
   const child = g === '2-3' || g === '4-6' || g === '7-10'
-  const r: Row = child ? CHILD[g] : BY_SEX[sex][g]
-  const a: ArRow = child ? AR_CHILD[g] : AR_BY_SEX[sex][g]
-  const vitD = age >= 75 ? 20 : r[1]
-  const ironNote = sex === 'kvinna'
+  const r: Row = repro ? REPRO_RI[repro.kind] : child ? CHILD[g] : BY_SEX[sex][g]
+  const a: ArRow = repro ? REPRO_AR[repro.kind] : child ? AR_CHILD[g] : AR_BY_SEX[sex][g]
+  const vitD = !repro && age >= 75 ? 20 : r[1]
+  const ironNote = repro?.kind === 'gravid' ? 'Undersök järnstatus och ge tillskott vid behov.'
+    : repro ? undefined
+    : sex === 'kvinna'
     ? g === '51-70' ? 'Vid pågående menstruation gäller 15 mg.'
       : g === '11-14' ? '15 mg vid menstruation.'
       : g === '15-17' || g === '18-24' || g === '25-50' ? 'Vid kraftiga menstruationer: kontrollera järnstatus.'
@@ -116,17 +163,19 @@ export function microReferences(age: number, sex: Sex, energyMJ: number): MicroR
     : undefined
   const p = true // provisoriskt AR
   // UL enligt NNR 2023 tabell 16 (gäller vuxna). Magnesium, folsyra och niacin har UL bara för tillskott/vissa former och tas inte med.
-  const adult = age >= 18
+  const adult = age >= 18 || !!repro
   const ul = (v: number) => (adult ? v : undefined)
   return [
     { key: 'VITA', kind: 'RI', value: r[0], ar: a[0], ul: ul(3000) },
-    { key: 'VITD', kind: 'RI', value: vitD, ar: a[1], note: age >= 75 ? '20 µg från 75 år.' : undefined, ul: ul(100) },
+    { key: 'VITD', kind: 'RI', value: vitD, ar: a[1], note: repro ? 'Tillskott kan behövas under graviditet och amning.' : age >= 75 ? '20 µg från 75 år.' : undefined, ul: ul(100) },
     { key: 'VITE', kind: 'AI', value: r[6], ar: a[6], arProvisional: p, ul: ul(300) },
     { key: 'THIACLHCL', kind: 'RI', value: 0.1 * energyMJ, ar: 0.07 * energyMJ, note: '0,1 mg/MJ av energibehovet (AR 0,07 mg/MJ).' },
     { key: 'RIBF', kind: 'RI', value: r[2], ar: a[2] },
     { key: 'NIAEQ', kind: 'RI', value: 1.6 * energyMJ, ar: 1.3 * energyMJ, note: '1,6 NE/MJ av energibehovet (AR 1,3 NE/MJ).' },
     { key: 'VITB6', kind: 'RI', value: r[3], ar: a[3], ul: ul(12) },
-    { key: 'FOL', kind: 'RI', value: r[4], ar: a[4], note: sex === 'kvinna' && age >= 18 && age <= 50 ? 'Vid planerad graviditet: 400 µg folsyra som tillskott.' : undefined },
+    { key: 'FOL', kind: repro?.kind === 'gravid' ? 'AI' : 'RI', value: r[4], ar: a[4],
+      note: repro?.kind === 'gravid' ? (repro.trimester === 1 ? 'AI. 400 µg folsyra som tillskott till och med vecka 12.' : 'AI för gravida.')
+        : sex === 'kvinna' && age >= 18 && age <= 50 ? 'Vid planerad graviditet: 400 µg folsyra som tillskott.' : undefined },
     { key: 'VITB12', kind: 'AI', value: r[7], ar: a[7], arProvisional: p },
     { key: 'VITC', kind: 'RI', value: r[5], ar: a[5] },
     { key: 'CA', kind: 'RI', value: r[8], ar: a[8], ul: ul(2500) },
@@ -165,8 +214,12 @@ export type MacroReference = {
   monounsaturated: Range
   polyunsaturated: Range
   freeSugar: Range
-  /** g per kg kroppsvikt (RI) */
+  /** g per kg kroppsvikt (RI, eller 1,2 g/kg för > 70 år; inkl. tillägg vid graviditet/amning) */
   proteinGPerKg: number
+  /** Proteintillägg i g/dag vid graviditet/amning (ingår i proteinGPerKg när vikt anges) */
+  proteinAddG?: number
+  /** Essentiella fettsyror, minst E% (5 vid graviditet/amning, annars 3) */
+  essentialFatMinE?: number
   /** Fiber, g per MJ */
   fiberGPerMJ: Range
 }
@@ -186,7 +239,9 @@ const PROTEIN_RI_G_PER_KG: Record<AgeGroup, Record<Sex, number>> = {
 }
 
 /** Rekommenderad energifördelning (E%) för personer från 2 år. */
-export function macroReferences(age: number, sex: Sex): MacroReference {
+export function macroReferences(age: number, sex: Sex, repro: Repro | null = null, weightKg?: number): MacroReference {
+  const base = PROTEIN_RI_G_PER_KG[ageGroup(age)][sex]
+  const add = reproProteinAddG(repro).ri
   return {
     // NNR 2023 (erratum 2): äldre över 65 år bör få 15–20 E% från protein
     protein: age > 65 ? { min: 15, max: 20 } : { min: 10, max: 20 },
@@ -196,7 +251,9 @@ export function macroReferences(age: number, sex: Sex): MacroReference {
     monounsaturated: { min: 10, max: 20 },
     polyunsaturated: { min: 5, max: 10 },
     freeSugar: { max: 10 },
-    proteinGPerKg: PROTEIN_RI_G_PER_KG[ageGroup(age)][sex],
+    proteinGPerKg: add && weightKg ? base + add / weightKg : base,
+    proteinAddG: add || undefined,
+    essentialFatMinE: repro ? 5 : 3,
     fiberGPerMJ: age >= 18 ? { min: 3 } : { min: 2, max: 3 },
   }
 }

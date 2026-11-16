@@ -9,6 +9,7 @@ export type WeightGoal = {
 }
 
 export const CONDITION_GROUPS = [
+  { group: 'Graviditet och amning', items: ['Gravid', 'Ammande'] },
   { group: 'Metabola och endokrina', items: ['Diabetes typ 1', 'Diabetes typ 2', 'Graviditetsdiabetes', 'Prediabetes', 'Höga blodfetter', 'Hypertoni', 'Hypotyreos', 'Hypertyreos', 'Gikt'] },
   { group: 'Hjärta och kärl', items: ['Hjärt-kärlsjukdom', 'Hjärtsvikt', 'Stroke'] },
   { group: 'Njure', items: ['Kronisk njursjukdom'] },
@@ -28,6 +29,10 @@ export type Health = {
   conditions: string[]
   /** Stadium 1–5 vid kronisk njursjukdom */
   ckdStage?: number
+  /** Trimester 1–3 vid Gravid */
+  trimester?: 1 | 2 | 3
+  /** Tid efter förlossning vid Ammande */
+  lactationPeriod?: '0-6' | '6+'
   amputations: Amputation[]
   notes?: string
 }

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { macroReferences, microReferences, microStatus, type Range } from '../core/references'
-import { energyNeed, normalizeFormula, bmi } from '../core/energy'
+import { macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
+import { energyNeed, normalizeFormula, bmi, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { emptyHealth, mealName, sortMeals, type Calculation, type DiaryEntry, type Health, type Meal, type Person } from '../core/types'
 import { HealthSection } from './HealthSection'
 import { newId } from '../core/storage'
@@ -105,10 +105,12 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
   const [copyOpen, setCopyOpen] = useState(false)
 
   const weightKg = calc.weightKg
-  const need = useMemo(
-    () => (person ? energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula)) : null),
-    [person, weightKg, calc.pal, calc.bmrFormula],
-  )
+  const repro = person ? reproFrom(person.health, person.sex) : null
+  const need = useMemo(() => {
+    if (!person) return null
+    const n = energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
+    return repro ? withExtraEnergy(n, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : n
+  }, [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
   const summary = useMemo(() => summarizeDiary(db, entries, calc.days, SUMMARY_KEYS), [db, entries, calc.days])
 
   /** Intag och behov för vald omfattning (dag eller vald måltid). */
@@ -228,7 +230,7 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPick
           </span>
         </nav>
         {bottomTab === 'rdi' && (person && need
-          ? <RdiView person={person} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
+          ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
           : <IntakeView scoped={scoped} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
         {bottomTab === 'maltider' && <MealView summary={summary} />}
@@ -380,9 +382,9 @@ function PatientPanel({ person, calc, onPatchPerson, onPatchCalc }: {
 
 type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string }
 
-function RdiView({ person, weightKg, need, scoped, scope }: {
-  person: Person; weightKg: number
-  need: { bmrKcal: number; teeKcal: number; teeMJ: number }
+function RdiView({ person, repro, weightKg, need, scoped, scope }: {
+  person: Person; repro: Repro | null; weightKg: number
+  need: EnergyNeed
   scoped: Scoped; scope: 'dag' | 'maltid'
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
@@ -391,9 +393,9 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
   const kcal = v('ENERC|kcal')
   const pct = scoped.needKcal > 0 ? (kcal / scoped.needKcal) * 100 : 0
   const bmrPct = (need.bmrKcal / need.teeKcal) * 100
-  const macro = macroReferences(person.age, person.sex)
+  const macro = macroReferences(person.age, person.sex, repro, weightKg)
   const proteinPerKg = scope === 'dag' ? v('PROT') / weightKg : null
-  const micro = microReferences(person.age, person.sex, need.teeMJ)
+  const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
     .map(m => {
       const f = scope === 'maltid' ? scoped.needMJ / need.teeMJ : 1
       return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined }
@@ -412,13 +414,14 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
           <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av behovet · skillnad {kcal - scoped.needKcal >= 0 ? '+' : '−'}{formatNumber(Math.abs(kcal - scoped.needKcal), 0)} kcal</span>
         </div>
         <div className="ws-kcalbox">
-          <span className="lbl">Energibehov per dag ({formatNumber(weightKg, 1)} kg)</span>
+          <span className="lbl">Energibehov per dag ({formatNumber(weightKg, 1)} kg{repro ? `, ${REPRO_LABEL(repro)}` : ''})</span>
           <span className="val">{formatNumber(need.teeKcal, 0)} <small>kcal</small></span>
           <div className="splitbar" aria-hidden="true">
             <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
             <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
           </div>
-          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal, 0)} kcal</span>
+          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
+            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
         </div>
         <div className="ws-kcalbox">
           <span className="lbl">Protein</span>
@@ -429,7 +432,7 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
                 <div className={`fill ${proteinPerKg >= macro.proteinGPerKg ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / macro.proteinGPerKg) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(macro.proteinGPerKg, 2)} g/kg · {v('PROT') > 0 ? `${formatNumber(v('PROT'), 0)} g totalt` : 'inget registrerat'} · <span className={`pill ${proteinPerKg >= macro.proteinGPerKg ? 'ok' : 'low'}`}>{proteinPerKg >= macro.proteinGPerKg ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation minst {formatNumber(macro.proteinGPerKg, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · {v('PROT') > 0 ? `${formatNumber(v('PROT'), 0)} g totalt` : 'inget registrerat'} · <span className={`pill ${proteinPerKg >= macro.proteinGPerKg ? 'ok' : 'low'}`}>{proteinPerKg >= macro.proteinGPerKg ? 'Inom' : 'Under'}</span></span>
             </>
           ) : (
             <>
@@ -441,7 +444,7 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
       </div>
 
       <div className="ws-h4row">
-        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {scope === 'dag' ? 'RDI (NNR 2023)' : 'måltidens andel av RDI'}</h4>
+        <h4 className="ws-h4">Vitaminer och mineraler i förhållande till {scope === 'dag' ? `RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})` : 'måltidens andel av RDI'}</h4>
         <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
         </button>
