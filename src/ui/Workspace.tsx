@@ -363,6 +363,19 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
 type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number }
 
+/** Fliken Måltid: neutral ruta – mängd och stapel för andel av dagens rekommendation, ingen bedömning. */
+function ShareBox({ label, value, unit, dayRef, refText }: { label: string; value: number; unit: string; dayRef: number; refText: string }) {
+  const pct = dayRef > 0 ? (value / dayRef) * 100 : 0
+  return (
+    <div className="ws-kcalbox">
+      <span className="lbl">{label}</span>
+      <span className="val">{formatNumber(value, unit === 'ml' ? 0 : 1)} <small>{unit}</small></span>
+      <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min(pct, 100)}%` }} /></div>
+      <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av dagens {refText}</span>
+    </div>
+  )
+}
+
 function RdiView({ person, repro, weightKg, need, scoped }: {
   person: Person; repro: Repro | null; weightKg: number
   need: EnergyNeed
@@ -370,6 +383,8 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
 }) {
   const v = (k: NutrientKey) => scoped.totals[k] ?? 0
   const sh = scoped.share ?? 1
+  // Fliken Måltid (gäller även när dagen bara har en måltid)
+  const isMeal = scoped.dayKcal !== undefined
   const [detailed, setDetailed] = useState(() => { try { return localStorage.getItem('kalipra.microDetail') === '1' } catch { return false } })
   useEffect(() => { try { localStorage.setItem('kalipra.microDetail', detailed ? '1' : '0') } catch { /* ignorera */ } }, [detailed])
   const kcal = v('ENERC|kcal')
@@ -423,9 +438,9 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
         )}
         <div className="ws-kcalbox">
           <span className="lbl">Protein</span>
-          {sh === 1 ? (
+          {!isMeal ? (
             <>
-              <span className="val">{formatNumber(proteinPerKg, 2)} <small>{sh < 1 ? 'g/kg' : 'g/kg och dag'}</small></span>
+              <span className="val">{formatNumber(proteinPerKg, 2)} <small>{isMeal ? 'g/kg' : 'g/kg och dag'}</small></span>
               <div className="meter" aria-hidden="true">
                 <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
@@ -435,6 +450,8 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           ) : (
             <>
               <span className="val">{formatNumber(v('PROT'), 1)} <small>g</small></span>
+              <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min((v('PROT') / (macro.proteinGPerKg * weightKg)) * 100, 100)}%` }} /></div>
+              <span className="sub"><strong>{formatNumber((v('PROT') / (macro.proteinGPerKg * weightKg)) * 100, 0)} %</strong> av dagens proteinbehov ({formatNumber(macro.proteinGPerKg * weightKg, 0)} g)</span>
             </>
           )}
         </div>
@@ -446,6 +463,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           const ml = v('WATER')
           const mlkg = ml / weightKg
           const ref = 30 * sh
+          if (isMeal) return <ShareBox label="Vätska" value={ml} unit="ml" dayRef={30 * weightKg} refText={`riktvärde (${formatNumber(30 * weightKg, 0)} ml)`} />
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Vätska</span>
@@ -463,6 +481,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           const fr = fiberReference(person.age, person.sex, need.teeMJ)
           const refG = fr.minG * sh
           const ok = g >= refG
+          if (isMeal) return <ShareBox label="Fiber" value={g} unit="g" dayRef={fr.minG} refText={`rekommendation (${fr.text})`} />
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Fiber</span>
@@ -471,7 +490,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${ok ? '' : 'low'}`} style={{ width: `${Math.min((g / refG) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation {sh < 1 ? `minst ${formatNumber(refG, 0)} g för måltiden` : fr.text} · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation {fr.text} · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
             </div>
           )
         })()}
@@ -479,6 +498,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           const g = v('NACL')
           const maxG = micro.find(m => m.key === 'NACL')?.value ?? 6
           const over = g > maxG
+          if (isMeal) return <ShareBox label="Salt" value={g} unit="g" dayRef={maxG / sh} refText={`högsta mängd (${formatNumber(maxG / sh, 0)} g)`} />
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Salt</span>
@@ -494,18 +514,18 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
       </div>
 
       <div className="ws-h4row">
-        <h4 className="ws-h4">{sh < 1 ? <>Vitaminer och mineraler <span className="muted">· mängd och andel av dagens RDI (NNR 2023)</span></> : `Vitaminer och mineraler i förhållande till RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
-        {sh === 1 && <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
+        <h4 className="ws-h4">{isMeal ? <>Vitaminer och mineraler <span className="muted">· mängd och andel av dagens RDI (NNR 2023)</span></> : `Vitaminer och mineraler i förhållande till RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
+        {!isMeal && <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
           {detailed ? 'Enkel vy' : 'Detaljerad vy'}
         </button>}
       </div>
-      <div className={`ws-micros ${detailed && sh === 1 ? 'detailed' : ''}`}>
+      <div className={`ws-micros ${detailed && !isMeal ? 'detailed' : ''}`}>
         {micro.filter(m => m.key !== 'NACL').map(m => { // salt visas i egen ruta ovanför
           const d = NUTRIENTS[m.key]
           const val = v(m.key)
           const p = m.value > 0 ? (val / m.value) * 100 : 0
           const st = microStatus(m, val)
-          if (sh < 1) {
+          if (isMeal) {
             // Fliken Måltid: exakt mängd och neutral andel av dagens RDI (ingen stapel, ingen färg)
             const dayRef = m.value / sh
             return (

@@ -666,3 +666,4 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ef-legend li strong { margin-left: auto; font-weight: 600 }
 .ef-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block }
 .ef-legend i.ef0 { background: var(--day0) } .ef-legend i.ef1 { background: var(--day1) } .ef-legend i.ef2 { background: var(--day2) } .ef-legend i.ef3 { background: var(--day3) }
+.ws-kcalbox .meter .fill.neutral { background: var(--muted) }
