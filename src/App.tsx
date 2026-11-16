@@ -38,7 +38,8 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => loadState())
-  const [view, setView] = useState<View>('start')
+  // Startsidan används inte just nu: programmet öppnar direkt i kostregistreringen
+  const [view, setView] = useState<View>('oversikt')
   const [calcId, setCalcId] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('registrering')
   /** Ny beräkning: 'lista' = patientlistan (eller vald patient), 'ny' = formulär för ny patient */
@@ -63,8 +64,8 @@ export default function App() {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [pickNew, setPickNew] = useState(false)
   /** Vyn att gå tillbaka till när Patientdata stängs */
-  const [prevView, setPrevView] = useState<View>('start')
-  const [anonMode, setAnonMode] = useState(false)
+  const [prevView, setPrevView] = useState<View>('oversikt')
+  const [anonMode, setAnonMode] = useState(true)
   /** Patientlistan öppnad från kostregistrering utan patient: registreringen följer med till vald patient. */
   const [carryAnon, setCarryAnon] = useState(false)
   const [anon, setAnon] = useState<Calculation>(() => {
@@ -100,6 +101,11 @@ export default function App() {
     setActiveId(personId)
     const t = now()
     setState(s => ({ ...s, persons: s.persons.map(p => (p.id === personId ? { ...p, lastOpenedAt: t } : p)) }))
+  }
+  /** Kostregistreringen utan att börja om: vald patients beräkning, annars registrering utan patient. */
+  function openKostreg() {
+    if (activePerson) { openOverview(activePerson.id); return }
+    setAnonMode(true); setCalcId(null); go('oversikt')
   }
   function openPatientList() {
     setCarryAnon(anonMode && view === 'oversikt' && anon.entries.length > 0)
@@ -298,7 +304,7 @@ export default function App() {
       <input ref={fileRef} type="file" accept="application/json,.json" hidden
         onChange={e => e.target.files?.[0] && importFile(e.target.files[0])} />
       <header className="top">
-        <button className="brand" onClick={() => go('start')} aria-label="Till startsidan">
+        <button className="brand" onClick={openKostreg} aria-label="Till kostregistreringen">
           <Logo size={34} />
           <span>Kalipra<span className="tag">Verktyg för dietister</span></span>
         </button>
@@ -323,7 +329,7 @@ export default function App() {
         <div className="topright">
           {view !== 'start' && (
             <nav className="topnav">
-              <button className={view === 'oversikt' ? 'on' : ''} onClick={newCalculation}>Kostregistrering</button>
+              <button className={view === 'oversikt' ? 'on' : ''} onClick={openKostreg}>Kostregistrering</button>
               <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
             </nav>
           )}
@@ -344,7 +350,7 @@ export default function App() {
           <PatientData person={activePerson} calc={pc}
             onPatchPerson={p => patchPerson(activePerson.id, p)}
             onPatchCalc={p => pc && patchCalc(pc.id, p)}
-            onDone={() => go(prevView === 'patientdata' ? 'start' : prevView)} />
+            onDone={() => go(prevView === 'patientdata' ? 'oversikt' : prevView)} />
         )
       })()}
 
