@@ -1,6 +1,6 @@
 # Kalipra – arbetsflöde
 
-Språk: svenska. Använd ordet "patient". Inga patientidentifierande uppgifter.
+Språk: svenska. Använd ordet "klient" i programmet (inte "patient"); fältet för namn heter "Filnamn". Inga patientidentifierande uppgifter.
 
 ## Publicering
 

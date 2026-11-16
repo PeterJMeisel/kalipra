@@ -38,7 +38,7 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: 
     e.preventDefault()
     const a = num(age), w = num(weight), h = num(height), p = num(pal)
     const fail = (msg: string, health = false) => { if (health) setHealthOpen(true); setError(msg) }
-    if (!code.trim()) return fail('Ange en kod eller ett alias för patienten.')
+    if (!code.trim()) return fail('Ange en kod eller ett alias för klienten.')
     if (!Number.isFinite(a) || a < MIN_SUPPORTED_AGE || a > 120) return fail(`Ålder måste vara mellan ${MIN_SUPPORTED_AGE} och 120 år.`)
     if (!(w >= 8 && w <= 400)) return fail('Ange nuvarande vikt i kg (8–400).')
     if (!(h >= 70 && h <= 250)) return fail('Ange längd i cm (70–250).')
@@ -66,7 +66,7 @@ export function ClientForm({ initial, onSave, onCancel, submitLabel, prefill }: 
       <div className="formsection">
         <div className="grid2">
           <label className="field span2">
-            <span>Kod / alias</span>
+            <span>Filnamn</span>
             <input id="cf-code" value={code} onChange={e => setCode(e.target.value)} placeholder="t.ex. K-2026-014" autoComplete="off" />
           </label>
           <label className="field">

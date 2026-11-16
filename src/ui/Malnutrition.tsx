@@ -20,10 +20,10 @@ type PickerProps = {
   detail: (p: Person) => string
   actionLabel: string
   onPick: (id: string) => void
-  /** Markeringsläge: kryssrutor i stället för att öppna patienten */
+  /** Markeringsläge: kryssrutor i stället för att öppna klienten */
   selected?: Set<string>
   onToggle?: (id: string) => void
-  /** Aktuell vikt i kg att visa per patient */
+  /** Aktuell vikt i kg att visa per klient */
   weightOf?: (p: Person) => number | undefined
   /** Behåll ordningen i persons (annars senast ändrad först) */
   keepOrder?: boolean
@@ -38,11 +38,11 @@ export function PersonPicker({ persons, detail, actionLabel, onPick, selected, o
   const list = [...persons]
     .sort((a, b) => (keepOrder ? 0 : (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt)))
     .filter(p => p.code.toLowerCase().includes(q.trim().toLowerCase()))
-  if (persons.length === 0) return <p className="empty">Det finns inga sparade patienter ännu.</p>
+  if (persons.length === 0) return <p className="empty">Det finns inga sparade klienter ännu.</p>
   return (
     <>
       {persons.length > 6 && (
-        <input className="filter" type="search" placeholder="Sök på kod …" value={q} onChange={e => setQ(e.target.value)} aria-label="Sök patient" />
+        <input className="filter" type="search" placeholder="Sök på kod …" value={q} onChange={e => setQ(e.target.value)} aria-label="Sök klient" />
       )}
       <ul className="savedlist">
         {list.map(p => (
@@ -66,7 +66,7 @@ export function PersonPicker({ persons, detail, actionLabel, onPick, selected, o
             )}
           </li>
         ))}
-        {list.length === 0 && <li className="muted">Ingen patient matchar sökningen.</li>}
+        {list.length === 0 && <li className="muted">Ingen klient matchar sökningen.</li>}
       </ul>
     </>
   )
@@ -153,7 +153,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     e.preventDefault()
     const h = parse(vals.h)
     const w = parse(vals.w) ?? solveBody('w', { h, b: parse(vals.b) })
-    if (age === undefined) return setError('Ange patientens nuvarande ålder (18–120 år).')
+    if (age === undefined) return setError('Ange klientens nuvarande ålder (18–120 år).')
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return setError('Ange datum.')
     if (date > today()) return setError('Datumet kan inte vara i framtiden.')
     if (h !== undefined && !(h >= 70 && h <= 250)) return setError('Ange längd i cm (70–250).')

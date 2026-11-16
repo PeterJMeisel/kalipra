@@ -12,7 +12,7 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'C
 
 type Props = {
   db: FoodDatabase
-  /** null = kostregistrering utan patient: intag visas utan behov och RDI */
+  /** null = kostregistrering utan klient: intag visas utan behov och RDI */
   person: Person | null
   calc: Calculation
   onPatchPerson: (patch: Partial<Person>) => void
@@ -21,7 +21,7 @@ type Props = {
 }
 
 
-/** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
+/** Klientöversikt: måltider till vänster, livsmedelssök/klient till höger, näring mot RDI nertill. */
 export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
@@ -208,7 +208,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
         </div>
       </section>
 
-      <section className="ws-right panelbox" aria-label="Livsmedelssök och patientuppgifter">
+      <section className="ws-right panelbox" aria-label="Livsmedelssök och klientuppgifter">
         <h3 className="ws-rtitle">Livsmedelssök</h3>
         <FoodPicker db={db} meal={meal} onAdd={addEntry} />
       </section>
@@ -674,7 +674,7 @@ function DaysChart({ groups, legend, what }: { groups: ChartGroup[]; legend: { i
   )
 }
 
-/* ---------- Nertill: intag utan patient ---------- */
+/* ---------- Nertill: intag utan klient ---------- */
 
 const INTAKE_MICROS: NutrientKey[] = ['VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
@@ -686,7 +686,7 @@ function IntakeView({ scoped }: { scoped: Scoped }) {
   ]
   return (
     <div className="ws-rdi">
-      <p className="muted ws-intakenote">Intag, {scoped.label}. Välj en patient för att se behov och RDI.</p>
+      <p className="muted ws-intakenote">Intag, {scoped.label}. Välj en klient för att se behov och RDI.</p>
       <div className="ws-intakerow">
         {big.map(([l, val, u, d]) => (
           <div className="ws-kcalbox" key={l}><span className="lbl">{l}</span><span className="val">{formatNumber(val, d)} <small>{u}</small></span></div>
