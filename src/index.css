@@ -508,3 +508,11 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .pl-actions .primary { font-weight: 600 }
 h2.sub .muted { font-weight: 400; font-size: .8em; color: var(--muted) }
 @media (max-width: 760px) { .patientbar { order: 3; width: 100%; margin: 4px 0 0; justify-content: space-between } }
+.ws-nopatient { padding: 8px 4px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start }
+.ws-nopatient p { margin: 0 }
+.ws-nopatient .muted, .ws-intakenote { color: var(--muted); font-size: 14px }
+.ws-intakenote { margin: 0 0 10px }
+.ws-intakerow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px }
+.ws-microval { grid-template-columns: 1fr auto }
+.ws-microval .mv { font-weight: 600; text-align: right }
+@media (max-width: 900px) { .ws-intakerow { grid-template-columns: repeat(2, 1fr) } }

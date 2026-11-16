@@ -21,6 +21,8 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT',
   'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
 const ACTIVE_KEY = 'kalipra.activePatient'
+const ANON_KEY = 'kalipra.anonCalc'
+const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
 type View = 'start' | 'ny' | 'berakning' | 'undernaring' | 'koppla-ny' | 'oversikt' | 'patienter'
 type Tab = 'registrering' | 'resultat' | 'uppgifter'
 
@@ -57,6 +59,14 @@ export default function App() {
     try { return localStorage.getItem(ACTIVE_KEY) } catch { return null }
   })
   const [pickNew, setPickNew] = useState(false)
+  const [anonMode, setAnonMode] = useState(false)
+  /** Patientlistan öppnad från kostregistrering utan patient: registreringen följer med till vald patient. */
+  const [carryAnon, setCarryAnon] = useState(false)
+  const [anon, setAnon] = useState<Calculation>(() => {
+    try { const a = JSON.parse(localStorage.getItem(ANON_KEY) ?? 'null'); if (a && Array.isArray(a.entries)) return a } catch { /* ignorera */ }
+    return emptyAnon()
+  })
+  useEffect(() => { try { localStorage.setItem(ANON_KEY, JSON.stringify(anon)) } catch { /* ignorera */ } }, [anon])
   useEffect(() => {
     try { if (activeId) localStorage.setItem(ACTIVE_KEY, activeId); else localStorage.removeItem(ACTIVE_KEY) } catch { /* ignorera */ }
   }, [activeId])
@@ -81,11 +91,13 @@ export default function App() {
 
   /** Laddar patienten: den visas i bannern och används av Patientöversikt och Bedöm undernäring. */
   function activate(personId: string) {
+    setAnonMode(false)
     setActiveId(personId)
     const t = now()
     setState(s => ({ ...s, persons: s.persons.map(p => (p.id === personId ? { ...p, lastOpenedAt: t } : p)) }))
   }
   function openPatientList() {
+    setCarryAnon(anonMode && view === 'oversikt' && anon.entries.length > 0)
     setPickNew(false)
     go('patienter')
   }
@@ -99,6 +111,8 @@ export default function App() {
   }
   /** Öppnar patienten i översikten: senaste beräkningen, eller en ny om det inte finns någon. */
   function openOverview(personId: string) {
+    if (carryAnon) { attachAnon(personId, 70); return }
+    setAnonMode(false)
     activate(personId)
     go('oversikt')
     const last = calculationsFor(state, personId)[0]
@@ -109,6 +123,37 @@ export default function App() {
     setState(s => ({ ...s, calculations: [...s.calculations, c] }))
     setCalcId(c.id)
     setMessage(w === undefined ? 'Ny beräkning skapad. Kontrollera vikten under fliken Patient.' : `Ny beräkning skapad med senaste vikten ${formatNumber(w, 1)} kg.`)
+  }
+  /** Skapar en beräkning för patienten med kostregistreringen som gjordes utan patient. */
+  function attachAnon(personId: string, weightKg: number) {
+    const p = personById(personId)
+    const last = calculationsFor(state, personId)[0]
+    const c: Calculation = { id: newId(), personId, createdAt: now(), updatedAt: now(), weightKg: currentWeight(state, personId)?.kg ?? last?.weightKg ?? weightKg, pal: last?.pal ?? 1.2, goal: null, bmrFormula: last?.bmrFormula, days: anon.days, entries: anon.entries }
+    setState(s => ({ ...s, calculations: [...s.calculations, c] }))
+    setAnon(emptyAnon())
+    setCarryAnon(false)
+    activate(personId)
+    go('oversikt')
+    setCalcId(c.id)
+    setMessage(`Kostregistreringen är kopplad till ${p?.code ?? 'patienten'}.`)
+  }
+  /** Ny beräkning: direkt till kostregistreringen. Med laddad patient skapas en ny beräkning för den, annars registreras utan patient. */
+  function newCalculation() {
+    if (activePerson) {
+      const last = calculationsFor(state, activePerson.id)[0]
+      const w = currentWeight(state, activePerson.id)?.kg ?? last?.weightKg ?? 70
+      const c: Calculation = { id: newId(), personId: activePerson.id, createdAt: now(), updatedAt: now(), weightKg: w, pal: last?.pal ?? 1.2, goal: null, bmrFormula: last?.bmrFormula, days: 1, entries: [] }
+      setState(s => ({ ...s, calculations: [...s.calculations, c] }))
+      activate(activePerson.id)
+      setAnonMode(false)
+      setCalcId(c.id)
+      go('oversikt')
+    } else {
+      setAnon(emptyAnon())
+      setAnonMode(true)
+      setCalcId(null)
+      go('oversikt')
+    }
   }
   function startNewCalc(personId: string | null) {
     setNyMode('lista')
@@ -266,8 +311,8 @@ export default function App() {
         <div className="topright">
           {view !== 'start' && (
             <nav className="topnav">
-              <button className={navOn(['ny'])} onClick={() => startNewCalc(null)}>Ny beräkning</button>
-              <button className={navOn(['oversikt'])} onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>Patientöversikt</button>
+              <button className={view === 'oversikt' && anonMode ? 'on' : ''} onClick={newCalculation}>Ny beräkning</button>
+              <button className={view === 'oversikt' && !anonMode ? 'on' : ''} onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>Patientöversikt</button>
               <button className={navOn(['undernaring', 'koppla-ny'])} onClick={() => { if (activePerson) setAssessPersonId(activePerson.id); go('undernaring') }}>Bedöm undernäring</button>
             </nav>
           )}
@@ -290,7 +335,15 @@ export default function App() {
               <p><button type="button" className="linkback" onClick={() => setPickNew(false)}>← Tillbaka till patientlistan</button></p>
               <h2 className="sub">Ny patient</h2>
               <ClientForm key="ny-patient" submitLabel="Skapa patient" onCancel={() => setPickNew(false)}
-                onSave={f => { const r = createPerson(f); go('oversikt'); setCalcId(r.calcId) }} />
+                onSave={f => {
+                  const r = createPerson(f)
+                  setAnonMode(false)
+                  if (carryAnon) {
+                    setState(s => ({ ...s, calculations: s.calculations.map(c => (c.id === r.calcId ? { ...c, days: anon.days, entries: anon.entries } : c)) }))
+                    setAnon(emptyAnon()); setCarryAnon(false)
+                    go('oversikt'); setCalcId(r.calcId); setMessage(`Kostregistreringen är kopplad till ${f.code}.`)
+                  } else { go('oversikt'); setCalcId(r.calcId) }
+                }} />
             </>
           ) : (
             <>
@@ -312,6 +365,8 @@ export default function App() {
                   <button className="small" onClick={() => setExportSel(null)}>Avbryt</button>
                 </div>
               )}
+              {carryAnon && <p className="msg">Kostregistreringen du har gjort ({plural(anon.entries.length, 'livsmedel', 'livsmedel')}) kopplas till den patient du väljer eller skapar.{' '}
+                <button type="button" className="small" onClick={() => setCarryAnon(false)}>Koppla inte</button></p>}
               {message && <p className="msg">{message}</p>}
               <h2 className="sub">Mina patienter <span className="muted">· senast öppnad först</span></h2>
               {sortedPersons.length === 0
@@ -334,10 +389,9 @@ export default function App() {
             <p className="lead">Verktyg för dietister</p>
           </div>
           <div className="bigchoices">
-            <button className="bigbtn primary" onClick={() => startNewCalc(null)}>
+            <button className="bigbtn primary" onClick={newCalculation}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M24 14v20M14 24h20" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" /></svg>
               <span className="bt">Ny beräkning</span>
-              <span className="bs">För en ny eller befintlig patient</span>
             </button>
             <button className="bigbtn" onClick={() => (activePerson ? openOverview(activePerson.id) : openPatientList())}>
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M5 40c1.5-8 6.5-12 13-12s11.5 4 13 12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><path d="M32 14h11M32 22h11M36 30h7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
@@ -468,7 +522,25 @@ export default function App() {
         </main>
       )}
 
-      {view === 'oversikt' && !(calculation && calcPerson) && (
+      {view === 'oversikt' && anonMode && (
+        <main className="main wsmain">
+          <section className="clienthead ws-head">
+            <div className="chtop">
+              <div>
+                <h1>Kostregistrering</h1>
+                <p className="facts">Ingen patient vald – intaget visas utan behov och rekommendationer.</p>
+              </div>
+              <div className="actions">
+                <button className="small primary" onClick={openPatientList}>Välj patient</button>
+              </div>
+            </div>
+          </section>
+          <Workspace key="anon" db={db} person={null} calc={anon} onPatchPerson={() => {}}
+            onPatchCalc={p => setAnon(a => ({ ...a, ...p }))} onPickPatient={openPatientList} />
+        </main>
+      )}
+
+      {view === 'oversikt' && !anonMode && !(calculation && calcPerson) && (
         <main className="main narrow">
           <h1>Patientöversikt</h1>
           {message && <p className="msg">{message}</p>}
@@ -491,7 +563,7 @@ export default function App() {
         </main>
       )}
 
-      {view === 'oversikt' && calculation && calcPerson && (
+      {view === 'oversikt' && !anonMode && calculation && calcPerson && (
         <main className="main wsmain">
           <section className="clienthead ws-head">
             <div className="chtop">
@@ -512,6 +584,7 @@ export default function App() {
                 <button className="small" onClick={openPatientList}>Byt patient</button>
               </div>
             </div>
+            {message && <p className="msg">{message}</p>}
           </section>
           <Workspace
             key={calculation.id}

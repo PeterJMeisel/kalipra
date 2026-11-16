@@ -13,15 +13,17 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'C
 
 type Props = {
   db: FoodDatabase
-  person: Person
+  /** null = kostregistrering utan patient: intag visas utan behov och RDI */
+  person: Person | null
   calc: Calculation
   onPatchPerson: (patch: Partial<Person>) => void
   onPatchCalc: (patch: Partial<Calculation>) => void
+  onPickPatient?: () => void
 }
 
 
 /** Patientöversikt: måltider till vänster, livsmedelssök/patient till höger, näring mot RDI nertill. */
-export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Props) {
+export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc, onPickPatient }: Props) {
   const [day, setDay] = useState(1)
   const [meal, setMeal] = useState<Meal>('Frukost')
   const [rightTab, setRightTab] = useState<'livsmedel' | 'patient'>('livsmedel')
@@ -47,20 +49,20 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Prop
 
   const weightKg = calc.weightKg
   const need = useMemo(
-    () => energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula)),
-    [person.sex, person.age, weightKg, person.heightCm, calc.pal, calc.bmrFormula],
+    () => (person ? energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula)) : null),
+    [person, weightKg, calc.pal, calc.bmrFormula],
   )
   const summary = useMemo(() => summarizeDiary(db, entries, calc.days, SUMMARY_KEYS), [db, entries, calc.days])
   const mealShare: Partial<Record<Meal, number>> = { Frukost: 0.25, 'Mellanmål fm': 0.05, Lunch: 0.3, 'Mellanmål em': 0.1, Middag: 0.25, Kvällsmål: 0.05 }
 
   /** Intag och behov för vald omfattning (dag eller vald måltid). */
   const scoped = useMemo(() => {
-    if (scope === 'dag') return { totals: summary.perDay, needKcal: need.teeKcal, needMJ: need.teeMJ, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
+    if (scope === 'dag') return { totals: summary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag (snitt över ${summary.daysCounted} ${summary.daysCounted === 1 ? 'dag' : 'dagar'})` }
     const share = mealShare[meal] ?? 0.05
     return {
       totals: summary.perMeal[meal] ?? {},
-      needKcal: need.teeKcal * share,
-      needMJ: need.teeMJ * share,
+      needKcal: (need?.teeKcal ?? 0) * share,
+      needMJ: (need?.teeMJ ?? 0) * share,
       label: `${meal.toLowerCase()} (${formatNumber(share * 100, 0)} % av dagsbehovet)`,
     }
   }, [scope, summary, need, meal])
@@ -135,12 +137,20 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Prop
         </nav>
         {rightTab === 'livsmedel'
           ? <FoodPicker db={db} meal={meal} onAdd={addEntry} />
-          : <PatientPanel person={person} calc={calc} onPatchPerson={onPatchPerson} onPatchCalc={onPatchCalc} />}
+          : person
+            ? <PatientPanel person={person} calc={calc} onPatchPerson={onPatchPerson} onPatchCalc={onPatchCalc} />
+            : (
+              <div className="ws-nopatient">
+                <p><strong>Ingen patient vald.</strong></p>
+                <p className="muted">Intaget visas utan behov och rekommendationer. Välj en patient för att jämföra med behov, protein per kg och RDI.</p>
+                {onPickPatient && <button className="primary" onClick={onPickPatient}>Välj patient</button>}
+              </div>
+            )}
       </section>
 
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
         <nav className="ws-tabs" role="tablist">
-          <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>Näring mot behov</button>
+          <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>{person ? 'Näring mot behov' : 'Intag'}</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
           <button role="tab" aria-selected={bottomTab === 'maltider'} className={bottomTab === 'maltider' ? 'on' : ''} onClick={() => setBottomTab('maltider')}>Måltider</button>
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
@@ -148,7 +158,9 @@ export function Workspace({ db, person, calc, onPatchPerson, onPatchCalc }: Prop
             <button role="radio" aria-checked={scope === 'maltid'} className={scope === 'maltid' ? 'on' : ''} onClick={() => setScope('maltid')}>Måltid</button>
           </span>
         </nav>
-        {bottomTab === 'rdi' && <RdiView person={person} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />}
+        {bottomTab === 'rdi' && (person && need
+          ? <RdiView person={person} weightKg={weightKg} need={need} scoped={scoped} scope={scope} />
+          : <IntakeView scoped={scoped} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={scoped.totals} />}
         {bottomTab === 'maltider' && <MealView summary={summary} />}
       </section>
@@ -342,6 +354,40 @@ function RdiView({ person, weightKg, need, scoped, scope }: {
   )
 }
 
+/* ---------- Nertill: intag utan patient ---------- */
+
+const INTAKE_MICROS: NutrientKey[] = ['VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
+
+function IntakeView({ scoped }: { scoped: Scoped }) {
+  const v = (k: NutrientKey) => scoped.totals[k] ?? 0
+  const big: [string, number, string, number][] = [
+    ['Energi', v('ENERC|kcal'), 'kcal', 0], ['Protein', v('PROT'), 'g', 1], ['Fett', v('FAT'), 'g', 1],
+    ['Kolhydrater', v('CHO'), 'g', 1], ['Fiber', v('FIBT'), 'g', 1],
+  ]
+  return (
+    <div className="ws-rdi">
+      <p className="muted ws-intakenote">Intag, {scoped.label}. Välj en patient för att se behov och RDI.</p>
+      <div className="ws-intakerow">
+        {big.map(([l, val, u, d]) => (
+          <div className="ws-kcalbox" key={l}><span className="lbl">{l}</span><span className="val">{formatNumber(val, d)} <small>{u}</small></span></div>
+        ))}
+      </div>
+      <h4 className="ws-h4">Vitaminer och mineraler</h4>
+      <div className="ws-micros">
+        {INTAKE_MICROS.map(k => {
+          const d = NUTRIENTS[k]
+          return (
+            <div className="ws-micro ws-microval" key={k}>
+              <span className="mn">{d.label}</span>
+              <span className="mv">{formatNumber(v(k), d.decimals)} {d.unit}</span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 /* ---------- Nertill: energifördelning ---------- */
 
 type Status = 'ok' | 'near' | 'low' | 'high'
@@ -354,10 +400,25 @@ const rangeText = (r: Range): string => {
   return `högst ${f(r.max!)} E%`
 }
 
-function MacroView({ person, totals }: { person: Person; totals: NutrientTotals }) {
+function MacroView({ person, totals }: { person: Person | null; totals: NutrientTotals }) {
   const v = (k: NutrientKey) => totals[k] ?? 0
   const e = energyDistribution(totals)
-  const macro = macroReferences(person.age, person.sex)
+  const macro = macroReferences(person?.age ?? 40, person?.sex ?? 'kvinna')
+  if (!person) {
+    const rows: [string, number, number | null][] = [
+      ['Protein', v('PROT'), e.protein], ['Fett', v('FAT'), e.fat], ['– varav mättat', v('FASAT'), e.saturated],
+      ['Kolhydrater (inkl. fiber)', v('CHO'), e.carbohydrate], ['– varav fritt socker', v('SUGFR'), e.freeSugar], ['Fiber', v('FIBT'), null],
+    ]
+    if (e.alcohol > 0.05) rows.push(['Alkohol', v('ALC'), e.alcohol])
+    return (
+      <table className="ref ws-macro">
+        <thead><tr><th>Näringsämne</th><th className="num">Gram</th><th className="num">E%</th></tr></thead>
+        <tbody>{rows.map(([l, g, p]) => (
+          <tr key={l} className={l.startsWith('–') ? 'subrow' : ''}><td>{l}</td><td className="num">{formatNumber(g, 1)}</td><td className="num">{p === null ? '' : <strong>{formatNumber(p, 1)}</strong>}</td></tr>
+        ))}</tbody>
+      </table>
+    )
+  }
   const rows: { label: string; pct: number; grams: number; ref: Range }[] = [
     { label: 'Protein', pct: e.protein, grams: v('PROT'), ref: macro.protein },
     { label: 'Fett', pct: e.fat, grams: v('FAT'), ref: macro.fat },
