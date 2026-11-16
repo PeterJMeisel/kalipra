@@ -58,9 +58,8 @@ export default function App() {
     try { localStorage.setItem('kalipra.theme', theme) } catch { /* lagring kan saknas */ }
   }, [theme])
   const fileRef = useRef<HTMLInputElement>(null)
-  const [activeId, setActiveId] = useState<string | null>(() => {
-    try { return localStorage.getItem(ACTIVE_KEY) } catch { return null }
-  })
+  // Ingen patient är vald när programmet startar
+  const [activeId, setActiveId] = useState<string | null>(null)
   const [pickNew, setPickNew] = useState(false)
   const [anonMode, setAnonMode] = useState(false)
   /** Patientlistan öppnad från kostregistrering utan patient: registreringen följer med till vald patient. */
@@ -70,9 +69,8 @@ export default function App() {
     return emptyAnon()
   })
   useEffect(() => { try { localStorage.setItem(ANON_KEY, JSON.stringify(anon)) } catch { /* ignorera */ } }, [anon])
-  useEffect(() => {
-    try { if (activeId) localStorage.setItem(ACTIVE_KEY, activeId); else localStorage.removeItem(ACTIVE_KEY) } catch { /* ignorera */ }
-  }, [activeId])
+  // Tidigare sparades vald patient mellan starter – rensa det gamla värdet
+  useEffect(() => { try { localStorage.removeItem(ACTIVE_KEY) } catch { /* ignorera */ } }, [])
 
   useEffect(() => { setSaved(saveState(state)) }, [state])
 
