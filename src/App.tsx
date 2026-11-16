@@ -24,6 +24,9 @@ const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'PROT', 'FAT', 'CHO', 'FIBT',
 
 const ACTIVE_KEY = 'kalipra.activePatient'
 const ANON_KEY = 'kalipra.anonCalc'
+/** Referensperson när ingen patient är vald: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2. */
+const REF_WEIGHT = 60
+const REF_PERSON: Person = { id: 'referens', code: 'Referens-Eva', age: 45, sex: 'kvinna', heightCm: 166, createdAt: '2026-01-01T00:00:00.000Z' }
 const emptyAnon = (): Calculation => ({ id: 'anon', personId: '', createdAt: new Date().toISOString(), weightKg: 70, pal: 1.2, goal: null, days: 1, entries: [] })
 /** Startinnehåll för en ny kostregistrering. */
 const startDiary = () => ({ days: 1, entries: [] })
@@ -329,10 +332,13 @@ export default function App() {
           {activePerson ? (
             <span className="pb-info">
               <span className="pb-code">{activePerson.code}</span>
-              <span className="pb-facts">{activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
+              <span className="pb-facts">{activePerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {activePerson.age} år{activeBmi !== null && <> · BMI {formatNumber(activeBmi, 1)}</>}</span>
             </span>
           ) : (
-            <span className="pb-none">Ingen patient vald</span>
+            <span className="pb-info pb-ref" title="Ingen patient vald. Behov och RDI räknas för en referensperson: kvinna 31–60 år, normalt BMI, inga hälsotillstånd, PAL 1,2.">
+              <span className="pb-code">{REF_PERSON.code}</span>
+              <span className="pb-facts">Kvinna · {REF_PERSON.age} år · BMI {formatNumber(bmi(REF_WEIGHT, REF_PERSON.heightCm), 1)}</span>
+            </span>
           )}
           {activePerson && (
             <button type="button" className={`pb-btn pb-data ${view === 'patientdata' ? 'on' : ''}`} onClick={() => togglePanel('patientdata')}>
@@ -575,7 +581,7 @@ export default function App() {
       {view === 'oversikt' && anonMode && (
         <main className="main wsmain">
           <h1 className="ws-title">Kostregistrering</h1>
-          <Workspace key="anon" db={db} person={null} calc={anon} onPatchPerson={() => {}}
+          <Workspace key="anon" db={db} person={REF_PERSON} calc={{ ...anon, weightKg: REF_WEIGHT, pal: 1.2, bmrFormula: undefined }} onPatchPerson={() => {}}
             onPatchCalc={p => setAnon(a => ({ ...a, ...p }))} onPickPatient={openPatientList} />
         </main>
       )}
