@@ -390,15 +390,15 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av behovet · skillnad {kcal - scoped.needKcal >= 0 ? '+' : '−'}{formatNumber(Math.abs(kcal - scoped.needKcal), 0)} kcal</span>
         </div>
         {scoped.dayKcal !== undefined ? (() => {
-          // Fliken Måltid: hur stor del av dagens registrerade energi måltiden står för
-          const dk = scoped.dayKcal
+          // Fliken Måltid: hur stor del av dagens energibehov måltiden motsvarar
+          const dk = need.teeKcal
           const part = dk > 0 ? (kcal / dk) * 100 : 0
           return (
             <div className="ws-kcalbox">
-              <span className="lbl">Andel av dagens energi</span>
+              <span className="lbl">Andel av dagens energibehov</span>
               <span className="val">{formatNumber(part, 0)} <small>%</small></span>
               <div className="meter" aria-hidden="true"><div className="fill" style={{ width: `${Math.min(part, 100)}%` }} /></div>
-              <span className="sub">{formatNumber(kcal, 0)} av dagens {formatNumber(dk, 0)} kcal</span>
+              <span className="sub">{formatNumber(kcal, 0)} av dagsbehovet {formatNumber(dk, 0)} kcal</span>
             </div>
           )
         })() : (
