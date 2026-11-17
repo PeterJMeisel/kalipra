@@ -132,7 +132,6 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
                       <tbody>{me.iddsi.tabell.map(r => <tr key={r.produkt} className={r.produkt === me.flavour ? 'me' : ''}><th scope="row">{r.produkt}</th><td>{r.kylskåpskall}</td><td>{r.rumstempererad}</td></tr>)}</tbody>
                     </table>
                   )}
-                  {me.iddsi.källa && <p className="ps-iddsi-note">Källa: se längst ner.</p>}
                 </div>
               </div>
             )}
