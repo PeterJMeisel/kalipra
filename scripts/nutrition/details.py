@@ -26,7 +26,6 @@ FLAGS = [
     ('näringsmässigt komplett', r'näringsmässigt komplett|lämplig som enda näringskälla'),
     ('ej komplett', r'inte lämplig som enda näringskälla|ej lämplig som enda näringskälla|ej näringsmässigt komplett'),
     ('sondnäring', r'sondnäring|sondmatning|via sond'),
-    ('ej för galaktosemi', r'galaktosemi'),
 ]
 
 SECTION_HEADS = [
@@ -125,9 +124,96 @@ def table_rows(txt):
     return rows
 
 
+IDDSI_NAMN = {0: 'tunnflytande', 1: 'mycket lätt trögflytande', 2: 'lätt trögflytande', 3: 'måttligt trögflytande',
+              4: 'mycket trögflytande', 5: 'finfördelad och mjuk', 6: 'mjuk och lättuggad', 7: 'normal'}
+
+
+def iddsi(txt):
+    """IDDSI-nivå enligt bladet. Returnerar {'nivå': '4', 'namn': ..., 'tabell': [{produkt, kylskåpskall, rumstempererad}], 'not': ...}."""
+    out = {}
+    lines = txt.split('\n')
+    # Nutricias tabell: Produkt | IDDSI-nivå kylskåpskall | IDDSI-nivå rumstempererad
+    for i, ln in enumerate(lines):
+        if ln.count('IDDSI-nivå') >= 1 and 'Produkt' in ln:
+            col = ln.index('Produkt') - 4
+            rows, pending = [], []
+            for l2 in lines[i + 1:i + 40]:
+                if 'Testning' in l2 or 'IDDSI ramverk' in l2:
+                    break
+                part = l2[col:] if len(l2) > col else ''
+                c = [x for x in re.split(r'\s{2,}', part.strip()) if x]
+                if len(c) >= 2 and re.fullmatch(r'\d', c[-1]) and re.fullmatch(r'\d', c[-2]):
+                    name = ' '.join(c[:-2] or pending)
+                    if c[:-2] and pending:
+                        name = ' '.join(pending + c[:-2])
+                    if name and name not in ('Kylskåpskall Rumstempererad',):
+                        rows.append({'produkt': name, 'kylskåpskall': int(c[-2]), 'rumstempererad': int(c[-1])})
+                    pending = []
+                elif c and not re.search(r'Kylskåpskall|Rumstempererad|\.\s', part) and len(' '.join(c)) < 40:
+                    pending.append(' '.join(c))
+            if rows:
+                out['tabell'] = rows
+                levels = sorted({r['kylskåpskall'] for r in rows} | {r['rumstempererad'] for r in rows})
+                out['nivå'] = '–'.join(str(x) for x in (levels if len(levels) <= 1 else [levels[0], levels[-1]]))
+                if any(r['kylskåpskall'] != r['rumstempererad'] for r in rows):
+                    out['not'] = 'Nivån beror på temperaturen (kylskåpskall/rumstempererad).'
+            break
+    if 'nivå' not in out:
+        flat = re.sub(r'\s+', ' ', txt)
+        m = (re.search(r'IDDSI[^.]{0,30}?nivå\s*(\d)\s*(?:–|-)\s*(\d)', flat, re.I)
+             or re.search(r'IDDSI\W{0,4}(?:\d\s+)?nivå\s*(\d)()', flat, re.I)
+             or re.search(r'IDDSI-(\d)()\b', flat))
+        # Förtjockningsmedel med doseringstabell "NIVÅ 1 … NIVÅ 4"
+        lv = sorted({int(x) for x in re.findall(r'NIVÅ (\d)\s', txt)})
+        if not m and len(lv) > 1 and 'IDDSI' in txt:
+            out['nivå'] = f'{lv[0]}–{lv[-1]}'
+            out['not'] = 'Nivån beror på doseringen.'
+        if m:
+            out['nivå'] = m.group(1) + (f'–{m.group(2)}' if m.group(2) else '')
+            if m.group(2):
+                out['not'] = 'Nivån beror på doseringen.'
+    if 'nivå' in out and '–' not in out['nivå']:
+        out['namn'] = IDDSI_NAMN[int(out['nivå'])]
+    return out or None
+
+
+def galactosemia_ok(txt):
+    """True om bladet säger att produkten är lämplig vid galaktosemi (inte "ej/inte lämplig", inte kontraindikation).
+    Texten är i kolumnlayout, så ordet före "lämplig" kan stå sist i samma kolumn på raden ovanför."""
+    lines = txt.split('\n')
+    cell_re = re.compile(r'\S+(?: \S+)*')
+    for i, ln in enumerate(lines):
+        for m in re.finditer(r'galaktosemi', ln, re.I):
+            cell = next((c for c in cell_re.finditer(ln) if c.start() <= m.start() < c.end()), None)
+            if not cell:
+                continue
+            before = ln[cell.start():m.start()]
+            if re.search(r'kontraindikation|(ej|inte)\s+(lämplig|avsedd)', before, re.I):
+                continue
+            if not re.search(r'lämplig', before, re.I):
+                # "lämplig" kan stå på raden ovanför i samma kolumn
+                if i == 0:
+                    continue
+                prev = next((c for c in cell_re.finditer(lines[i - 1]) if c.start() < cell.start() + 30 and c.end() > cell.start()), None)
+                if not prev or not re.search(r'lämplig[^.]*$', prev.group(0), re.I) or re.search(r'(ej|inte)\s+lämplig[^.]*$|kontraindikation', prev.group(0), re.I):
+                    continue
+                return True
+            # "lämplig" står först i cellen: kolla om raden ovanför i samma kolumn slutar med Ej/Inte
+            if re.match(r'\s*(för|till|vid)?\s*(patienter|personer)?.*?lämplig', before, re.I) and before.lower().lstrip().startswith(('lämplig', 'för', 'till', 'patienter', 'personer', 'med')):
+                if i > 0:
+                    prev = next((c for c in cell_re.finditer(lines[i - 1]) if c.start() <= cell.start() + 3 and c.end() >= cell.start()), None)
+                    if prev and re.search(r'\b(ej|inte)\s*$', prev.group(0), re.I):
+                        continue
+            return True
+    return False
+
+
 def flags(txt):
     low = txt.lower()
-    return [name for name, pat in FLAGS if re.search(pat, low)]
+    out = [name for name, pat in FLAGS if re.search(pat, low)]
+    if galactosemia_ok(txt):
+        out.append('anpassad för galaktosemi')
+    return out
 
 
 def right_column_sections(txt, split=None):
@@ -203,6 +289,7 @@ def details_for(txt, whole_sheet=None, wide=False):
         'vatten_per_100': water(txt) if water(txt) is not None else water(sheet),
         **osmo(txt or sheet),
         'egenskaper': flags(sheet),
+        'iddsi': iddsi(txt) or iddsi(sheet),
         'näringsdeklaration': table_rows_cells(txt) if wide else table_rows(txt),
         **left_extras(txt or sheet),
     }

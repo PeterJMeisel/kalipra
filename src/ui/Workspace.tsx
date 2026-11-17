@@ -171,7 +171,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
 
   return (
     <div className="ws">
-      {sheetFor !== null && <ProductSheet foodNumber={sheetFor} onClose={() => setSheetFor(null)} />}
+      {sheetFor !== null && <ProductSheet foodNumber={sheetFor} onClose={() => setSheetFor(null)} refs={person && need ? microReferences(person.age, person.sex, need.teeMJ, repro) : undefined} />}
       <section className="ws-meals panelbox" aria-label="Registrerade livsmedel per måltid">
         <div className="ws-daytabs" role="tablist" aria-label="Dag">
           {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => {

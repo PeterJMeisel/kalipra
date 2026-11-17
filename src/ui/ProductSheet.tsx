@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import type { MicroReference } from '../core/references'
+import type { NutrientKey } from '../core/nutrients'
 
 /** Övrig information ur tillverkarnas produktblad (scripts/nutrition/build_nutrition.py → nutrition-details.json). */
 type Detail = {
@@ -15,6 +17,7 @@ type Detail = {
   osmolaritet?: number
   osmolalitet?: number
   egenskaper?: string[]
+  iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number; rumstempererad: number }[] }
   'näringsdeklaration'?: Record<string, { enhet: string; värde: string }>
   fettkälla?: string
   proteinkälla?: string
@@ -39,6 +42,32 @@ const SECTIONS: [string, string][] = [
   ['smaker', 'Smaker och förpackningar'],
 ]
 
+/** Radetikett i produktbladet → näringsämne med referensvärde, och referensens basenhet (mg eller µg). */
+const RDI_ROWS: [RegExp, NutrientKey, 'mg' | 'µg'][] = [
+  [/^Vitamin A/i, 'VITA', 'µg'], [/^Vitamin D/i, 'VITD', 'µg'], [/^Vitamin E/i, 'VITE', 'mg'], [/^Vitamin C/i, 'VITC', 'mg'],
+  [/^(Tiamin|Vitamin B1\b)/i, 'THIACLHCL', 'mg'], [/^(Riboflavin|Vitamin B2\b)/i, 'RIBF', 'mg'], [/^Niacin/i, 'NIAEQ', 'mg'],
+  [/^Vitamin B6/i, 'VITB6', 'mg'], [/^(Folsyra|Folat)/i, 'FOL', 'µg'], [/^Vitamin B12/i, 'VITB12', 'µg'],
+  [/^Kalium/i, 'K', 'mg'], [/^Kalcium/i, 'CA', 'mg'], [/^Fosfor/i, 'P', 'mg'], [/^Magnesium/i, 'MG', 'mg'],
+  [/^Järn/i, 'FE', 'mg'], [/^Zink/i, 'ZN', 'mg'], [/^Selen/i, 'SE', 'µg'], [/^Jod/i, 'ID', 'µg'],
+]
+const UNIT_FACTOR: Record<string, number> = { g: 1e6, mg: 1e3, 'µg': 1, 'μg': 1, mcg: 1 }
+/** Procent av klientens RDI (RI eller AI) för en rad, eller null om ämnet saknar referens. */
+function rdiPct(label: string, r: { enhet: string; värde: string } | undefined, refs: MicroReference[] | undefined): number | null {
+  if (!r || !refs) return null
+  const hit = RDI_ROWS.find(([re]) => re.test(label))
+  if (!hit) return null
+  const ref = refs.find(m => m.key === hit[1] && m.kind !== 'max')
+  const f = UNIT_FACTOR[r.enhet.split(' ')[0]]
+  const v = Number(r.värde.replace(/[<≤]/g, '').split('/')[0].replace(',', '.'))
+  if (!ref || !f || !Number.isFinite(v) || ref.value <= 0) return null
+  return (v * f) / (ref.value * (hit[2] === 'mg' ? 1e3 : 1)) * 100
+}
+
+const fmtCell = (v: string) => {
+  const [a, b] = v.split('\u2003')
+  return b ? <>{a}<span className="ps-rdi">{b}</span></> : a
+}
+
 const flavourName = (d: Detail) => d.flavour ?? 'Neutral/ingen smak'
 /** Tar bort upprepad inledning som "Fresubin 2 KCAL Drink, smak Jordgubb:" eller "Jordgubb:" när smaken redan står framför. */
 const stripLead = (t: string, d: Detail) => (d.flavour
@@ -46,7 +75,7 @@ const stripLead = (t: string, d: Detail) => (d.flavour
   : t)
 
 /** Produktfaktablad för en nutritionsprodukt. Alla smaker av samma produkt visas i samma blad; skillnader visas per smak. */
-export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onClose: () => void }) {
+export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number; onClose: () => void; refs?: MicroReference[] }) {
   const [data, setData] = useState<{ fetched: string; products: Detail[] } | null>(null)
   useEffect(() => { loadDetails().then(setData) }, [])
   useEffect(() => {
@@ -64,7 +93,9 @@ export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onCl
   for (const g of group) for (const l of Object.keys(g['näringsdeklaration'] ?? {})) if (!labels.includes(l)) labels.push(l)
   const cell = (g: Detail, l: string) => {
     const r = g['näringsdeklaration']?.[l]
-    return r ? `${r.värde} ${r.enhet}` : '–'
+    if (!r) return '–'
+    const pct = rdiPct(l, r, refs)
+    return `${r.värde} ${r.enhet}` + (pct !== null ? `\u2003${Math.round(pct)} % av RDI` : '')
   }
   type Row = [string, (g: Detail) => string]
   const allExtra: Row[] = [
@@ -87,7 +118,24 @@ export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onCl
             {multi && <p className="ps-flavours">Smaker: {group.map(flavourName).join(', ')}</p>}
             {egenskaper.length > 0 && <div className="ps-chips">{egenskaper.map(e => <span key={e} className="ps-chip">{e}</span>)}</div>}
 
+            {me.iddsi && (
+              <div className="ps-iddsi" aria-label={`IDDSI nivå ${me.iddsi.nivå}`}>
+                <div className="ps-iddsi-badge"><span>IDDSI</span><strong>{me.iddsi.nivå}</strong></div>
+                <div>
+                  <p className="ps-iddsi-title">IDDSI nivå {me.iddsi.nivå}{me.iddsi.namn ? ` – ${me.iddsi.namn}` : ''}</p>
+                  {me.iddsi.not && <p className="ps-iddsi-note">{me.iddsi.not}</p>}
+                  {me.iddsi.tabell && me.iddsi.tabell.length > 0 && (me.iddsi.not || me.iddsi.tabell.length > 1) && (
+                    <table className="ps-iddsi-table">
+                      <thead><tr><th></th><th>Kylskåpskall</th><th>Rumstempererad</th></tr></thead>
+                      <tbody>{me.iddsi.tabell.map(r => <tr key={r.produkt}><th scope="row">{r.produkt}</th><td>{r.kylskåpskall}</td><td>{r.rumstempererad}</td></tr>)}</tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
+            )}
+
             <h3 className="ps-h">Näringsvärden per 100 {me.basis}</h3>
+            {refs && <p className="muted ps-note">% av RDI = andel av klientens referensvärde (RI eller AI enligt NNR 2023) i 100 {me.basis}.</p>}
             {multi && <p className="muted ps-note">Värden som skiljer sig mellan smakerna visas per smak och är markerade.</p>}
             <div className="ps-tablewrap">
               <table className="ps-table">
@@ -101,7 +149,7 @@ export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onCl
                     return (
                       <tr key={l} className={/^(varav|därav|av vilka|–)/i.test(l) ? 'sub' : ''}>
                         <th scope="row">{l}</th>
-                        {same ? <td colSpan={group.length}>{vals[0]}</td> : vals.map((v, i) => <td key={group[i].id} className="diff">{v}</td>)}
+                        {same ? <td colSpan={group.length}>{fmtCell(vals[0])}</td> : vals.map((v, i) => <td key={group[i].id} className="diff">{fmtCell(v)}</td>)}
                       </tr>
                     )
                   })}
@@ -140,7 +188,7 @@ export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onCl
 
             <p className="ps-foot">
               <a href={me.url} target="_blank" rel="noopener noreferrer">Tillverkarens produktblad (PDF)</a>
-              <span className="muted"> · Uppgifterna är hämtade automatiskt ur produktbladet {data?.fetched}. Kontrollera mot originalet vid behov.</span>
+              <span className="muted"> · Uppgifterna är hämtade ur produktbladet {data?.fetched}. Kontrollera mot originalet vid behov.</span>
             </p>
           </>
         )}
