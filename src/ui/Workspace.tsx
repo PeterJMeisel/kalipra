@@ -393,19 +393,6 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
 type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number }
 
-/** Liten ring: hela ringen = intagets energi; färgad del = kolhydrater (E%), randig del = sockerarter. */
-function ChoDonut({ total, sugar, st }: { total: number; sugar: number; st: string }) {
-  const R = 26, w = 10, C = 2 * Math.PI * R
-  const seg = (pct: number) => `${(pct / 100) * C} ${C}`
-  return (
-    <svg className="ws-chodonut" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
-      <circle cx="32" cy="32" r={R} fill="none" className="cd-bg" strokeWidth={w} />
-      <circle cx="32" cy="32" r={R} fill="none" className={`cd-cho ${st}`} strokeWidth={w} strokeDasharray={seg(total)} transform="rotate(-90 32 32)" />
-      <circle cx="32" cy="32" r={R} fill="none" className="cd-sugar" strokeWidth={w} strokeDasharray={seg(sugar)} transform="rotate(-90 32 32)" />
-    </svg>
-  )
-}
-
 /** Fliken Måltid: neutral ruta – mängd och stapel för andel av dagens rekommendation, ingen bedömning. */
 function ShareBox({ label, value, unit, dayRef, refText }: { label: string; value: number; unit: string; dayRef: number; refText: string }) {
   const pct = dayRef > 0 ? (value / dayRef) * 100 : 0
@@ -593,9 +580,11 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Kolhydrater</span>
-              <div className="ws-chorow">
               <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
-              <ChoDonut total={Math.min(ed.carbohydrate, 100)} sugar={Math.min(sugarE, ed.carbohydrate, 100)} st={isMeal ? 'neutral' : st} />
+              <div className="meter ws-chometer" aria-hidden="true">
+                <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: `${Math.min(ed.carbohydrate, 100)}%` }} />
+                <div className="fill sugar" style={{ width: `${Math.min(sugarE, ed.carbohydrate, 100)}%` }} />
+                {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
               </div>
               <span className="sub">varav sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g){isMeal ? '' : ` · rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
             </div>
