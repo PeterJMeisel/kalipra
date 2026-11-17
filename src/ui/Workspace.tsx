@@ -582,11 +582,16 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
               <span className="lbl">Kolhydrater</span>
               <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
               <div className="meter ws-chometer" aria-hidden="true">
-                <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: `${Math.min(ed.carbohydrate, 100)}%` }} />
-                <div className="fill sugar" style={{ width: `${Math.min(sugarE, ed.carbohydrate, 100)}%` }} />
+                {/* Två delar efter varandra: sockerarter (mörkare) + övriga kolhydrater, med smal glipa emellan */}
+                <div className={`seg sugar ${isMeal ? 'neutral' : st}`} style={{ width: `${Math.min(sugarE, ed.carbohydrate, 100)}%` }} />
+                <div className={`seg rest ${isMeal ? 'neutral' : st}`} style={{ left: `${Math.min(sugarE, ed.carbohydrate, 100)}%`, width: `${Math.max(0, Math.min(ed.carbohydrate, 100) - Math.min(sugarE, ed.carbohydrate))}%` }} />
                 {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
               </div>
-              <span className="sub">varav sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g){isMeal ? '' : ` · rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
+              <span className="ws-cholegend">
+                <span><i className={`sw sugar ${isMeal ? 'neutral' : st}`} />Sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g)</span>
+                <span><i className={`sw rest ${isMeal ? 'neutral' : st}`} />Övriga {formatNumber(Math.max(0, ed.carbohydrate - sugarE), 0)} E%</span>
+              </span>
+              {!isMeal && <span className="sub">Rekommendation {formatNumber(lo, 0)}–{formatNumber(hi, 0)} E%</span>}
             </div>
           )
         })()}
