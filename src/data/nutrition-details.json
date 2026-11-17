@@ -9654,7 +9654,8 @@
     "låglaktos",
     "fibrer",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "anpassad för njursjukdom utan dialys"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -49841,7 +49842,8 @@
    "laktos": 0.11,
    "osmolaritet": 455,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för njursjukdom utan dialys"
    ],
    "iddsi": {
     "tabell": [

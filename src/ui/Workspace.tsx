@@ -8,6 +8,7 @@ import { newId } from '../core/storage'
 import { addDayDates, ensureDayDates, removeDayDates, setDayDate, shortDate, todayISO } from '../core/dates'
 import { SourceTag } from './DiaryEditor'
 import { ProductSheet } from './ProductSheet'
+import { nutritionRank } from '../core/nutritionOrder'
 
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'SUGAR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
@@ -334,10 +335,11 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
   // Som i Dietist Net: utan sökord visas listan i bokstavsordning.
   const hits = useMemo(() => {
     if (query.trim()) return db.search(query, 120, sources)
-    // Utan sökord: nutritionsprodukter (näringsdrycker, sondnäring m.m.) först, sedan övriga i bokstavsordning
+    // Utan sökord: kosttillägg och sedan sondnäring (vanligaste först, motsvarande produkter bredvid varandra), sedan övriga i bokstavsordning
     const byName = (a: Food, b: Food) => a.name.localeCompare(b.name, 'sv')
     const all = db.foods.filter(f => sources.includes(f.group))
-    const nutr = all.filter(f => f.source === 'nutrition').sort(byName)
+    const nutr = all.filter(f => f.source === 'nutrition')
+      .sort((a, b) => nutritionRank(a.name, a.group) - nutritionRank(b.name, b.group) || byName(a, b))
     const rest = all.filter(f => f.source !== 'nutrition').sort(byName)
     return [...nutr, ...rest].slice(0, Math.max(300, nutr.length + 100))
   }, [db, query, sources])

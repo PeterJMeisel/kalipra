@@ -182,6 +182,9 @@ def main(dst):
         # Diabetesanpassade produkter (enligt tillverkarens produktnamn/indikation)
         if re.search(r'\b(Diben|Diasip|Diason)\b', p['product'], re.I) and 'diabetesanpassad' not in eg:
             eg.append('diabetesanpassad')
+        # Njursjukdom utan dialys (lågt protein och sänkta elektrolyter enligt tillverkaren)
+        if re.search(r'\b(Renalive LP|Renilon 4\.0|Fresubin Renal)\b', p['product'], re.I):
+            eg.append('anpassad för njursjukdom utan dialys')
         # Extra fiber: minst 1,5 g/100 ml (vätska) eller 3 g/100 g (pulver), eller fiber nämns på bladet
         fib = p['values'].get('FIBT') or 0
         if fib >= (1.5 if p['basis'] == 'ml' else 3) and 'fibrer' not in eg and 'fiberfri' not in eg:
