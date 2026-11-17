@@ -91,8 +91,20 @@ def free_sugar(p, txt):
     return round(max(0.0, sugar - lact), 2)
 
 
+# Sondnäring (allt annat räknas som kosttillägg: näringsdrycker, puddingar, berikning, förtjockning m.m.)
+SOND = re.compile(r'^(NutriChef|Compleat (Mix|Mix Protein|paediatric Mix)$|Isosource|MiniMax Barnsondnäring|Novasource|Peptamen)')
+
+
+def category(p):
+    if p.get('category') == 'Sondnäring' or SOND.match(p['product']):
+        return 'Sondnäring'
+    return 'Kosttillägg'
+
+
 def main(dst):
     prods = fk_products() + nes_products()
+    for p in prods:
+        p['category'] = category(p)
     for p in prods:
         p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
         p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''))
@@ -129,7 +141,9 @@ def main(dst):
     det = {'note': 'Övrig information ur tillverkarnas produktblad, samma ordning/id som foods i nutrition.json. '
                    'Fullständig text finns i scripts/nutrition/{fk,fks,nes}/*.txt.',
            'fetched': date.today().isoformat(),
-           'products': [{'id': i, 'name': p['name'], 'manufacturer': p['manufacturer'], 'url': p['url'], **p.get('details', {})}
+           'products': [{'id': i, 'name': p['name'], 'product': p['product'], 'flavour': p.get('flavour'), 'manufacturer': p['manufacturer'],
+                         'category': p.get('category'), 'basis': p['basis'], 'url': p['url'],
+                         **({'laktos': p['values']['LACT']} if p['values'].get('LACT') is not None else {}), **p.get('details', {})}
                         for i, p in enumerate(prods, start=1)]}
     json.dump(det, open(os.path.join(os.path.dirname(dst), 'nutrition-details.json'), 'w'), ensure_ascii=False, indent=1)
     by = {}

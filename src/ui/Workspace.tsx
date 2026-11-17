@@ -7,6 +7,7 @@ import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type
 import { newId } from '../core/storage'
 import { addDayDates, ensureDayDates, removeDayDates, setDayDate, shortDate, todayISO } from '../core/dates'
 import { SourceTag } from './DiaryEditor'
+import { ProductSheet } from './ProductSheet'
 
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'SUGAR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
@@ -218,7 +219,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
                   const kcal = ((f?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100
                   return (
                     <tr key={e.id}>
-                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
+                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={f?.group ?? e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
                         <input aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
                           onBlur={ev => {
@@ -327,13 +328,14 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
   const gramsRef = useRef<HTMLInputElement>(null)
   const multi = available.length > 1
   const [sourcesOpen, setSourcesOpen] = useState(false)
+  const [sheetFor, setSheetFor] = useState<number | null>(null)
 
   // Som i Dietist Net: utan sökord visas listan i bokstavsordning.
   const hits = useMemo(() => {
     if (query.trim()) return db.search(query, 120, sources)
     // Utan sökord: nutritionsprodukter (näringsdrycker, sondnäring m.m.) först, sedan övriga i bokstavsordning
     const byName = (a: Food, b: Food) => a.name.localeCompare(b.name, 'sv')
-    const all = db.foods.filter(f => sources.includes(f.source))
+    const all = db.foods.filter(f => sources.includes(f.group))
     const nutr = all.filter(f => f.source === 'nutrition').sort(byName)
     const rest = all.filter(f => f.source !== 'nutrition').sort(byName)
     return [...nutr, ...rest].slice(0, Math.max(300, nutr.length + 100))
@@ -356,14 +358,18 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
     <div className="ws-picker">
       <input className="ws-search" type="search" placeholder="Sök livsmedel …" value={query}
         onChange={e => { setQuery(e.target.value); setPicked(null) }} aria-label="Sök livsmedel" />
+      {sheetFor !== null && <ProductSheet foodNumber={sheetFor} onClose={() => setSheetFor(null)} />}
       <ul className="ws-hits" role="listbox" aria-label="Sökträffar">
         {hits.map(f => (
           <li key={`${f.source}:${f.number}`} role="option" aria-selected={picked === f}>
             <button type="button" className={picked === f ? 'on' : ''}
               onClick={() => { setPicked(f); setTimeout(() => gramsRef.current?.select(), 0) }}>
-              <span>{multi && <SourceTag source={f.source} />}{f.name}</span>
+              <span>{multi && <SourceTag source={f.group} />}{f.name}</span>
               <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 {f.unit}</small>
             </button>
+            {f.source === 'nutrition' && (
+              <button type="button" className="ws-info" title="Produktfaktablad" aria-label={`Produktfaktablad för ${f.name}`} onClick={() => setSheetFor(f.number)}>i</button>
+            )}
           </li>
         ))}
         {query.trim().length > 1 && hits.length === 0 && <li className="empty">Inga träffar.</li>}

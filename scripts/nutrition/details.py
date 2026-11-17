@@ -113,7 +113,7 @@ def right_column_sections(txt, split=None):
                 break
         if cur and cur != 'referenser' and r:
             sec.setdefault(cur, []).append(r)
-    return {k: re.sub(r'\s+', ' ', ' '.join(v)).strip() for k, v in sec.items() if v}
+    return {k: re.sub(r'\s+', ' ', ' '.join(v)).strip().lstrip(':').strip() for k, v in sec.items() if v}
 
 
 def left_extras(txt):
@@ -168,7 +168,9 @@ def details_for(txt, whole_sheet=None):
         'näringsdeklaration': table_rows(txt),
         **left_extras(txt or sheet),
     }
-    secs = right_column_sections(sheet) if 'Produktinformation' in sheet else {}
+    # Sektionerna tas ur produktens eget block (en smak) så att texten inte upprepas för alla smaker
+    src = txt if txt and 'Produktinformation' in txt else sheet
+    secs = right_column_sections(src) if 'Produktinformation' in src else {}
     if 'ingredienser' not in secs:
         ing = column_block(sheet, r'INGREDIENSER|Ingredienser:?')
         if ing:

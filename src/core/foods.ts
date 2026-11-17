@@ -1,23 +1,31 @@
 import type { NutrientKey, NutrientTotals } from './nutrients'
 import type { DiaryEntry, Meal } from './types'
 
-/** Livsmedelsdatabaser som kan sökas i. */
-export type SourceId = 'lmv' | 'fineli' | 'usda' | 'nutrition'
+/**
+ * Livsmedelsdatabaser som kan sökas i. Nutritionsprodukterna ligger i databasen 'nutrition' men väljs
+ * under Källor som två grupper: 'sond' (sondnäring) och 'kost' (kosttillägg: näringsdrycker, puddingar,
+ * berikning, förtjockning m.m.).
+ */
+export type SourceId = 'lmv' | 'fineli' | 'usda' | 'nutrition' | 'sond' | 'kost'
 export const SOURCES: Record<SourceId, { label: string; short: string; credit: string }> = {
   lmv: { label: 'Livsmedelsverket', short: 'LMV', credit: 'Livsmedelsverkets livsmedelsdatabas (CC BY 4.0)' },
   fineli: { label: 'Fineli', short: 'Fineli', credit: 'Fineli, THL – Institutet för hälsa och välfärd, Finland, release 20 (CC BY 4.0)' },
   usda: { label: 'USDA', short: 'USDA', credit: 'USDA FoodData Central, SR Legacy april 2018 (public domain, CC0)' },
   nutrition: { label: 'Nutritionsprodukter', short: 'Nutr', credit: 'Tillverkarnas produktblad för sondnäring och kosttillägg (Fresenius Kabi, Nestlé Health Science)' },
+  sond: { label: 'Sondnäring', short: 'Sond', credit: 'Sondnäring – tillverkarnas produktblad (Fresenius Kabi, Nestlé Health Science)' },
+  kost: { label: 'Kosttillägg', short: 'Kost', credit: 'Kosttillägg – tillverkarnas produktblad (Fresenius Kabi, Nestlé Health Science)' },
 }
 
 /** Källor som är ibockade från början. USDA får man välja själv. */
-export const DEFAULT_SOURCES: SourceId[] = ['lmv', 'fineli', 'nutrition']
+export const DEFAULT_SOURCES: SourceId[] = ['lmv', 'fineli', 'sond', 'kost']
 const SOURCE_KEY = 'kalipra.sources.v2'
 
 export function loadSources(available: SourceId[]): SourceId[] {
   try {
     const saved = JSON.parse(localStorage.getItem(SOURCE_KEY) ?? 'null')
     if (Array.isArray(saved)) {
+      // Äldre val: 'nutrition' = både sondnäring och kosttillägg
+      if (saved.includes('nutrition')) saved.push('sond', 'kost')
       const ok = saved.filter((x): x is SourceId => available.includes(x))
       if (ok.length) return ok
     }
@@ -52,6 +60,8 @@ export type Food = {
   /** Enhet för mängden. 'ml' för flytande nutritionsprodukter, annars gram. */
   unit: 'g' | 'ml'
   manufacturer?: string
+  /** Grupp under Källor: samma som source, utom nutritionsprodukter som är 'sond' eller 'kost'. */
+  group: SourceId
 }
 
 export type SourceInfo = { id: SourceId; fetched: string; count: number }
@@ -72,12 +82,18 @@ export class FoodDatabase {
           const v = values[i]
           if (v != null) per100g[k] = v
         })
-        const food: Food = { source, number, name, analysed: analysed === 1, per100g, unit: prod?.basis === 'ml' ? 'ml' : 'g', ...(prod?.manufacturer ? { manufacturer: prod.manufacturer } : {}) }
+        const group: SourceId = source === 'nutrition' ? (prod?.category === 'Sondnäring' ? 'sond' : 'kost') : source
+        const food: Food = { source, group, number, name, analysed: analysed === 1, per100g, unit: prod?.basis === 'ml' ? 'ml' : 'g', ...(prod?.manufacturer ? { manufacturer: prod.manufacturer } : {}) }
         this.foods.push(food)
         this.byKey.set(`${source}:${number}`, food)
         this.searchKeys.push(normalize([name, prod?.manufacturer, prod?.category].filter(Boolean).join(' ')))
       })
-      this.sources.push({ id: source, fetched: d.fetched, count: d.foods.length })
+      if (source === 'nutrition') {
+        for (const g of ['sond', 'kost'] as const) {
+          const count = this.foods.filter(f => f.source === 'nutrition' && f.group === g).length
+          if (count) this.sources.push({ id: g, fetched: d.fetched, count })
+        }
+      } else this.sources.push({ id: source, fetched: d.fetched, count: d.foods.length })
     }
   }
 
@@ -100,7 +116,7 @@ export class FoodDatabase {
     const allowed = sources ? new Set(sources) : null
     const hits: { food: Food; score: number }[] = []
     this.foods.forEach((food, i) => {
-      if (allowed && !allowed.has(food.source)) return
+      if (allowed && !allowed.has(food.group)) return
       const key = this.searchKeys[i]
       if (!words.every(w => key.includes(w))) return
       let score = key.length / 100
