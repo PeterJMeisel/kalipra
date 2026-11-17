@@ -41,4 +41,4 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Stimulance, D-mannose, Lorenzos oil och XLYS TRY Glutaridon rättades 2026-11-17 med värden ur de svenska bladen (`NUT_FIX` i build_nutrition.py). Loprofin Frukostflingor har energi och protein från Nutricia UK (`NUT_OTHER_SOURCE`, visas med hänvisning i produktbladet). GTO Oil är tillagd ur andra kolumnen i Lorenzos oil-bladet (`NUT_SECOND_COLUMN`).
 
 ## Öppna punkter
-- Lokal kopia saknas av Nutricia UK:s sida för Loprofin Cereal Loops (https://www.nutricia.co.uk/hcp/products/loprofin-cereal-loops/, hämtad 2026-11-17). Den ska sparas som `Nutricia\Loprofin-Cereal-Loops-Nutricia-UK.pdf` i källdokumentmappen och läggas in i index.csv (källdokument.json är redan uppdaterad).
+(Inga just nu.)
