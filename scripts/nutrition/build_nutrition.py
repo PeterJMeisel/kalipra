@@ -161,6 +161,16 @@ def main(dst):
     for p in prods:
         p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
         p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''), wide=p['manufacturer'] == 'Nutricia')
+        eg = p['details'].setdefault('egenskaper', [])
+        # Diabetesanpassade produkter (enligt tillverkarens produktnamn/indikation)
+        if re.match(r'(Diben|Diasip|Nutrison advanced Diason|Diason)', p['product'], re.I) and 'diabetesanpassad' not in eg:
+            eg.append('diabetesanpassad')
+        # Extra fiber: minst 1,5 g/100 ml (vätska) eller 3 g/100 g (pulver), eller fiber nämns på bladet
+        fib = p['values'].get('FIBT') or 0
+        if fib >= (1.5 if p['basis'] == 'ml' else 3) and 'fibrer' not in eg and 'fiberfri' not in eg:
+            eg.append('fibrer')
+        if 'fibrer' in eg and fib < 0.5:
+            eg.remove('fibrer')
         w = p['details'].get('vatten_per_100')
         if w is not None and p['basis'] == 'ml':
             p['values']['WATER'] = w

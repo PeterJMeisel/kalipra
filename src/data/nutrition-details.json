@@ -18,11 +18,11 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "diabetesanpassad"
    ],
    "näringsdeklaration": {
     "Fett": {
@@ -217,10 +217,11 @@
    "osmolalitet": 580,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "diabetesanpassad",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -458,7 +459,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -694,8 +694,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -932,7 +931,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -1168,8 +1166,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -1405,8 +1402,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -1629,10 +1625,10 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -1829,7 +1825,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -2034,7 +2029,7 @@
    "osmolalitet": 615,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -2241,7 +2236,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -2441,8 +2435,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -2643,7 +2636,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -2850,8 +2842,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -3058,7 +3049,6 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -3282,7 +3272,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -3493,8 +3482,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -3704,7 +3692,7 @@
    "egenskaper": [
     "glutenfri",
     "laktosfri",
-    "med fiber",
+    "fibrer",
     "vegetabilisk/växtbaserad",
     "mjölkproteinfri",
     "näringsmässigt komplett",
@@ -3911,8 +3899,7 @@
    "egenskaper": [
     "glutenfri",
     "laktosfri",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "mjölkproteinfri",
     "näringsmässigt komplett",
     "sondnäring",
@@ -4133,7 +4120,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -4357,7 +4343,6 @@
     "glutenfri",
     "låglaktos",
     "fiberfri",
-    "med fiskolja",
     "MCT",
     "näringsmässigt komplett",
     "sondnäring"
@@ -4980,7 +4965,7 @@
    "osmolalitet": 1000,
    "egenskaper": [
     "glutenfri",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -5193,7 +5178,7 @@
    "osmolalitet": 1000,
    "egenskaper": [
     "glutenfri",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -6070,7 +6055,7 @@
    "vatten_per_100": 77.0,
    "osmolaritet": 453,
    "egenskaper": [
-    "med fiber",
+    "fibrer",
     "vegetabilisk/växtbaserad",
     "näringsmässigt komplett",
     "sondnäring"
@@ -6270,7 +6255,7 @@
    "vatten_per_100": 76.0,
    "osmolaritet": 611,
    "egenskaper": [
-    "med fiber",
+    "fibrer",
     "vegetabilisk/växtbaserad",
     "näringsmässigt komplett",
     "sondnäring"
@@ -6470,7 +6455,7 @@
    "vatten_per_100": 76.0,
    "osmolaritet": 417,
    "egenskaper": [
-    "med fiber",
+    "fibrer",
     "vegetabilisk/växtbaserad",
     "näringsmässigt komplett",
     "sondnäring"
@@ -7247,8 +7232,9 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "diabetesanpassad",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -7474,8 +7460,9 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "diabetesanpassad",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -7701,8 +7688,9 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "diabetesanpassad",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -7928,8 +7916,9 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiskolja",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "diabetesanpassad",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kcal)": {
@@ -8155,7 +8144,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett"
    ],
@@ -8383,7 +8372,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "MCT",
     "näringsmässigt komplett"
    ],
@@ -8680,7 +8669,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -8894,7 +8883,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -9108,7 +9097,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -9322,7 +9311,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett",
     "ej komplett"
    ],
@@ -9535,8 +9524,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -9771,7 +9759,8 @@
    "osmolalitet": 890,
    "egenskaper": [
     "glutenfri",
-    "låglaktos"
+    "låglaktos",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -9984,7 +9973,8 @@
    "osmolalitet": 950,
    "egenskaper": [
     "glutenfri",
-    "låglaktos"
+    "låglaktos",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -10197,7 +10187,8 @@
    "osmolalitet": 850,
    "egenskaper": [
     "glutenfri",
-    "låglaktos"
+    "låglaktos",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -10410,7 +10401,8 @@
    "osmolalitet": 900,
    "egenskaper": [
     "glutenfri",
-    "låglaktos"
+    "låglaktos",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -12267,7 +12259,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
@@ -12486,7 +12478,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
@@ -15873,7 +15865,6 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -16078,7 +16069,6 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -16283,7 +16273,6 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -16488,7 +16477,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -16694,7 +16683,7 @@
    "egenskaper": [
     "glutenfri",
     "laktosfri",
-    "med fiber",
+    "fibrer",
     "vegetabilisk/växtbaserad",
     "mjölkproteinfri",
     "näringsmässigt komplett"
@@ -20819,7 +20808,6 @@
    "osmolalitet": 380,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -21028,9 +21016,9 @@
    "osmolalitet": 500,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -21241,7 +21229,6 @@
    "osmolalitet": 340,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -21453,7 +21440,8 @@
    "osmolaritet": 915,
    "egenskaper": [
     "glutenfri",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "fibrer"
    ],
    "iddsi": {
     "nivå": "3",
@@ -21619,7 +21607,6 @@
    "osmolaritet": 336,
    "osmolalitet": 395,
    "egenskaper": [
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -21824,7 +21811,6 @@
    "osmolalitet": 207,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -22049,7 +22035,6 @@
    "osmolalitet": 375,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "sondnäring"
    ],
    "näringsdeklaration": {
@@ -22273,7 +22258,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -22470,7 +22454,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -22667,7 +22650,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "sondnäring"
    ],
    "näringsdeklaration": {
@@ -22863,7 +22845,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "sondnäring"
    ],
    "näringsdeklaration": {
@@ -23059,7 +23040,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -23256,7 +23236,6 @@
    "egenskaper": [
     "glutenfri",
     "fiberfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -23656,7 +23635,6 @@
    "osmolalitet": 446,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -24054,7 +24032,8 @@
    "osmolaritet": 285,
    "egenskaper": [
     "glutenfri",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -24248,8 +24227,8 @@
    "osmolaritet": 335,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -24484,9 +24463,9 @@
    "osmolaritet": 376,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -24684,7 +24663,6 @@
    "osmolaritet": 425,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -25085,7 +25063,6 @@
    "osmolalitet": 334,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -25498,8 +25475,7 @@
    "osmolalitet": 540,
    "egenskaper": [
     "glutenfri",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -25716,7 +25692,6 @@
    "osmolalitet": 227,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "näringsmässigt komplett",
     "sondnäring"
    ],
@@ -25933,7 +25908,6 @@
    "osmolalitet": 844,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
     "sondnäring"
    ],
    "näringsdeklaration": {
@@ -26325,7 +26299,8 @@
    "egenskaper": [
     "glutenfri",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "fibrer"
    ],
    "text": {
     "ingredienser": "Vatten, glukossirap, mjölkproteiner, rapsolja, fibrer [galaktooligosackarider (innehåller mjölk), frukto­ oligosackarider], sackaros*, fettreducerat kakao­ pulver (1,3 %)**, mineraler (natriumcitrat, kaliumcitrat, kaliumklorid, magnesiumoxid, magnesium­citrat, järnsulfat, natriumklorid, zinksulfat, kalciumcitrat***, mangansulfat, kopparsulfat, natriumfluorid, kromklorid, natriummolybdat, kaliumjodid, natrium­ selenat), emulgeringsmedel (E472e, E471), vitaminer (C, E, niacin, pantotensyra, B6, tiamin, riboflavin, A, folsyra, K, biotin, D , B12**), surhetsreglerande medel (E330, E525), stabiliseringsmedel (E418), arom, färgämnen****. Ordningen i ingredienslistan varierar något mellan smakerna. *Neutral smak innehåller ej sackaros **Endast Choklad ***Ej Choklad ****Färgämnen per smak: Aprikos: E120 och E160a Jordgubb: E120"
@@ -26346,8 +26321,8 @@
    "osmolalitet": 980,
    "egenskaper": [
     "glutenfri",
-    "med fiskolja",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -26980,7 +26955,8 @@
    },
    "text": {
     "ingredienser": "Modifierad stärkelse (majs). Kontrollera alltid informationen på förpackningen innan användning."
-   }
+   },
+   "egenskaper": []
   },
   {
    "id": 139,
@@ -27039,7 +27015,10 @@
    },
    "text": {
     "ingredienser": "Maltodextrin, xantangummi, kaliumklorid. Kontrollera alltid informationen på förpackningen innan användning. Halal-certifierad Kosher-certifierad"
-   }
+   },
+   "egenskaper": [
+    "fibrer"
+   ]
   },
   {
    "id": 140,
@@ -27407,6 +27386,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
+    "fibrer",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -28010,7 +27990,7 @@
    "egenskaper": [
     "glutenfri",
     "låglaktos",
-    "med fiber",
+    "fibrer",
     "näringsmässigt komplett"
    ],
    "iddsi": {
@@ -28769,6 +28749,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-GA1-Anamix-Infant-2020_k2_2020-04-23.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för glutarsyrauri typ 1",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -29417,6 +29401,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-HCU-Anamix-Infant-2020_2020-05-12.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för homocystinuri",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -29903,7 +29891,9 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2023/08/Produktblad_GA1_Anamix_Junior_2023.pdf",
    "osmolalitet": 1220,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för glutarsyrauri typ 1",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -30146,7 +30136,9 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-IVA-Anamix-Junior.pdf",
    "osmolalitet": 1220,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för isovaleriansyraemi",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -30393,7 +30385,9 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-HCU-Anamix-Junior_k3.pdf",
    "osmolalitet": 1340,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för homocystinuri",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -30643,6 +30637,9 @@
    "basis": "ml",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2020/09/HCU-Anamix-Junior-LQ_2020.pdf",
    "osmolalitet": 1480,
+   "egenskaper": [
+    "anpassad för homocystinuri"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -30895,6 +30892,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-MMA_PA-Anamix-Infant-2020_k2_2020-04-23.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för metylmalon-/propionsyraemi",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -31166,7 +31167,9 @@
    "egenskaper": [
     "glutenfri",
     "näringsmässigt komplett",
-    "ej komplett"
+    "ej komplett",
+    "anpassad för lönnsirapssjukdom (MSUD)",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -31400,6 +31403,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-IVA-Anamix-Infant-2020_2020-04-30.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för isovaleriansyraemi",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -31676,6 +31683,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-MSUD-Anamix-Infant-2020_k2_2020-04-23.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för lönnsirapssjukdom (MSUD)",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -31945,7 +31956,9 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2023/08/Produktblad_MMAPA_Anamix_Junior_2023.pdf",
    "osmolalitet": 1220,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för metylmalon-/propionsyraemi",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -32182,7 +32195,9 @@
    "egenskaper": [
     "glutenfri",
     "näringsmässigt komplett",
-    "ej komplett"
+    "ej komplett",
+    "anpassad för tyrosinemi",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -32409,7 +32424,9 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-AnamixJunior.pdf",
    "osmolalitet": 1340,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "anpassad för fenylketonuri (PKU)",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -32646,6 +32663,9 @@
    "category": "Kosttillägg",
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-PKU-Anamix-FirstSpoon-2.pdf",
+   "egenskaper": [
+    "anpassad för fenylketonuri (PKU)"
+   ],
    "näringsdeklaration": {
     "Energi": {
      "enhet": "kcal",
@@ -32890,6 +32910,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad_PKU_Anamix_Infant_2023.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för fenylketonuri (PKU)",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -33162,6 +33186,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-TYR-Anamix-Infant-2020_2020-04-30.pdf",
    "osmolalitet": 380,
+   "egenskaper": [
+    "anpassad för tyrosinemi",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -34285,10 +34313,10 @@
    "osmolaritet": 365,
    "egenskaper": [
     "glutenfri",
-    "med fiber",
-    "med fiskolja",
+    "fibrer",
     "näringsmässigt komplett",
-    "sondnäring"
+    "sondnäring",
+    "diabetesanpassad"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -34466,6 +34494,9 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-UCD-Anamix-Infant-2.pdf",
    "osmolalitet": 310,
+   "egenskaper": [
+    "anpassad för ureacykeldefekter"
+   ],
    "näringsdeklaration": {
     "Energi": {
      "enhet": "kcal",
@@ -34694,6 +34725,10 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2024/12/Produktblad-PKU-GMPro-Delight-15-20-2026.pdf",
    "laktos": 0.36,
+   "egenskaper": [
+    "anpassad för fenylketonuri (PKU)",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -35152,7 +35187,8 @@
    "osmolalitet": 660,
    "egenskaper": [
     "glutenfri",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -35342,7 +35378,8 @@
    "osmolaritet": 600,
    "osmolalitet": 940,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -35553,7 +35590,8 @@
    "osmolalitet": 570,
    "egenskaper": [
     "glutenfri",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -35765,7 +35803,8 @@
    "laktos": 3.7,
    "vatten_per_100": 67.0,
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi": {
@@ -36174,6 +36213,10 @@
    "category": "Kosttillägg",
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2019/04/Produktblad-PKU-GMPro-Powder-2026.pdf",
+   "egenskaper": [
+    "anpassad för fenylketonuri (PKU)",
+    "fibrer"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -36421,6 +36464,9 @@
    "category": "Kosttillägg",
    "basis": "ml",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2019/04/Produktblad-PKU-GMPro-LQ-2026.pdf",
+   "egenskaper": [
+    "anpassad för fenylketonuri (PKU)"
+   ],
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
@@ -36667,7 +36713,8 @@
    "osmolaritet": 480,
    "egenskaper": [
     "näringsmässigt komplett",
-    "ej komplett"
+    "ej komplett",
+    "anpassad för fenylketonuri (PKU)"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -36874,7 +36921,8 @@
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2023/03/Produktblad-PKU-GMPro-Mix-In-2026.pdf",
    "egenskaper": [
     "näringsmässigt komplett",
-    "ej komplett"
+    "ej komplett",
+    "anpassad för fenylketonuri (PKU)"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -37026,7 +37074,8 @@
    "egenskaper": [
     "glutenfri",
     "MCT",
-    "näringsmässigt komplett"
+    "näringsmässigt komplett",
+    "anpassad för epilepsi (ketogen kost)"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {

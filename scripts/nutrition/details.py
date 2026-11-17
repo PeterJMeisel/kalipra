@@ -17,8 +17,7 @@ FLAGS = [
     ('laktosfri', r'laktosfri|laktos- och glutenfri'),
     ('låglaktos', r'låglaktos'),
     ('fiberfri', r'fiberfri|utan fiber'),
-    ('med fiber', r'med fiber|fiberberikad|innehåller fiber'),
-    ('med fiskolja', r'fiskolja'),
+    ('fibrer', r'med fiber|fiberberikad|innehåller fiber|med kostfiber'),
     ('MCT', r'\bMCT\b|medellånga fettsyror'),
     ('vegetabilisk/växtbaserad', r'växtbaserad|plant ?based|vegansk'),
     ('mjölkproteinfri', r'mjölkproteinfri|fri från mjölkprotein'),
@@ -208,9 +207,29 @@ def galactosemia_ok(txt):
     return False
 
 
+# Ovanliga sjukdomar som produkten är anpassad för (ur bladets indikation)
+RARE = [  # (namn, ord – skiftlägesokänsligt, förkortning – skiftlägeskänslig)
+    ('fenylketonuri (PKU)', r'fenylketonuri|hyperfenylalanin', r'\bPKU\b'),
+    ('tyrosinemi', r'tyrosinemi', r'\bTYR\b'),
+    ('homocystinuri', r'homocystinuri', r'\bHCU\b'),
+    ('lönnsirapssjukdom (MSUD)', r'lönnsirap|maple syrup', r'\bMSUD\b'),
+    ('glutarsyrauri typ 1', r'glutar(syra|acid)uri', r'\bGA-?1\b'),
+    ('isovaleriansyraemi', r'isovalerian', r'\bIVA\b'),
+    ('metylmalon-/propionsyraemi', r'metylmalon|propion(syra|acid)emi', r'\bMMA\b'),
+    ('ureacykeldefekter', r'ureacykel', r'\bUCD\b'),
+    ('hyperlysinemi', r'hyperlysin', r'HYPER-LYS'),
+    ('epilepsi (ketogen kost)', r'ketogen', r'(?!)'),
+]
+
+
 def flags(txt):
     low = txt.lower()
     out = [name for name, pat in FLAGS if re.search(pat, low)]
+    # Ovanlig sjukdom: den som nämns oftast (blad nämner ibland andra produkter i serien)
+    hits = {name: len(re.findall(word, txt, re.I)) + len(re.findall(abbr, txt)) for name, word, abbr in RARE}
+    top = max(hits.values())
+    if top:
+        out += [f'anpassad för {n}' for n, c in hits.items() if c == top]
     if galactosemia_ok(txt):
         out.append('anpassad för galaktosemi')
     return out
