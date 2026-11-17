@@ -116,6 +116,10 @@ export type Calculation = {
   meals?: number
   /** Antal måltider per dag; index 0 = dag 1. En ny dag börjar med 1 måltid. */
   mealCounts?: number[]
+  /** Datum per dag (ISO yyyy-mm-dd), index 0 = dag 1 */
+  dayDates?: string[]
+  /** true om användaren valt datumet själv (flyttas då inte automatiskt) */
+  dayDatesManual?: boolean[]
   id: string
   personId: string
   createdAt: string

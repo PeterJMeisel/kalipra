@@ -146,6 +146,8 @@ export type MicroReference = {
   arProvisional?: boolean
   /** Övre gräns för intag (UL), vuxna. Intag över UL = röd. */
   ul?: number
+  /** Lägsta rekommenderade intag för ämnen med maxvärde (salt: AI för natrium hos vuxna) */
+  min?: number
   note?: string
 }
 
@@ -192,7 +194,8 @@ export function microReferences(age: number, sex: Sex, energyMJ: number, repro: 
     { key: 'ZN', kind: 'RI', value: r[10], ar: a[10], ul: ul(25) },
     { key: 'ID', kind: 'AI', value: r[14], ar: a[14], arProvisional: p, ul: ul(600) },
     { key: 'SE', kind: 'AI', value: r[15], ar: a[15], arProvisional: p, ul: ul(255) },
-    { key: 'NACL', kind: 'max', value: r[16], note: 'Rekommenderat högsta intag.' },
+    // Salt: NNR 2023 AI för natrium 1,5 g/dag för vuxna = 3,75 g salt; max 2,3 g natrium = 5,75 g salt (tabell 11)
+    { key: 'NACL', kind: 'max', value: r[16], min: adult ? 3.75 : undefined, note: adult ? 'Tillräckligt intag 3,75 g, högst 5,75 g.' : 'Rekommenderat högsta intag.' },
   ]
 }
 
@@ -202,8 +205,8 @@ export type MicroStatus = 'ok' | 'near' | 'low' | 'high'
  * AI: grön vid ≥ AI, röd under AI.
  * Över UL eller över rekommenderat maxintag: röd.
  */
-export function microStatus(m: Pick<MicroReference, 'kind' | 'value' | 'ar' | 'ul'>, intake: number): MicroStatus {
-  if (m.kind === 'max') return intake > m.value ? 'high' : 'ok'
+export function microStatus(m: Pick<MicroReference, 'kind' | 'value' | 'ar' | 'ul' | 'min'>, intake: number): MicroStatus {
+  if (m.kind === 'max') return intake > m.value ? 'high' : m.min !== undefined && intake < m.min ? 'low' : 'ok'
   if (m.ul !== undefined && intake > m.ul) return 'high'
   if (intake >= m.value) return 'ok'
   if (m.kind === 'RI' && m.ar !== undefined && intake >= m.ar) return 'near'

@@ -5,6 +5,7 @@ import { fiberReference, fluidReference, macroReferences, microReferences, micro
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
+import { addDayDates, ensureDayDates, removeDayDates, setDayDate, shortDate, todayISO } from '../core/dates'
 import { SourceTag } from './DiaryEditor'
 
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
@@ -76,9 +77,23 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
     onPatchCalc({ entries: next, mealCounts: counts })
     setMeal(k > 1 ? mealName(k - 1) : mealName(1))
   }
+  // Datum per dag: fylls i automatiskt om de saknas (äldre beräkningar)
+  const today = todayISO()
+  const dd = useMemo(() => ensureDayDates(calc.days, calc.dayDates, calc.dayDatesManual, today), [calc.days, calc.dayDates, calc.dayDatesManual, today])
+  useEffect(() => {
+    if (calc.dayDates?.length !== calc.days || calc.dayDates.some((x, i) => x !== dd.dates[i])) onPatchCalc({ dayDates: dd.dates, dayDatesManual: dd.manual })
+  }, [dd]) // eslint-disable-line react-hooks/exhaustive-deps
+  const [dateError, setDateError] = useState<string | null>(null)
+  function pickDate(date: string) {
+    const r = setDayDate(dd, currentDay - 1, date)
+    if ('error' in r) { setDateError(r.error); return }
+    setDateError(null)
+    onPatchCalc({ dayDates: r.dates, dayDatesManual: r.manual })
+  }
   function addDay() {
     if (calc.days >= 14) return
-    onPatchCalc({ days: calc.days + 1, mealCounts: [...allCounts(), 1] })
+    const nd = addDayDates(dd, today)
+    onPatchCalc({ days: calc.days + 1, mealCounts: [...allCounts(), 1], dayDates: nd.dates, dayDatesManual: nd.manual })
     setDay(calc.days + 1)
     setMeal(mealName(1))
   }
@@ -87,7 +102,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
     const count = entries.filter(e => e.day === d).length
     if (count && armed !== `day:${d}`) { setArmed(`day:${d}`); return }
     setArmed(null)
-    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d), mealCounts: allCounts().slice(0, d - 1) })
+    const nd = removeDayDates(dd, d - 1)
+    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d), mealCounts: allCounts().slice(0, d - 1), dayDates: nd.dates, dayDatesManual: nd.manual })
     if (day >= d) setDay(d - 1)
   }
   /** Kopierar alla livsmedel i en måltid till en annan (befintlig eller ny) måltid. */
@@ -140,12 +156,16 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => {
             const n = entries.filter(e => e.day === d).length
             return (
-              <button key={d} role="tab" aria-selected={currentDay === d} className={currentDay === d ? 'on' : ''} onClick={() => setDay(d)}>
-                Dag {d}{n > 0 && <span className="count">{n}</span>}
+              <button key={d} role="tab" aria-selected={currentDay === d} className={currentDay === d ? 'on' : ''} onClick={() => { setDay(d); setDateError(null) }}>
+                Dag {d} <span className="ws-tabdate">{dd.dates[d - 1] ? shortDate(dd.dates[d - 1]) : ''}</span>{n > 0 && <span className="count">{n}</span>}
               </button>
             )
           })}
           {calc.days < 14 && <button type="button" className="ws-add" onClick={addDay}>+ Lägg till dag</button>}
+          <label className="ws-date">Datum dag {currentDay}
+            <input type="date" lang="sv-SE" value={dd.dates[currentDay - 1] ?? ''} onChange={e => e.target.value && pickDate(e.target.value)} />
+          </label>
+          {dateError && <span className="ws-dateerr" role="alert">{dateError}</span>}
           {calc.days > 1 && (
             <button type="button" className={`ws-remove ${armed === `day:${calc.days}` ? 'armed' : ''}`} onClick={removeDay}>
               {armed === `day:${calc.days}` ? `Ta bort dag ${calc.days} med ${entries.filter(e => e.day === calc.days).length} livsmedel? Klicka igen` : `Ta bort dag ${calc.days}`}
@@ -235,7 +255,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           : <IntakeView scoped={view} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} teeMJ={need?.teeMJ} />}
         {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
-        {bottomTab === 'jamfor' && scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} person={person} repro={repro} weightKg={weightKg} need={need} />}
+        {bottomTab === 'jamfor' && scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} dates={dd.dates} person={person} repro={repro} weightKg={weightKg} need={need} />}
       </section>
     </div>
   )
@@ -396,7 +416,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
   const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
     .map(m => {
       const f = sh
-      return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined }
+      return { ...m, value: m.value * f, ar: m.ar !== undefined ? m.ar * f : undefined, ul: m.ul !== undefined ? m.ul * f : undefined, min: m.min !== undefined ? m.min * f : undefined }
     })
 
   return (
@@ -517,18 +537,22 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
         })()}
         {(() => {
           const g = v('NACL')
-          const maxG = micro.find(m => m.key === 'NACL')?.value ?? 6
-          const over = g > maxG
-          if (isMeal) return <ShareBox label="Salt" value={g} unit="g" dayRef={maxG / sh} refText={`högsta mängd (${formatNumber(maxG / sh, 0)} g)`} />
+          const sr = micro.find(m => m.key === 'NACL')
+          const maxG = sr?.value ?? 5.75
+          const minG = sr?.min
+          const st = sr ? microStatus(sr, g) : 'ok'
+          const f2 = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 2)
+          if (isMeal) return <ShareBox label="Salt" value={g} unit="g" dayRef={maxG / sh} refText={`högsta mängd (${f2(maxG / sh)} g)`} />
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Salt</span>
               <span className="val">{formatNumber(g, 1)} <small>g</small></span>
               <div className="meter" aria-hidden="true">
-                <div className={`fill ${over ? 'high' : ''}`} style={{ width: `${Math.min((g / maxG) * 100, 150) / 1.5}%` }} />
+                <div className={`fill ${st === 'high' ? 'high' : st === 'low' ? 'low' : ''}`} style={{ width: `${Math.min((g / maxG) * 100, 150) / 1.5}%` }} />
+                {minG !== undefined && <div className="mark" style={{ left: `${(minG / maxG) * 100 / 1.5}%` }} />}
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation högst {formatNumber(maxG, 0)} g · <span className={`pill ${over ? 'high' : 'ok'}`}>{over ? 'Över' : 'Inom'}</span></span>
+              <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `högst ${f2(maxG)} g`} · <span className={`pill ${st === 'high' ? 'high' : st === 'low' ? 'low' : 'ok'}`}>{st === 'high' ? 'Över' : st === 'low' ? 'Under' : 'Inom'}</span></span>
             </div>
           )
         })()}
@@ -583,8 +607,8 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
 /** En kolumn i jämförelsen. share = andel av dagsbehovet som kolumnen jämförs mot (1 för en dag). */
 type CompareCol = { label: string; name: string; totals: NutrientTotals; empty: boolean; share: number; extra?: boolean }
 
-function DaysView({ db, entries, days, person, repro, weightKg, need }: {
-  db: FoodDatabase; entries: DiaryEntry[]; days: number; person: Person | null; repro: Repro | null
+function DaysView({ db, entries, days, dates, person, repro, weightKg, need }: {
+  db: FoodDatabase; entries: DiaryEntry[]; days: number; dates: string[]; person: Person | null; repro: Repro | null
   weightKg: number; need: EnergyNeed | null
 }) {
   const perDay = useMemo(
@@ -599,7 +623,7 @@ function DaysView({ db, entries, days, person, repro, weightKg, need }: {
   const avg: NutrientTotals = {}
   for (const d of filled) for (const [k, val] of Object.entries(d.totals) as [NutrientKey, number][]) avg[k] = (avg[k] ?? 0) + val / filled.length
   const cols: CompareCol[] = [
-    ...perDay.map(d => ({ label: `Dag ${d.day}`, name: `dag ${d.day}`, totals: d.totals, empty: d.count === 0, share: 1 })),
+    ...perDay.map(d => ({ label: `Dag ${d.day}${dates[d.day - 1] ? ` · ${shortDate(dates[d.day - 1])}` : ''}`, name: `dag ${d.day}`, totals: d.totals, empty: d.count === 0, share: 1 })),
     ...(filled.length > 1 ? [{ label: `Snitt (${filled.length} dagar)`, name: 'snitt', totals: avg, empty: false, share: 1, extra: true }] : []),
   ]
   if (entries.length === 0) return <p className="empty">Ingen kostregistrering ännu.</p>
