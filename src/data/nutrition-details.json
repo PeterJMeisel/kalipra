@@ -225,9 +225,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "628"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -463,9 +467,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "630"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -697,9 +705,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "628"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -931,9 +943,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "419"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "100"
     },
     "Fett": {
      "enhet": "g",
@@ -1165,9 +1181,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "419"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "100"
     },
     "Fett": {
      "enhet": "g",
@@ -1398,9 +1418,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "422"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "100"
     },
     "Fett": {
      "enhet": "g",
@@ -1578,7 +1602,7 @@
      "enhet": "mosmol/kg H2O",
      "värde": "360"
     },
-    "Energifördelning E": {
+    "Energi": {
      "enhet": "%",
      "värde": "2"
     }
@@ -1619,6 +1643,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "120"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,1"
@@ -3051,9 +3079,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "513"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "122"
     },
     "Fett": {
      "enhet": "g",
@@ -3696,9 +3728,13 @@
     "sondnäring"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "630"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -3900,9 +3936,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "420"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "100"
     },
     "Fett": {
      "enhet": "g",
@@ -4117,9 +4157,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "424"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "101"
     },
     "Fett": {
      "enhet": "g",
@@ -4338,9 +4382,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "562"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "133"
     },
     "Fett": {
      "enhet": "g",
@@ -4556,6 +4604,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "0"
@@ -4754,6 +4806,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "0"
@@ -4951,9 +5007,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1008"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
     },
     "Fett": {
      "enhet": "g",
@@ -5161,9 +5221,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1008"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
     },
     "Fett": {
      "enhet": "g",
@@ -5373,6 +5437,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -5597,6 +5665,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -5821,9 +5893,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "634"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -6026,9 +6102,13 @@
     "sondnäring"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "631"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "152"
     },
     "Fett": {
      "enhet": "g",
@@ -6222,9 +6302,13 @@
     "sondnäring"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "640"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "153"
     },
     "Fett": {
      "enhet": "g",
@@ -6418,9 +6502,13 @@
     "sondnäring"
    ],
    "näringsdeklaration": {
-    "Energi": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "638"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "152"
     },
     "Fett": {
      "enhet": "g",
@@ -6620,6 +6708,10 @@
     "ej komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "0"
@@ -6806,6 +6898,10 @@
     "ej komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "0"
@@ -6992,6 +7088,10 @@
     "ej komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "0"
@@ -7178,6 +7278,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7"
@@ -7402,6 +7506,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7"
@@ -7626,6 +7734,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7"
@@ -7850,6 +7962,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7"
@@ -8075,6 +8191,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -8300,6 +8420,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -8519,9 +8643,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energivärde": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1500"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "360"
     },
     "Fett": {
      "enhet": "g",
@@ -8591,6 +8719,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -8798,6 +8930,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -9005,6 +9141,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -9212,6 +9352,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -9419,6 +9563,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "8,9"
@@ -9649,9 +9797,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "840"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -9859,9 +10011,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "840"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -10069,9 +10225,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "840"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -10279,9 +10439,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "840"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -10490,6 +10654,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "9,4"
@@ -10679,6 +10847,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "9,4"
@@ -10868,6 +11040,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "9,4"
@@ -11057,6 +11233,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "9,4"
@@ -11246,6 +11426,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "240"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "9,4"
@@ -11433,6 +11617,10 @@
     "MCT"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "492"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "22,9"
@@ -11897,9 +12085,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "420"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "100"
     },
     "Fett": {
      "enhet": "g",
@@ -12112,9 +12304,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "630"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -12328,9 +12524,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "630"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
     },
     "Fett": {
      "enhet": "g",
@@ -12543,6 +12743,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -12748,6 +12952,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -12953,6 +13161,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -13158,6 +13370,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -13363,6 +13579,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,7"
@@ -13566,6 +13786,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -13771,6 +13995,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -13978,9 +14206,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1344"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "320"
     },
     "Fett": {
      "enhet": "g",
@@ -14189,9 +14421,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1344"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "320"
     },
     "Fett": {
      "enhet": "g",
@@ -14400,9 +14636,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "1344"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "320"
     },
     "Fett": {
      "enhet": "g",
@@ -14612,6 +14852,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,8"
@@ -14823,6 +15067,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,8"
@@ -15034,6 +15282,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,8"
@@ -15245,6 +15497,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,8"
@@ -15456,6 +15712,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,8"
@@ -15665,6 +15925,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "158"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,2"
@@ -15863,6 +16127,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "158"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,2"
@@ -16061,6 +16329,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "158"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "6,2"
@@ -16259,6 +16531,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "160"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,6"
@@ -16459,6 +16735,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "5,7"
@@ -16657,6 +16937,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7,8"
@@ -16864,6 +17148,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7,8"
@@ -17071,6 +17359,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7,8"
@@ -17278,6 +17570,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7,8"
@@ -17485,6 +17781,10 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "7,8"
@@ -17688,6 +17988,10 @@
     "MCT"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "16,1"
@@ -17771,6 +18075,10 @@
     "MCT"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "16,1"
@@ -17853,6 +18161,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -18048,6 +18360,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -18243,6 +18559,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -18438,6 +18758,10 @@
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "150"
+    },
     "Fett": {
      "enhet": "g",
      "värde": "4,7"
@@ -18635,9 +18959,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "841"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -18831,9 +19159,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "842"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -19028,9 +19360,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "841"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -19224,9 +19560,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "841"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -19420,9 +19760,13 @@
     "ej för galaktosemi"
    ],
    "näringsdeklaration": {
-    "Energifördelning": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "841"
+    },
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
     },
     "Fett": {
      "enhet": "g",
@@ -24107,7 +24451,7 @@
     "vegetabilisk/växtbaserad"
    ],
    "näringsdeklaration": {
-    "av torkade plommon.": {
+    "Energi (kJ)": {
      "enhet": "kJ",
      "värde": "234"
     },

@@ -82,8 +82,18 @@ def table_rows(txt):
             if len(label) > 45 or label.lower().startswith(('per ', 'innehåll', 'smak ')) or re.search(r'\d+\s*x\s*\d|per 100', label):
                 continue
             label = re.sub(r'^varav\s+', 'varav ', label)
+            if mm.group('unit') == 'kJ' or label.lower().startswith(('energivärde', 'energifördelning')):
+                label = 'Energi' if mm.group('unit') != 'kJ' else 'Energi (kJ)'
             if label not in rows:
                 rows[label] = {'enhet': mm.group('unit').replace('μ', 'µ'), 'värde': mm.group('val').replace(' ', '')}
+    # "(kcal)  (200)" i Fresenius-bladen
+    if not any(r['enhet'] == 'kcal' for r in rows.values()):
+        m = re.search(r'\(kcal\)\s{2,}\((\d+(?:[,.]\d+)?)\)', txt)
+        if m:
+            items = list(rows.items())
+            idx = next((i for i, (k, _) in enumerate(items) if k == 'Energi (kJ)'), 0)
+            items.insert(idx + 1 if items and items[idx][0] == 'Energi (kJ)' else 0, ('Energi (kcal)', {'enhet': 'kcal', 'värde': m.group(1)}))
+            rows = dict(items)
     return rows
 
 

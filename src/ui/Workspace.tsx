@@ -94,6 +94,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   useEffect(() => {
     if (calc.dayDates?.length !== calc.days || calc.dayDates.some((x, i) => x !== dd.dates[i])) onPatchCalc({ dayDates: dd.dates, dayDatesManual: dd.manual })
   }, [dd]) // eslint-disable-line react-hooks/exhaustive-deps
+  const [sheetFor, setSheetFor] = useState<number | null>(null)
   const [dateError, setDateError] = useState<string | null>(null)
   function pickDate(date: string) {
     const r = setDayDate(dd, currentDay - 1, date)
@@ -170,6 +171,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
 
   return (
     <div className="ws">
+      {sheetFor !== null && <ProductSheet foodNumber={sheetFor} onClose={() => setSheetFor(null)} />}
       <section className="ws-meals panelbox" aria-label="Registrerade livsmedel per måltid">
         <div className="ws-daytabs" role="tablist" aria-label="Dag">
           {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => {
@@ -219,7 +221,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
                   const kcal = ((f?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100
                   return (
                     <tr key={e.id}>
-                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={f?.group ?? e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
+                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={f?.group ?? e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}
+                        {f?.source === 'nutrition' && <button type="button" className="ws-sheetlink" onClick={() => setSheetFor(f.number)}>Produktblad</button>}</td>
                       <td className="num">
                         <input aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
                           onBlur={ev => {
@@ -255,7 +258,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
 
       <section className="ws-right panelbox" aria-label="Livsmedelssök och klientuppgifter">
         <h3 className="ws-rtitle">Livsmedelssök</h3>
-        <FoodPicker db={db} meal={meal} onAdd={addEntry} />
+        <FoodPicker db={db} meal={meal} onAdd={addEntry} onShowSheet={setSheetFor} />
       </section>
 
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
@@ -319,7 +322,7 @@ function CopyMealPanel({ days, mealsFor, entries, fromDay: d0, fromMeal: m0, onC
 
 /* ---------- Höger: livsmedelssök ---------- */
 
-function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: (f: Food, grams: number) => void }) {
+function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: Meal; onAdd: (f: Food, grams: number) => void; onShowSheet: (n: number) => void }) {
   const available = useMemo(() => db.sources.map(s => s.id), [db])
   const [sources, setSources] = useState<SourceId[]>(() => loadSources(available))
   const [query, setQuery] = useState('')
@@ -328,7 +331,6 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
   const gramsRef = useRef<HTMLInputElement>(null)
   const multi = available.length > 1
   const [sourcesOpen, setSourcesOpen] = useState(false)
-  const [sheetFor, setSheetFor] = useState<number | null>(null)
 
   // Som i Dietist Net: utan sökord visas listan i bokstavsordning.
   const hits = useMemo(() => {
@@ -358,7 +360,6 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
     <div className="ws-picker">
       <input className="ws-search" type="search" placeholder="Sök livsmedel …" value={query}
         onChange={e => { setQuery(e.target.value); setPicked(null) }} aria-label="Sök livsmedel" />
-      {sheetFor !== null && <ProductSheet foodNumber={sheetFor} onClose={() => setSheetFor(null)} />}
       <ul className="ws-hits" role="listbox" aria-label="Sökträffar">
         {hits.map(f => (
           <li key={`${f.source}:${f.number}`} role="option" aria-selected={picked === f}>
@@ -367,15 +368,15 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
               <span>{multi && <SourceTag source={f.group} />}{f.name}</span>
               <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 {f.unit}</small>
             </button>
-            {f.source === 'nutrition' && (
-              <button type="button" className="ws-info" title="Produktfaktablad" aria-label={`Produktfaktablad för ${f.name}`} onClick={() => setSheetFor(f.number)}>i</button>
-            )}
+            {f.source === 'nutrition' && <button type="button" className="ws-sheetlink ws-hitsheet" tabIndex={-1} onClick={() => onShowSheet(f.number)}>Produktblad</button>}
           </li>
         ))}
         {query.trim().length > 1 && hits.length === 0 && <li className="empty">Inga träffar.</li>}
       </ul>
       <div className="ws-addrow">
-        <span className="pickedname">{picked ? picked.name : 'Välj ett livsmedel i listan'}</span>
+        <span className="pickedname">{picked ? picked.name : 'Välj ett livsmedel i listan'}
+          {picked?.source === 'nutrition' && <button type="button" className="ws-sheetlink" onClick={() => onShowSheet(picked.number)}>Visa produktblad</button>}
+        </span>
         <label className="inline">{picked?.unit === 'ml' ? 'Ml' : 'Gram'}{' '}
           <input ref={gramsRef} inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') add() }} aria-label="Mängd" />
