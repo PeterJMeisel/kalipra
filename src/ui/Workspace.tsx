@@ -588,7 +588,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
               </div>
               <span className="ws-cholegend">
-                <span><i className={`sw sugar ${isMeal ? 'neutral' : st}`} />Sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g)</span>
+                <span><i className={`sw sugar ${isMeal ? 'neutral' : st}`} />Sockerarter {formatNumber(sugarE, 0)} E%</span>
                 <span><i className={`sw rest ${isMeal ? 'neutral' : st}`} />Övriga {formatNumber(Math.max(0, ed.carbohydrate - sugarE), 0)} E%</span>
               </span>
               {!isMeal && <span className="sub">Rekommendation {formatNumber(lo, 0)}–{formatNumber(hi, 0)} E%</span>}
