@@ -9,4 +9,4 @@ Värden anges per 100 ml eller 100 g (`products[i].basis`). Varje produkt kontro
 energi = 4·protein + 9·fett + 4·kolhydrat + 2·fiber (±5 %).
 
 Nutricias produktblad kräver inloggning för vårdpersonal och ingår inte ännu.
-Databasen är inte kopplad till appen än (väntar på beslut om ml/gram).
+Fritt socker (SUGFR) = sockerarter minus laktos ("varav laktos" i bladet; laktosfria produkter = 0).

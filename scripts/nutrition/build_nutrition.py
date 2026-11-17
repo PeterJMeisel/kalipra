@@ -12,7 +12,7 @@ from parse_nes import parse_text
 
 KEYS = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'SUGAR', 'FASAT', 'FAMS', 'FAPU',
         'ALC', 'NACL', 'NA', 'VITA', 'VITD', 'VITE', 'VITC', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6',
-        'FOL', 'VITB12', 'CA', 'FE', 'ZN', 'SE', 'P', 'MG', 'K', 'ID']
+        'FOL', 'VITB12', 'CA', 'FE', 'ZN', 'SE', 'P', 'MG', 'K', 'ID', 'SUGFR']
 
 # Nestlés kombinerade blad: andra värdet (efter /) gäller fibervarianten
 COMBINED = {
@@ -52,7 +52,7 @@ def fk_products():
                 seen.add(name.lower())
                 out.append(dict(manufacturer='Fresenius Kabi', product=title, flavour=b.get('flavour'),
                                 name=name, basis=b['basis'] or 'ml', category=cat, url=m['url'],
-                                values=b['values']))
+                                values=b['values'], _txt=open(path, encoding='utf-8', errors='replace').read()))
     return out
 
 
@@ -68,12 +68,31 @@ def nes_products():
         for i, nm in enumerate(names):
             out.append(dict(manufacturer='Nestlé Health Science', product=nm, flavour=None, name=nm,
                             basis=basis, category=None, url=m['url'], values=res[i],
-                            prepared=prepared or None))
+                            prepared=prepared or None, _txt=txt))
     return out
+
+
+def free_sugar(p, txt):
+    """Fritt socker = sockerarter minus laktos (laktos från mjölkråvara räknas inte som fritt socker enligt NNR).
+    Laktos tas från näringsdeklarationen ("varav laktos"); saknas raden men bladet säger laktosfri räknas laktos = 0.
+    Övriga sockerarter i nutritionsprodukter är tillsatta (sackaros, glukossirap m.m.) och räknas som fritt socker."""
+    v = p['values']
+    sugar = v.get('SUGAR')
+    if sugar is None:
+        return None
+    lact = v.get('LACT')
+    if lact is None:
+        if re.search(r'laktosfri|laktos- och glutenfri|fri från laktos', txt, re.I) and not re.search(r'med laktos', txt, re.I):
+            lact = 0.0
+        else:
+            return None
+    return round(max(0.0, sugar - lact), 2)
 
 
 def main(dst):
     prods = fk_products() + nes_products()
+    for p in prods:
+        p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
     bad = [p['name'] for p in prods if not check(p['values'])]
     if bad:
         print('Kontrollera:', bad)
@@ -82,6 +101,7 @@ def main(dst):
         v = p['values']
         foods.append([i, p['name'], 1, [v.get(k) for k in KEYS]])
         meta.append({k: p[k] for k in ('manufacturer', 'product', 'flavour', 'basis', 'category', 'url')}
+                    | ({'lactose': v['LACT']} if v.get('LACT') is not None else {})
                     | ({'prepared': [p['prepared'].get(k) for k in KEYS]} if p.get('prepared') else {}))
     data = {
         'id': 'nutrition',
@@ -91,7 +111,8 @@ def main(dst):
         'keys': KEYS,
         'units': {'ENERC|kcal': 'kcal', 'ENERC|kJ': 'kJ', 'VITA': 'RE/µg', 'NIAEQ': 'NE/mg'},
         'note': 'Värden per 100 ml eller 100 g enligt products[i].basis. Pulver: per 100 g pulver; '
-                'products[i].prepared = per 100 ml tillredd när bladet anger det.',
+                'products[i].prepared = per 100 ml tillredd när bladet anger det. '
+                'SUGFR (fritt socker) = sockerarter minus laktos enligt produktbladet; products[i].lactose = laktos (g).',
         'foods': foods,
         'products': meta,
     }

@@ -1,0 +1,107 @@
+{
+ "diben": {
+  "title": "Diben®",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/diben/Diben%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "diben"
+ },
+ "diben-1-5-kcal-hp": {
+  "title": "Diben® 1,5 KCAL HP",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/diben-1-5-kcal-hp/Diben%201.5%20KCAL%20HP%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "diben-1-5-kcal-hp"
+ },
+ "frebini-energy": {
+  "title": "Frebini® ENERGY",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/frebini-energy/Frebini%20ENERGY%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "frebini-energy"
+ },
+ "frebini-energy-fibre": {
+  "title": "Frebini® ENERGY FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/frebini-energy-fibre/Frebini%20ENERGY%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "frebini-energy-fibre"
+ },
+ "frebini-original": {
+  "title": "Frebini® ORIGINAL",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/frebini-original/Frebini%20ORIGINAL%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "frebini-original"
+ },
+ "frebini-original-fibre": {
+  "title": "Frebini® ORIGINAL FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/frebini-original-fibre/Frebini%20ORIGINAL%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "frebini-original-fibre"
+ },
+ "fresubin-1000-complete": {
+  "title": "Fresubin® 1000 COMPLETE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-1000-complete/Fresubin%201000%20COMPLETE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-1000-complete"
+ },
+ "fresubin-1200-complete": {
+  "title": "Fresubin® 1200 COMPLETE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-1200-complete/Fresubin%201200%20COMPLETE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-1200-complete"
+ },
+ "fresubin-2-kcal-hp": {
+  "title": "Fresubin® 2 KCAL HP",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-2-kcal-hp/Fresubin%202%20KCAL%20HP%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-2-kcal-hp"
+ },
+ "fresubin-2-kcal-hp-fibre": {
+  "title": "Fresubin® 2 KCAL HP FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-2-kcal-hp-fibre/Fresubin%202%20KCAL%20HP%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-2-kcal-hp-fibre"
+ },
+ "fresubin-energy": {
+  "title": "Fresubin® ENERGY",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-energy/Fresubin%20ENERGY%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-energy"
+ },
+ "fresubin-energy-fibre": {
+  "title": "Fresubin® ENERGY FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-energy-fibre/Fresubin%20ENERGY%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-energy-fibre"
+ },
+ "fresubin-hp-energy": {
+  "title": "Fresubin® HP ENERGY",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-hp-energy/Fresubin%20HP%20ENERGY%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-hp-energy"
+ },
+ "fresubin-hp-energy-fibre": {
+  "title": "Fresubin® HP ENERGY FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-hp-energy-fibre/Fresubin%20HP%20ENERGY%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-hp-energy-fibre"
+ },
+ "fresubin-intensive": {
+  "title": "Fresubin® INTENSIVE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-intensive/Fresubin%20INTENSIVE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-intensive"
+ },
+ "fresubin-original": {
+  "title": "Fresubin® ORIGINAL",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-original/Fresubin%20ORIGINAL%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-original"
+ },
+ "fresubin-original-fibre": {
+  "title": "Fresubin® ORIGINAL FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-original-fibre/Fresubin%20ORIGINAL%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-original-fibre"
+ },
+ "fresubin-plant-based": {
+  "title": "Fresubin® PLANT-BASED",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-plant-based/Fresubin%20PLANT-BASED%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-plant-based"
+ },
+ "fresubin-soya-fibre": {
+  "title": "Fresubin® SOYA FIBRE",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-soya-fibre/Fresubin%20SOYA%20FIBRE%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-soya-fibre"
+ },
+ "survimed-opd": {
+  "title": "Survimed® OPD",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/survimed-opd/Survimed%20OPD%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "survimed-opd"
+ },
+ "survimed-opd-hn": {
+  "title": "Survimed® OPD HN",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/survimed-opd-hn/Survimed%20OPD%20HN%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "survimed-opd-hn"
+ }
+}
