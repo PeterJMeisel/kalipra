@@ -431,28 +431,6 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
     <div className="ws-rdi">
       {scoped.note && <p className="muted ws-intakenote">{scoped.note}</p>}
       <div className="ws-kcalrow">
-        <div className="ws-kcalbox">
-          <span className="lbl">Energi, {scoped.label}</span>
-          {isMeal ? (() => {
-            const pd = need.teeKcal > 0 ? (kcal / need.teeKcal) * 100 : 0
-            return (
-              <>
-                <span className="val">{formatNumber(kcal, 0)} <small>kcal</small></span>
-                <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min(pd, 100)}%` }} /></div>
-                <span className="sub"><strong>{formatNumber(pd, 0)} %</strong> av dagligt energibehov ({formatNumber(need.teeKcal, 0)} kcal)</span>
-              </>
-            )
-          })() : (
-            <>
-              <span className="val">{formatNumber(kcal, 0)} <small>av {formatNumber(scoped.needKcal, 0)} kcal</small></span>
-              <div className="meter" aria-hidden="true">
-                <div className="fill" style={{ width: `${Math.min(pct, 150) / 1.5}%` }} />
-                <div className="mark" style={{ left: `${100 / 1.5}%` }} />
-              </div>
-              <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av dagligt energibehov</span>
-            </>
-          )}
-        </div>
         {scoped.dayKcal !== undefined ? (() => {
           // Fliken Måltid: hur stor del av dagens energibehov måltiden motsvarar
           const dk = need.teeKcal
@@ -477,6 +455,28 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
             {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
         </div>
         )}
+        <div className="ws-kcalbox">
+          <span className="lbl">Energi, {scoped.label}</span>
+          {isMeal ? (() => {
+            const pd = need.teeKcal > 0 ? (kcal / need.teeKcal) * 100 : 0
+            return (
+              <>
+                <span className="val">{formatNumber(kcal, 0)} <small>kcal</small></span>
+                <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min(pd, 100)}%` }} /></div>
+                <span className="sub"><strong>{formatNumber(pd, 0)} %</strong> av dagligt energibehov ({formatNumber(need.teeKcal, 0)} kcal)</span>
+              </>
+            )
+          })() : (
+            <>
+              <span className="val">{formatNumber(kcal, 0)} <small>av {formatNumber(scoped.needKcal, 0)} kcal</small></span>
+              <div className="meter" aria-hidden="true">
+                <div className="fill" style={{ width: `${Math.min(pct, 150) / 1.5}%` }} />
+                <div className="mark" style={{ left: `${100 / 1.5}%` }} />
+              </div>
+              <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av dagligt energibehov</span>
+            </>
+          )}
+        </div>
         <div className="ws-kcalbox">
           <span className="lbl">Protein</span>
           {!isMeal ? (
