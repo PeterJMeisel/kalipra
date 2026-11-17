@@ -114,7 +114,7 @@ def parse_file(path):
                     flav = m.group(1).strip()
                     break
         basis, vals = parse_block(lines)
-        blocks.append({'flavour': flav, 'basis': basis, 'values': vals})
+        blocks.append({'flavour': flav, 'basis': basis, 'values': vals, 'text': p})
     return blocks
 
 

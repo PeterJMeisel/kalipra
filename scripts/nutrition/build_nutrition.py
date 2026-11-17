@@ -9,10 +9,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from parse_fk import parse_file
 from parse_nes import parse_text
+from details import details_for
 
 KEYS = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'SUGAR', 'FASAT', 'FAMS', 'FAPU',
         'ALC', 'NACL', 'NA', 'VITA', 'VITD', 'VITE', 'VITC', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6',
-        'FOL', 'VITB12', 'CA', 'FE', 'ZN', 'SE', 'P', 'MG', 'K', 'ID', 'SUGFR']
+        'FOL', 'VITB12', 'CA', 'FE', 'ZN', 'SE', 'P', 'MG', 'K', 'ID', 'SUGFR', 'WATER']
 
 # Nestlés kombinerade blad: andra värdet (efter /) gäller fibervarianten
 COMBINED = {
@@ -52,7 +53,8 @@ def fk_products():
                 seen.add(name.lower())
                 out.append(dict(manufacturer='Fresenius Kabi', product=title, flavour=b.get('flavour'),
                                 name=name, basis=b['basis'] or 'ml', category=cat, url=m['url'],
-                                values=b['values'], _txt=open(path, encoding='utf-8', errors='replace').read()))
+                                values=b['values'], _txt=open(path, encoding='utf-8', errors='replace').read(),
+                                _block=b.get('text', '')))
     return out
 
 
@@ -93,6 +95,10 @@ def main(dst):
     prods = fk_products() + nes_products()
     for p in prods:
         p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
+        p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''))
+        w = p['details'].get('vatten_per_100')
+        if w is not None and p['basis'] == 'ml':
+            p['values']['WATER'] = w
     bad = [p['name'] for p in prods if not check(p['values'])]
     if bad:
         print('Kontrollera:', bad)
@@ -102,6 +108,7 @@ def main(dst):
         foods.append([i, p['name'], 1, [v.get(k) for k in KEYS]])
         meta.append({k: p[k] for k in ('manufacturer', 'product', 'flavour', 'basis', 'category', 'url')}
                     | ({'lactose': v['LACT']} if v.get('LACT') is not None else {})
+
                     | ({'prepared': [p['prepared'].get(k) for k in KEYS]} if p.get('prepared') else {}))
     data = {
         'id': 'nutrition',
@@ -112,11 +119,19 @@ def main(dst):
         'units': {'ENERC|kcal': 'kcal', 'ENERC|kJ': 'kJ', 'VITA': 'RE/µg', 'NIAEQ': 'NE/mg'},
         'note': 'Värden per 100 ml eller 100 g enligt products[i].basis. Pulver: per 100 g pulver; '
                 'products[i].prepared = per 100 ml tillredd när bladet anger det. '
-                'SUGFR (fritt socker) = sockerarter minus laktos enligt produktbladet; products[i].lactose = laktos (g).',
+                'SUGFR (fritt socker) = sockerarter minus laktos enligt produktbladet; products[i].lactose = laktos (g). '
+                'WATER = vattenmängd enligt bladet. Övrig information ur bladen: nutrition-details.json.',
         'foods': foods,
         'products': meta,
     }
     json.dump(data, open(dst, 'w'), ensure_ascii=False, separators=(',', ':'))
+    # Övrig information ur bladen i en egen fil (laddas inte in i appen ännu)
+    det = {'note': 'Övrig information ur tillverkarnas produktblad, samma ordning/id som foods i nutrition.json. '
+                   'Fullständig text finns i scripts/nutrition/{fk,fks,nes}/*.txt.',
+           'fetched': date.today().isoformat(),
+           'products': [{'id': i, 'name': p['name'], 'manufacturer': p['manufacturer'], 'url': p['url'], **p.get('details', {})}
+                        for i, p in enumerate(prods, start=1)]}
+    json.dump(det, open(os.path.join(os.path.dirname(dst), 'nutrition-details.json'), 'w'), ensure_ascii=False, indent=1)
     by = {}
     for p in prods:
         by[p['manufacturer']] = by.get(p['manufacturer'], 0) + 1
