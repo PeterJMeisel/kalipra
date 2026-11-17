@@ -500,7 +500,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           <span className="lbl">Protein</span>
           {!isMeal ? (
             <>
-              <span className="val">{formatNumber(proteinPerKg, 2)} <small>{isMeal ? 'g/kg' : 'g/kg och dag'}</small></span>
+              <span className="val">{formatNumber(proteinPerKg, 2)} <small>g/kg</small></span>
               <div className="meter" aria-hidden="true">
                 <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
@@ -528,12 +528,12 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Vätska</span>
-              <span className="val">{formatNumber(ml, 0)} <small>ml · {formatNumber(mlkg, 0)} ml/kg</small></span>
+              <span className="val">{formatNumber(mlkg, 0)} <small>ml/kg · {formatNumber(ml, 0)} ml</small></span>
               <div className="meter" aria-hidden="true">
                 <div className={`fill ${okF ? '' : 'low'}`} style={{ width: `${Math.min((ml / fl.ml) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Vatten i mat och dryck · {fl.text}</span>
+              <span className="sub">{fl.text.charAt(0).toUpperCase() + fl.text.slice(1)}</span>
             </div>
           )
         })()}

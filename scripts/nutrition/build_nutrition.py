@@ -177,6 +177,7 @@ def main(dst):
                 **({'not': 'Nivån beror på temperaturen (kylskåpskall/rumstempererad).'} if own[0] != own[1] else {}),
                 'tabell': [{'produkt': f, 'kylskåpskall': v[0], 'rumstempererad': v[1]} for f, v in uk.items()],
                 'källa': IDDSI_UK['källa'], 'källa_url': IDDSI_UK['url'], 'källa_not': IDDSI_UK['not'],
+                'källa_utgivare': IDDSI_UK['utgivare'], 'källa_hämtad': IDDSI_UK['hämtad'],
             }
         eg = p['details'].setdefault('egenskaper', [])
         # Diabetesanpassade produkter (enligt tillverkarens produktnamn/indikation)

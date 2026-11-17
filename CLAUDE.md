@@ -21,3 +21,8 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 ## Skillnader artefakt/webb
 
 - Lösenordsspärren (beta) finns bara på webbplatsen (`src/main.tsx`).
+
+## Källdokument
+- Alla dokument som programmet länkar till (produktblad, IDDSI-dokument m.m.) ska ha en lokal kopia på Peters dator: `C:\Users\p-mei\Downloads\Kalipra-källdokument\<Tillverkare>\`, med `index.csv` (lokal fil; webbadress; hämtad).
+- I programmet går länken till webbadressen. Kopplingen fil → adress finns även i `scripts/nutrition/källdokument.json`.
+- När ett nytt dokument börjar användas: lägg det i mappen, uppdatera index.csv och källdokument.json.

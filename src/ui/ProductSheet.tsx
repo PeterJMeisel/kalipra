@@ -17,7 +17,7 @@ type Detail = {
   osmolaritet?: number
   osmolalitet?: number
   egenskaper?: string[]
-  iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number | string; rumstempererad: number | string }[]; källa?: string; källa_url?: string; källa_not?: string }
+  iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number | string; rumstempererad: number | string }[]; källa?: string; källa_url?: string; källa_not?: string; källa_utgivare?: string; källa_hämtad?: string }
   'näringsdeklaration'?: Record<string, { enhet: string; värde: string }>
   fettkälla?: string
   proteinkälla?: string
@@ -130,9 +130,7 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
                       <tbody>{me.iddsi.tabell.map(r => <tr key={r.produkt} className={r.produkt === me.flavour ? 'me' : ''}><th scope="row">{r.produkt}</th><td>{r.kylskåpskall}</td><td>{r.rumstempererad}</td></tr>)}</tbody>
                     </table>
                   )}
-                  {me.iddsi.källa && (
-                    <p className="ps-iddsi-note">Källa: <a href={me.iddsi.källa_url} target="_blank" rel="noopener noreferrer">{me.iddsi.källa}</a>. {me.iddsi.källa_not}</p>
-                  )}
+                  {me.iddsi.källa && <p className="ps-iddsi-note">Källa: se längst ner.</p>}
                 </div>
               </div>
             )}
@@ -193,6 +191,12 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
               <a href={me.url} target="_blank" rel="noopener noreferrer">Tillverkarens produktblad (PDF)</a>
               <span className="muted"> · Uppgifterna är hämtade ur produktbladet {data?.fetched}. Kontrollera mot originalet vid behov.</span>
             </p>
+            {me.iddsi?.källa && (
+              <p className="ps-foot">
+                IDDSI: <a href={me.iddsi.källa_url} target="_blank" rel="noopener noreferrer">{me.iddsi.källa}</a>
+                <span className="muted"> · {me.iddsi.källa_utgivare}. Hämtat {me.iddsi.källa_hämtad}. {me.iddsi.källa_not}</span>
+              </p>
+            )}
           </>
         )}
       </div>
