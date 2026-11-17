@@ -657,10 +657,7 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ef-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap }
 .ef-wrap .ws-macro { flex: 1 1 420px }
 .ef-pie { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 0 0 auto }
-.ef-pie path { stroke: var(--panel); stroke-width: 2 }
 .ef0 { fill: var(--day0); stroke: var(--day0) } .ef1 { fill: var(--day1) } .ef2 { fill: var(--day2) } .ef3 { fill: var(--day3) }
-.ef-pie path.ef0 { stroke: var(--panel) }
-.ef-pie circle.efs.ef0 { fill: none; stroke: var(--day0) } .ef-pie circle.efs.ef1 { fill: none; stroke: var(--day1) } .ef-pie circle.efs.ef2 { fill: none; stroke: var(--day2) } .ef-pie circle.efs.ef3 { fill: none; stroke: var(--day3) }
 .ef-legend { list-style: none; margin: 0; padding: 0; font-size: 13px; display: grid; gap: 4px; min-width: 150px }
 .ef-legend li { display: flex; align-items: center; gap: 8px }
 .ef-legend li strong { margin-left: auto; font-weight: 600 }
@@ -680,7 +677,10 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 /* Ta bort dag och Ta bort måltid lika stora */
 .ws-daytabs .ws-remove, .ws-mealtabs .ws-remove { font-size: 13px; min-height: 32px }
 .ws-chorow { display: flex; align-items: center; justify-content: space-between; gap: 10px }
-.ws-chodonut .cd-bg { stroke: var(--tint) }
-.ws-chodonut .cd-cho { stroke: var(--brand) }
-.ws-chodonut .cd-cho.low { stroke: var(--amber) } .ws-chodonut .cd-cho.high { stroke: var(--red) } .ws-chodonut .cd-cho.neutral { stroke: var(--muted) }
-.ws-chodonut .cd-sugar { stroke: #000; stroke-opacity: .4 }
+/* Cirkeldiagram (pie) */
+.pie .pie-bg { fill: var(--tint) }
+.pie path, .pie circle:not(.pie-bg) { stroke: var(--panel); stroke-width: 2; stroke-linejoin: round }
+.pie .ef0 { fill: var(--day0) } .pie .ef1 { fill: var(--day1) } .pie .ef2 { fill: var(--day2) } .pie .ef3 { fill: var(--day3) }
+.pie .pie-cho { fill: var(--brand) } .pie .pie-cho.low { fill: var(--amber) } .pie .pie-cho.high { fill: var(--red) } .pie .pie-cho.neutral { fill: var(--muted) }
+.pie .pie-sugar { fill: color-mix(in srgb, var(--brand) 55%, #000) } .pie .pie-sugar.low { fill: color-mix(in srgb, var(--amber) 55%, #000) }
+.pie .pie-sugar.high { fill: color-mix(in srgb, var(--red) 55%, #000) } .pie .pie-sugar.neutral { fill: color-mix(in srgb, var(--muted) 55%, #000) }

@@ -393,15 +393,22 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
 type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number }
 
-/** Liten ring: hela ringen = intagets energi; färgad del = kolhydrater (E%), randig del = sockerarter. */
-function ChoDonut({ total, sugar, st }: { total: number; sugar: number; st: string }) {
-  const R = 26, w = 10, C = 2 * Math.PI * R
-  const seg = (pct: number) => `${(pct / 100) * C} ${C}`
+/** Cirkeldiagram (pie): fyllda tårtbitar från klockan 12, medurs. Resten av cirkeln visas som bakgrund. */
+function Pie({ size, slices, label }: { size: number; slices: { pct: number; cls: string; title?: string }[]; label: string }) {
+  const r = size / 2 - 1, c = size / 2
+  let a0 = -Math.PI / 2
+  const pt = (ang: number) => `${c + r * Math.cos(ang)},${c + r * Math.sin(ang)}`
   return (
-    <svg className="ws-chodonut" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
-      <circle cx="32" cy="32" r={R} fill="none" className="cd-bg" strokeWidth={w} />
-      <circle cx="32" cy="32" r={R} fill="none" className={`cd-cho ${st}`} strokeWidth={w} strokeDasharray={seg(total)} transform="rotate(-90 32 32)" />
-      <circle cx="32" cy="32" r={R} fill="none" className="cd-sugar" strokeWidth={w} strokeDasharray={seg(sugar)} transform="rotate(-90 32 32)" />
+    <svg className="pie" viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img" aria-label={label}>
+      <circle cx={c} cy={c} r={r} className="pie-bg" />
+      {slices.filter(sl => sl.pct > 0.05).map((sl, i) => {
+        const pct = Math.min(sl.pct, 100)
+        if (pct >= 99.95) return <circle key={i} cx={c} cy={c} r={r} className={sl.cls}>{sl.title && <title>{sl.title}</title>}</circle>
+        const a1 = a0, a2 = a0 + (pct / 100) * Math.PI * 2
+        a0 = a2
+        const large = a2 - a1 > Math.PI ? 1 : 0
+        return <path key={i} d={`M${c},${c} L${pt(a1)} A${r},${r} 0 ${large} 1 ${pt(a2)} Z`} className={sl.cls}>{sl.title && <title>{sl.title}</title>}</path>
+      })}
     </svg>
   )
 }
@@ -595,7 +602,10 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
               <span className="lbl">Kolhydrater</span>
               <div className="ws-chorow">
               <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
-              <ChoDonut total={Math.min(ed.carbohydrate, 100)} sugar={Math.min(sugarE, ed.carbohydrate, 100)} st={isMeal ? 'neutral' : st} />
+              <Pie size={72} label={`Kolhydrater ${formatNumber(ed.carbohydrate, 0)} E%, varav sockerarter ${formatNumber(sugarE, 0)} E%`} slices={[
+                { pct: Math.min(sugarE, ed.carbohydrate), cls: `pie-sugar ${isMeal ? 'neutral' : st}`, title: `Sockerarter ${formatNumber(sugarE, 0)} E%` },
+                { pct: Math.max(0, ed.carbohydrate - sugarE), cls: `pie-cho ${isMeal ? 'neutral' : st}`, title: `Övriga kolhydrater ${formatNumber(ed.carbohydrate - sugarE, 0)} E%` },
+              ]} />
               </div>
               <span className="sub">varav sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g){isMeal ? '' : ` · rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
             </div>
@@ -928,26 +938,10 @@ const rangeText = (r: Range): string => {
 
 /** Cirkeldiagram (ring) över energifördelningen mellan makronutrienterna. Fast färgordning. */
 function EnergyPie({ parts }: { parts: { label: string; pct: number }[] }) {
-  const shown = parts.filter(p => p.pct > 0.05)
-  const total = shown.reduce((a, p) => a + p.pct, 0)
-  const R = 70, r = 44, C = 80
-  let a0 = -Math.PI / 2
-  const arc = (a1: number, a2: number) => {
-    const large = a2 - a1 > Math.PI ? 1 : 0
-    const p = (rad: number, ang: number) => `${C + rad * Math.cos(ang)},${C + rad * Math.sin(ang)}`
-    return `M${p(R, a1)} A${R},${R} 0 ${large} 1 ${p(R, a2)} L${p(r, a2)} A${r},${r} 0 ${large} 0 ${p(r, a1)} Z`
-  }
+  const total = parts.reduce((x, p) => x + p.pct, 0)
   return (
     <div className="ef-pie">
-      <svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Energifördelning i E%">
-        {total <= 0 ? <circle cx={C} cy={C} r={(R + r) / 2} fill="none" stroke="var(--line)" strokeWidth={R - r} /> :
-          shown.length === 1 ? <circle cx={C} cy={C} r={(R + r) / 2} fill="none" className={`efs ef${parts.indexOf(shown[0])}`} strokeWidth={R - r} /> :
-          shown.map(p => {
-            const a1 = a0, a2 = a0 + (p.pct / total) * Math.PI * 2
-            a0 = a2
-            return <path key={p.label} d={arc(a1, a2)} className={`ef${parts.indexOf(p)}`}><title>{`${p.label}: ${formatNumber(p.pct, 1)} E%`}</title></path>
-          })}
-      </svg>
+      <Pie size={160} label="Energifördelning i E%" slices={parts.map((p, i) => ({ pct: total > 0 ? (p.pct / total) * 100 : 0, cls: `ef${i}`, title: `${p.label}: ${formatNumber(p.pct, 1)} E%` }))} />
       <ul className="ef-legend">
         {parts.map((p, i) => (p.pct > 0.05 || i < 3) && (
           <li key={p.label}><i className={`ef${i}`} />{p.label}<strong>{formatNumber(p.pct, 0)} E%</strong></li>
