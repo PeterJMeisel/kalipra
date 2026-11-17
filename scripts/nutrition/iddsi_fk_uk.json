@@ -1,0 +1,24 @@
+{
+  "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+  "not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig.",
+  "produkter": {
+    "Survimed OPD 1.5 KCAL Drink": {"Cappuccino": ["0", "0"]},
+    "Fresubin JUCY Drink": {"Apelsin": ["0", "0"], "Äpple": ["0", "0"]},
+    "Fresubin ORIGINAL Drink": {"Vanilj": ["0", "0"]},
+    "Frebini ENERGY Drink": {"Banan": ["0", "0"], "Jordgubb": ["0", "0"]},
+    "Frebini ENERGY FIBRE Drink": {"Choklad": ["0", "0"], "Vanilj": ["0", "0"]},
+    "Calshake": {"Choklad": ["0", "0"], "Banan": ["0", "0"], "Jordgubb": ["0", "0"], "Vanilj": ["0", "0"], "Neutral": ["0–1*", "0"]},
+    "Fresubin ENERGY Drink": {"Vanilj": ["1", "0"], "Jordgubb": ["1", "0"], "Svarta vinbär": ["1", "0"], "Tropisk frukt": ["1", "0"], "Cappuccino": ["1", "0"]},
+    "Fresubin ENERGY FIBRE Drink": {"Jordgubb": ["1", "0"], "Choklad": ["1", "0–1*"]},
+    "Fresubin PLANT-BASED Drink": {"Vanilj": ["2", "1"]},
+    "Fresubin YODRINK": {"Citron": ["2", "1"], "Hallon": ["2", "1"]},
+    "Fresubin 5 KCAL Shot": {"Citron": ["2", "2"], "Neutral": ["2", "2"]},
+    "Fresubin 2 KCAL Drink": {"Toffee": ["2", "1"], "Vanilj": ["2", "1"], "Neutral": ["2", "1"], "Skogsbär": ["2", "1"]},
+    "Fresubin 2 KCAL FIBRE Drink": {"Citron": ["2", "1"], "Choklad": ["2", "1"], "Cappuccino": ["2", "1"], "Aprikos-Persika": ["2", "1"]},
+    "Fresubin PROTEIN ENERGY Drink": {"Vanilj": ["2", "1"], "Smultron": ["2", "1"], "Choklad": ["2", "1"], "Cappuccino": ["2", "1"], "Tropiska frukter": ["1", "0"]},
+    "Fresubin 3.2 KCAL Drink": {"Hasselnöt": ["3", "3"], "Mango": ["3", "3"], "Vanilj-Kola": ["3", "3"]},
+    "Fresubin 2 KCAL CRÈME": {"Choklad": ["4", "4"], "Smultron": ["4", "4"], "Cappuccino": ["4", "4"], "Vanilj": ["4", "4"], "Nougat": ["4", "4"]},
+    "Fresubin YOCRÈME": {"Aprikos-Persika": ["4", "4"], "Hallon": ["4", "4"], "Digestivekex": ["4", "4"], "Citron": ["4", "4"]}
+  }
+}

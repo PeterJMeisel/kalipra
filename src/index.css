@@ -469,11 +469,12 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .ws-picker { display: flex; flex-direction: column; gap: 8px; min-height: 0; flex: 1 }
 .ws-search { width: 100%; font-size: 15px; padding: 9px 11px; box-sizing: border-box }
 .ws-sources { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px }
-.ws-hits { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; min-height: 160px; border: 1px solid var(--line); border-radius: 8px }
+.ws-hits { list-style: none; margin: 0; padding: 0; overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 160px; border: 1px solid var(--line); border-radius: 8px }
 .ws-hits li:nth-child(even) button { background: color-mix(in srgb, var(--tint) 45%, transparent) }
 .ws-hits button { width: 100%; display: flex; justify-content: space-between; gap: 8px; text-align: left; border: 0; border-radius: 0; min-height: 30px; padding: 4px 10px; font-size: 14px; background: transparent }
 .ws-hits button.on { background: var(--brand) !important; color: var(--brand-ink) }
-.ws-hits small { color: inherit; opacity: .7; white-space: nowrap }
+.ws-hits small { color: inherit; opacity: .7; white-space: nowrap; flex-shrink: 0 }
+.ws-hits button > span { min-width: 0; overflow-wrap: anywhere }
 .ws-hits .empty { padding: 10px }
 .ws-addrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
 .ws-addrow .pickedname { flex: 1 1 100%; font-size: 14px; font-weight: 600 }
@@ -707,6 +708,7 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ps-iddsi-table { border-collapse: collapse; margin-top: 6px; font-size: 13px }
 .ps-iddsi-table th, .ps-iddsi-table td { padding: 2px 10px 2px 0; text-align: left }
 .ps-iddsi-table td { text-align: center }
+.ps-iddsi-table tr.me th, .ps-iddsi-table tr.me td { color: var(--brand); font-weight: 700 }
 .ps-rdi { margin-left: 10px; color: var(--muted); font-size: 12px; white-space: nowrap }
 .ps-h { font-size: 15px; margin: 18px 0 6px }
 .ps-note { margin: 0 0 6px; font-size: 13px }

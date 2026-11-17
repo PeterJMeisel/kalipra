@@ -4748,6 +4748,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "JUCY Drink, smak Apelsin: Vatten, glukossirap, vassleprotein (från mjölk), socker, maltodextrin, arom, kalciumklorid, vitamin C, kaliumklorid, järncitrat, zinksulfat, natriumklorid, vitamin E, magnesiumklorid, pantotensyra, niacin, manganklorid, skumdämpningsmedel (E 471), kopparsulfat, vitamin B6, riboflavin, natriumfluorid, vitamin A, tiamin, ß-karoten, folsyra, kromklorid, kaliumjodid, natriummolybdat, vitamin K, natriumselenit, biotin, vitamin D, vitamin B12.",
     "smaker": "Apelsin: finns i förpackning om 4x200 ml EasyBottle, varunummer 851957, artikelnummer 8770601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Apelsin",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Äpple",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -4949,6 +4968,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "JUCY Drink, smak Äpple: Vatten, glukossirap, vassleprotein (från mjölk), socker, maltodextrin, kalciumklorid, arom, vitamin C, kaliumklorid, järncitrat, zinksulfat, natriumklorid, vitamin E, magnesiumklorid, pantotensyra, niacin, manganklorid, skumdämpningsmedel (E 471), kopparsulfat, vitamin B6, riboflavin, natriumfluorid, vitamin A, tiamin, folsyra, kromklorid, kaliumjodid, natriummolybdat, vitamin K, natriumselenit, biotin, vitamin D, vitamin B12.",
     "smaker": "Äpple: finns i förpackning om 4x200 ml EasyBottle, varunummer 851964, artikelnummer 8748601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Apelsin",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Äpple",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -5602,6 +5640,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld . Skaka flaskan väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Frebini ENERGY Drink, smak Banan: Vatten, maltodextrin, rapsolja, mjölkprotein, socker, medellånga fettsyror (MCT), arom, kaliumfosfat, kaliumklorid, natriumcitrat, emulgeringsmedel (sojalecitiner), natriumklorid, kolinbitartrat, modifierad stärkelse vitamin C, magnesiumoxid, inositol, taurin, natriumhydroxid, järnsulfat, L-karnitin, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, natriumfluorid, tiamin, riboflavin, vitamin B6, antioxidant (E 330), ß-karoten, vitamin A, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, biotin, vitamin K, folsyra, vitamin D, vitamin B12.",
     "smaker": "Banan: finns i förpackning om 4x200 ml EasyBottle, varunummer 845446, artikelnummer 8155601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml. 1.) Lochs H, Allison SP, Meier R, Pirlich M, Kondrup J, Schneider S, et al. Introductory to the ESPEN Guidelines on Enteral nutrition: terminology, definitions and general topics. Clin Nutr 2006; 25:180–6. FKS EN 928 01 2023 Produktfrågor fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 ml) n* för tio om i plett nutr k trienter"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -5829,6 +5886,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld . Skaka flaskan väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Frebini ENERGY Drink, smak Jordgubb: Vatten, maltodextrin, rapsolja, mjölkprotein, socker, medellånga fettsyror (MCT), arom, kaliumfosfat, kaliumklorid, natriumcitrat, emulgeringsmedel (sojalecitiner), natriumklorid, kolinbitartrat, vitamin C, magnesiumoxid, inositol, modifierad stärkelse, taurin, natriumhydroxid, järnsulfat, L-karnitin, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, natriumfluorid, tiamin, riboflavin, vitamin B6, antioxidant (E 330), ß-karoten, vitamin A, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, biotin, vitamin K, folsyra, vitamin D, vitamin B12.",
     "smaker": "Jordgubb: finns i förpackning om 4x200 ml EasyBottle, varunummer 845445, artikelnummer 8156601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml. 1.) Lochs H, Allison SP, Meier R, Pirlich M, Kondrup J, Schneider S, et al. Introductory to the ESPEN Guidelines on Enteral nutrition: terminology, definitions and general topics. Clin Nutr 2006; 25:180–6. FKS EN 929 01 2023 Produktfrågor fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -6040,6 +6116,20 @@
     "viktigt": "Ska användas under medicinsk övervakning. Lämplig som enda näringskälla. Inte lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Säkerställ tillräckligt vätskeintag. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Skaka väl före användning. Serveras bäst kyld. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Survimed OPD 1.5 KCAL Drink, smak Cappuccino: Vatten, maltodextrin, vassleproteinhydrolysat (från mjölk), socker, medellånga fettsyror (MCT), vegetabiliska oljor (rapsolja, solrosolja), aromer (med mjölk), kaliumfosfat, stabiliseringsmedel (E 460, E 466), kolinklorid, vitamin C, kalciumcitrat, natriumklorid, surhetsreglerande medel (E 524), magnesiumoxid, emulgeringsmedel (E 472 c), järnsulfat, zinksulfat, kaliumklorid, vitamin E, manganklorid, niacin, pantotensyra, tiamin, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, vitamin A, ß-karoten, färgämne (E 150d), folsyra, kromklorid, natriummolybdat, natriumselenit, kaliumjodid, biotin, vitamin K, vitamin D, vitamin B12.",
     "smaker": "Cappuccino: finns i förpackning om 4x200 ml EasyBottle, varunummer 849381, artikelnummer 8576601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -8354,6 +8444,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld . Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Frebini ENERGY FIBRE Drink, smak Choklad: Vatten, maltodextrin, rapsolja, mjölkprotein, socker, medellånga fettsyror, inulin, fettreducerat kakao, cellulosa, kaliumfosfat, emulgeringsmedel (E471, sojalecitiner), kakaomassa, natriumklorid, kolinbitartrat, natriumcitrat, natriumhydroxid, vitamin C, kaliumklorid, inositol, magnesiumoxid, taurin, aromer, järnsulfat, L-karnitin, zinksulfat, vitamin E, niacin, pantotensyra, manganklorid, kopparsulfat, tiamin, natriumfluorid, riboflavin, vitamin B6, antioxidanter (E 330), ß-karoten, vitamin A, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, biotin, vitamin K, folsyra, vitamin D, vitamin B12.",
     "smaker": "Choklad: finns i förpackning om 4x200 ml EasyBottle, varunummer 851652, artikelnummer 8792601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml. 1.) Lochs H, Allison SP, Meier R, Pirlich M, Kondrup J, Schneider S, et al. Introductory to the ESPEN Guidelines on Enteral nutrition: terminology, definitions and general topics. Clin Nutr 2006; 25:180–6. FKS EN 935 04 2026 Produktfrågor fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 0 ml) n* för tio om i plett nutr k utrienter"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -8582,6 +8691,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld . Skaka flaskan väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Frebini ENERGY FIBRE Drink, smak Vanilj: Vatten, maltodextrin, rapsolja, mjölkprotein, socker, medellånga fettsyror, inulin, cellulosa, kaliumfosfat, kaliumklorid, natriumcitrat, arom, emulgeringsmedel (sojalecitin), natriumklorid, kolinbitartrat, vitamin C, magnesiumoxid, inositol, taurin, natriumhydroxid, modifierad stärkelse, järnsulfat, L-karnitin, zinksulfat, vitamin E, niacin, pantotensyra, manganklorid, kopparsulfat, tiamin, natriumfluorid, vitamin B6, riboflavin, antioxidant (E 330), ß-karoten, vitamin A, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, biotin, vitamin K, folsyra, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 847530, artikelnummer 8419601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml. 1.) Lochs H, Allison SP, Meier R, Pirlich M, Kondrup J, Schneider S, et al. Introductory to the ESPEN Guidelines on Enteral nutrition: terminology, definitions and general topics. Clin Nutr 2006; 25:180–6. FKS EN 936 01 2024 Produktfrågor fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -9956,6 +10084,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning.",
     "ingredienser": "Fresubin 2 KCAL FIBRE Drink, smak Aprikos-Persika: Vatten, glukossirap, mjölkprotein, vegetabiliska oljor (solrosolja , rapsolja), sackaros, inulin (från cikoria), maltodextrin, aromer, vetedextrin, kaliumcitrat, emulgeringsmedel (E471, sojalecitin), kaliumkarbonat, natriumklorid, surhetsreglerande medel (E 507), natriumkarbonat, vitamin C, magnesiumoxid, järnpyrofosfat, niacin, zinksulfat ,manganklorid ,pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K1, biotin, vitamin D3, vitamin B12",
     "smaker": "Aprikos-Persika: finns i förpackning om 4x200 ml EasyBottle, varunummer 844712, artikelnummer 7988601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Aprikos-Persika",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -10170,6 +10327,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning.",
     "ingredienser": "Fresubin 2 KCAL FIBRE Drink, smak Cappuccino: Vatten, glukossirap, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), sackaros, inulin (från cikoria), aromer, maltodextrin, vetedextrin, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), kaliumkarbonat, natriumklorid, surhetsreglerande medel (E 507), natriumkarbonat, vitamin C, magnesiumoxid, järnpyrofosfat, niacin, zinksulfat, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K1, biotin, vitamin D3, vitamin B12.",
     "smaker": "Cappuccino: finns i förpackning om 4x200 ml EasyBottle, varunummer 845156, artikelnummer 8125601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Aprikos-Persika",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -10384,6 +10570,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning.",
     "ingredienser": "Fresubin 2 KCAL FIBRE Drink, smak Choklad: Vatten, glukossirap, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), sackaros, inulin (från cikoria), fettreducerat kakaopulver, maltodextrin, arom, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), natriumklorid, natriumkarbonat, vitamin C, stabiliseringsmedel (E 460, E 466, E 407), kaliumkarbonat, järnpyrofosfat, magnesiumoxid, niacin, zinksulfat, pantotensyra, manganklorid, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, natriummolybdat, kaliumjodid, natriumselenit, kromklorid, vitamin K1, biotin, vitamin D3, vitamin B12.",
     "smaker": "Choklad: finns i förpackning om 4x200 ml EasyBottle, varunummer 845157, artikelnummer 8126601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Aprikos-Persika",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -10598,6 +10813,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning.",
     "ingredienser": "Fresubin 2 KCAL FIBRE Drink, smak Citron: Vatten, glukossirap, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), sackaros, inulin (från cikoria), maltodextrin, vetedextrin, aromer, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), kaliumkarbonat, natriumklorid, surhetsreglerande medel (E 507), natriumkarbonat, vitamin C, magnesiumoxid, järnpyrofosfat, niacin, zinksulfat, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K1, biotin, vitamin D3, vitamin B12.",
     "smaker": "Citron: finns i förpackning om 4x200 ml EasyBottle, varunummer 845158, artikelnummer 8127601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Aprikos-Persika",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -11654,6 +11898,40 @@
     "anvisning": "Förvaras torrt vid rumstemperatur. Använd direkt efter beredning. Använd inom 24 timmar vid kylförvaring och rör om igen innan användning. Serveras bäst kyld. Beredning: Tillsätt innehållet i en påse (87 g pulver) till 240 ml standardmjölk vilket ger ca 600 kcal. Blanda kraftigt med en visp eller gaffel eller använd en shaker.",
     "ingredienser": "Calshake, smak Banan: Fettpulver (palmolja, glukossirap, mjölkprotein, stabiliseringsmedel (E 452, E 340)), dextros, maltodextrin, socker, medellånga fettsyror-pulver (vegetabiliska oljor: (kokosolja, palmolja, rapsolja), glukossirap, mjölkprotein, emulgeringsmedel (E472c)), skummjölkspulver, arom, surhetsreglerande medel (E 170), färgämne (E 160a), magnesiumoxid, kaliumklorid. Kan även innehålla ägg, gluten, selleri, senap och soja.",
     "smaker": "Banan: finns i förpackning om 7x87 g enportionspåsar. varunummer 845934, artikelnummer 8951141. Minsta beställningsmultipel: 7x87 g. Minsta beställningsmultipel Apotek: 7x87 g. FKS EN 965 09 2025 Produktfrågor e@fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 90 g pulver + 240 ml mjölk per 100 ml färdig produkt: (3,5 %) on it i d e n utr l per ökade gs- ka för"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "0–1*",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -11747,6 +12025,40 @@
     "anvisning": "Förvaras torrt vid rumstemperatur. Använd direkt efter beredning. Använd inom 24 timmar vid kylförvaring och rör om igen innan användning. Serveras bäst kyld. Beredning: Tillsätt innehållet i en påse (90 g pulver) till 240 ml standardmjölk vilket ger ca 600 kcal. Blanda kraftigt med en visp eller gaffel eller använd en shaker.",
     "ingredienser": "Calshake, smak Choklad: Fettpulver (palmolja, glukossirap, mjölkprotein, stabiliseringsmedel (E 452, E 340)), dextros, maltodextrin, socker, kakaopulver, fettpulver (palmfett, laktos (mjölk), mjölkprotein) medellånga fettsyror-pulver (vegetabiliska oljor: (kokosolja, palmolja, rapsolja), glukossirap, mjölkprotein, emulgeringsmedel (E472c)), arom (med färgämne (E 150c)), surhetsreglerande medel (E 170), magnesiumoxid. Kan även innehålla ägg, gluten, selleri, senap och soja.",
     "smaker": "Choklad: finns i förpackning om 7x90 g enportionspåsar. varunummer 845933, artikelnummer 8951131. Minsta beställningsmultipel: 7x90 g. Minsta beställningsmultipel Apotek: 7x90 g. FKS EN 966 09 2025 Produktfrågor e@fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 87 g pulver + 240 ml mjölk per 100 ml färdig produkt: (3,5 %) on it i utr"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "0–1*",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -11839,6 +12151,40 @@
     "anvisning": "Förvaras torrt vid rumstemperatur. Använd direkt efter beredning. Använd inom 24 timmar vid kylförvaring och rör om igen innan användning. Serveras bäst kyld. Beredning: Tillsätt innehållet i en påse (87 g pulver) till 240 ml standardmjölk vilket ger ca 600 kcal. Blanda kraftigt med en visp eller gaffel eller använd en shaker.",
     "ingredienser": "Calshake, smak Jordgubb: Fettpulver (palmolja, glukossirap, mjölkprotein, stabiliseringsmedel (E 452, E 340)), dextros, maltodextrin, medellånga fettsyror-pulver (vegetabiliska oljor: (kokosolja, palmolja, rapsolja), glukossirap, mjölkprotein, emulgeringsmedel (E472c)), skummjölkspulver, arom (med mjölk), socker, färgämne (E 162), surhetsreglerande medel (E 170), magnesiumoxid, kaliumklorid. Kan även innehålla ägg, gluten, selleri, senap och soja.",
     "smaker": "Jordgubb: finns i förpackning om 7x87 g enportionspåsar. varunummer 845932, artikelnummer 8951151. Minsta beställningsmultipel: 7x87 g. Minsta beställningsmultipel Apotek: 7x87 g. FKS EN 967 09 2025 Produktfrågor e@fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 87 g pulver + 240 ml mjölk per 100 ml färdig produkt: (3,5 %) on it i d e n utr l per ökade ka för"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "0–1*",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -11931,6 +12277,40 @@
     "anvisning": "Förvaras torrt vid rumstemperatur. Använd direkt efter beredning. Använd inom 24 timmar vid kylförvaring och rör om igen innan användning. Serveras bäst kyld. Beredning: Tillsätt innehållet i en påse (87 g pulver) till 240 ml standardmjölk vilket ger ca 600 kcal. Blanda kraftigt med en visp eller gaffel eller använd en shaker.",
     "ingredienser": "Calshake, smak Neutral: Maltodextrin, fettpulver (palmolja, glukossirap, mjölkprotein, stabiliseringsmedel (E 452, E 340)), skummjölkspulver, medellånga fettsyror-pulver (vegetabiliska oljor: (kokosolja, palmolja, rapsolja), glukossirap, mjölkprotein, emulgeringsmedel (E472c)), surhetsreglerande medel (E 170), magnesiumoxid, kaliumklorid. Kan även innehålla ägg, gluten, selleri, senap och soja.",
     "smaker": "Neutral: finns i förpackning om 7x87 g enportionspåsar. varunummer 845931, artikelnummer 8951171. Minsta beställningsmultipel: 7x87 g. Minsta beställningsmultipel Apotek: 7x87 g. FKS EN 968 09 2025 Produktfrågor e@fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20 87 g pulver + 240 ml mjölk per 100 ml färdig produkt: (3,5 %) on it i d e n utr l per ökade gs- ka för"
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "0–1*",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -12023,6 +12403,40 @@
     "anvisning": "Förvaras torrt vid rumstemperatur. Använd direkt efter beredning. Använd inom 24 timmar vid kylförvaring och rör om igen innan användning. Serveras bäst kyld. Beredning: Tillsätt innehållet i en påse (87 g pulver) till 240 ml standardmjölk vilket ger ca 600 kcal. Blanda kraftigt med en visp eller gaffel eller använd en shaker.",
     "ingredienser": "Calshake, smak Vanilj: Fettpulver (palmolja, glukossirap, mjölkprotein, stabiliseringsmedel (E 452, E 340)), dextros, maltodextrin, socker, skummjölkspulver, medellånga fettsyror-pulver (vegetabiliska oljor: (kokosolja, palmolja, rapsolja), glukossirap, mjölkprotein, emulgeringsmedel (E472c)), aromer (med laktos), surhetsreglerande medel (E 170), magnesiumoxid, kaliumklorid, färgämne (E 160a), Kan även innehålla ägg, gluten, selleri, senap och soja.",
     "smaker": "Vanilj: finns i förpackning om 7x87 g enportionspåsar. varunummer 845930, artikelnummer 8951161. Minsta beställningsmultipel: 7x87 g. Minsta beställningsmultipel Apotek: 7x87 g. FKS EN 969 09 2025 Produktfrågor e@fresenius-kabi.com E-post: medinfo.sverige@fresenius-kabi.com Tel: 020-116 68 44 Övriga frågor E-post: kundservice@fresenius-kabi.com Tel: 020-98 40 20"
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Banan",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "0–1*",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -12241,6 +12655,20 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ORIGINAL Drink, smak Vanilj: Vatten, maltodextrin, kalciumkaseinat (från mjölk), vegetabiliska oljor (rapsolja, solrosolja), socker, sojaprotein, natriumcitrat, arom, kaliumklorid, emulgeringsmedel (E 471, sojalecitin), kaliumfosfat, magnesiumcitrat, kolinbitartrat, vitamin C, surhetsreglerande medel (E 330), förtjockningsmedel (E 415), magnesiumoxid, järnsulfat, kaliumcitrat, zinksulfat, kalciumfosfat, vitamin E, pantotensyra, manganklorid, niacin, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 844998, artikelnummer 8168601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0",
+    "namn": "tunnflytande",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "0",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -12460,6 +12888,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY FIBRE Drink, smak Choklad: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), socker, mjölkprotein, kalciumkaseinat (från mjölk), fettreducerat kakaopulver, vetedextrin, inulin, arom, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), stabiliseringsmedel (E 460, E 466, E 407), natriumklorid, kaliumklorid, kaliumcitrat, vitamin C, cellulosa, kolinklorid, magnesiumoxid, järndifosfat zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, kromklorid, biotin, vitamin D, vitamin B12.",
     "smaker": "Choklad: finns i förpackning om 4x200 ml EasyBottle, varunummer 844992, artikelnummer 8157601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "1",
+      "rumstempererad": "0–1*"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -12679,6 +13126,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY FIBRE Drink, smak Jordgubb: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), socker, mjölkprotein, kalciumkaseinat (från mjölk), vetedextrin, inulin, cellulosa, aromer, kaliumcitrat, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), rödbetspulver, natriumklorid, kaliumklorid, rödkryddextrakt, vitamin C, kolinklorid, magnesiumoxid, surhetsreglerande medel (E 330), järndifosfat, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Jordgubb: finns i förpackning om 4x200 ml EasyBottle, varunummer 844993, artikelnummer 8158601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "1",
+      "rumstempererad": "0–1*"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -12887,6 +13353,40 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Vid användning som enda näringskälla, säkerställ tillräckligt elektrolytintag. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PROTEIN ENERGY Drink, smak Cappuccino: Vatten, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), maltodextrin, socker, arom (med mjölk), kaliumcitrat, karamelliserat socker, natriumklorid, natriumcitrat, emulgeringsmedel (sojalecitin), vitamin C, magnesiumoxid, järndifosfat, magnesiumcitrat, zinksulfat, pantotensyra, manganklorid, niacin, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, färgämne (E 150 d), folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Cappuccino: finns i förpackning om 4x200 ml EasyBottle, varunummer 844386, artikelnummer 8137601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Smultron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Tropiska frukter",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -13095,6 +13595,40 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Vid användning som enda näringskälla, säkerställ tillräckligt elektrolytintag. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PROTEIN ENERGY Drink, smak Choklad: Vatten, glukossirap, vegetabiliska oljor (solrosolja, rapsolja), kalciumkaseinat (från mjölk), mjölkprotein, socker, fettreducerat kakaopulver, vassleprotein (från mjölk), arom, emulgeringsmedel (E 471, sojalecitin), kaliumcitrat, natriumklorid, vitamin C, stabiliseringsmedel (E 460, E 466, E 407), surhetsreglerande medel (E 524), kaliumklorid, magnesiumcitrat, järndifosfat, zinksulfat, pantotensyra, niacin, manganklorid, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, kromklorid, biotin, vitamin D, vitamin B12.",
     "smaker": "Choklad: finns i förpackning om 4x200 ml EasyBottle, varunummer 844388, artikelnummer 8138601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Smultron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Tropiska frukter",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -13303,6 +13837,40 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Vid användning som enda näringskälla, säkerställ tillräckligt elektrolytintag. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PROTEIN ENERGY Drink, smak Smultron: Vatten, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), maltodextrin, socker, aromer, kaliumcitrat, rödbetspulver, natriumklorid, natriumcitrat, emulgeringsmedel (sojalecitin), vitamin C, magnesiumoxid, järndifosfat, magnesiumcitrat, zinksulfat, pantotensyra, manganklorid, niacin, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Smultron: finns i förpackning om 4x200 ml EasyBottle, varunummer 844385, artikelnummer 8141601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Smultron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Tropiska frukter",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -13511,6 +14079,40 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Vid användning som enda näringskälla, säkerställ tillräckligt elektrolytintag. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PROTEIN ENERGY Drink, smak Tropiska frukter: Vatten, mjölkprotein, vegetabiliska oljor (solrosolja, rapsolja), socker, maltodextrin, kaliumcitrat, arom, natriumklorid, natriumcitrat, emulgeringsmedel (sojalecitin), vitamin C, magnesiumoxid, järndifosfat, magnesiumcitrat, zinksulfat, pantotensyra, manganklorid, niacin, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Tropiska frukter: finns i förpackning om 4x200 ml EasyBottle, varunummer 844387, artikelnummer 8139601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Smultron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Tropiska frukter",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -13719,6 +14321,40 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Vid användning som enda näringskälla, säkerställ tillräckligt elektrolytintag. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Inte lämplig för patienter med galaktosemi. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PROTEIN ENERGY Drink, smak Vanilj: Vatten, mjölkprotein, socker, vegetabiliska oljor (solrosolja, rapsolja), maltodextrin, kaliumcitrat, arom, natriumklorid, natriumcitrat, emulgeringsmedel (sojalecitin), vitamin C, magnesiumoxid, järndifosfat, magnesiumcitrat, zinksulfat, pantotensyra, manganklorid, niacin, vitamin E, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, kaliumjodid, natriummolybdat, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 844384, artikelnummer 8140601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Smultron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Choklad",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Tropiska frukter",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -13928,6 +14564,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin YODRINK, smak Citron: Vatten, sackaros, vassleprotein, skummjölksyoghurt (pulver), vegetabiliska oljor (rapsolja, solrosolja), maltodextrin, surhetsreglerande medel (E 270), kalciumlaktat, aromer, emulgeringsmedel (E 471, sojalecitiner), förtjockningsmedel (E 440), kolinbitartrat, vitamin C, natriumklorid, järndifosfat, magnesiumoxid, zinksulfat, vitamin E, pantotensyra, manganklorid, niacin, kopparsulfat, vitamin B6, natriumfluorid, riboflavin, vitamin A, tiamin, folsyra, kromklorid, kaliumjodid, natriumselenit, vitamin K, natriummolybdat, biotin, vitamin D, vitamin B12.",
     "smaker": "Citron: finns i förpackning om 4x200 ml EasyBottle, varunummer ??????, artikelnummer 8801601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Hallon",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -14137,6 +14792,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin YODRINK, smak Hallon: Vatten, sackaros, vassleprotein, skummjölksyoghurt (pulver), vegetabiliska oljor (rapsolja, solrosolja), maltodextrin, surhetsreglerande medel (E 270), kalciumlaktat, emulgeringsmedel (E 471, sojalecitiner), förtjockningsmedel (E 440), färgämne (E 120), aromer, kolinbitartrat, vitamin C, natriumklorid, järndifosfat, magnesiumoxid, zinksulfat, vitamin E, pantotensyra, manganklorid, niacin, kopparsulfat, vitamin B6, natriumfluorid, riboflavin, vitamin A, tiamin, folsyra, kromklorid, kaliumjodid, natriumselenit, vitamin K, natriummolybdat, biotin, vitamin D, vitamin B12.",
     "smaker": "Hallon: finns i förpackning om 4x200 ml EasyBottle, varunummer 845730, artikelnummer 8170601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Hallon",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -14351,6 +15025,30 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp upp till 24 timmar. Skaka väl före användning. Serveras bäst kyld. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 3.2 KCAL Drink, smak Hasselnöt: Vatten, glukossirap, rapsolja, kollagenhydrolysat, sackaros, mjölkprotein, maltodextrin, stabiliseringsmedel (E 460, E 466), emulgeringsmedel (E 471, sojalecitiner, E 472e), kalciumfosfat, kaliumklorid, aromer, surhetsreglerande medel (E 524, E 525), kaliumfosfat, vitamin C, kaliumcitrat, kalciumcitrat, magnesiumklorid, magnesiumoxid, järndifosfat, natriumklorid, zinksulfat, niacin, manganklorid, vitamin E, pantotensyra, kopparsulfat, natriumfluorid, riboflavin, tiamin, vitamin B6, ß-karoten, vitamin A, kromklorid, folsyra, natriummolybdat, kaliumjodid, natriumselenit, biotin, vitamin D, vitamin K, vitamin B12.",
     "smaker": "Hasselnöt: finns i förpackning om 4x125 ml EasyBottle, varunummer 844380, artikelnummer 7244801. Minsta beställningsmultipel Tamro: 6x4x125 ml. Minsta beställningsmultipel Apotek: 1x4x125 ml. Produkten finns i totalt tre olika smaker: Hasselnöt, Mango och Vanilj-Kola i 125 ml EasyBottle."
+   },
+   "iddsi": {
+    "nivå": "3",
+    "namn": "måttligt trögflytande",
+    "tabell": [
+     {
+      "produkt": "Hasselnöt",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Mango",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Vanilj-Kola",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -14565,6 +15263,30 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp upp till 24 timmar. Skaka väl före användning. Serveras bäst kyld. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 3.2 KCAL Drink, smak Mango: Vatten, glukossirap, rapsolja, kollagenhydrolysat, sackaros, mjölkprotein, maltodextrin, stabiliseringsmedel (E 460, E 466), emulgeringsmedel (E 471, sojalecitiner, E 472e), kalciumfosfat, kaliumklorid, surhetsreglerande medel (E 524, E 525), arom, kaliumfosfat, vitamin C, kaliumcitrat, kalciumcitrat, magnesiumklorid, magnesiumoxid, järndifosfat, natriumklorid, zinksulfat, niacin, manganklorid, vitamin E, pantotensyra, kopparsulfat, natriumfluorid, riboflavin, tiamin, vitamin B6, ß-karoten, vitamin A, kromklorid, folsyra, natriummolybdat, kaliumjodid, natriumselenit, biotin, vitamin D, vitamin K, vitamin B12.",
     "smaker": "Mango: finns i förpackning om 4x125 ml EasyBottle, varunummer 844379, artikelnummer 7247801. Minsta beställningsmultipel Tamro: 6x4x125 ml. Minsta beställningsmultipel Apotek: 1x4x125 ml. Produkten finns i totalt tre olika smaker: Hasselnöt, Mango och Vanilj-Kola i 125 ml EasyBottle."
+   },
+   "iddsi": {
+    "nivå": "3",
+    "namn": "måttligt trögflytande",
+    "tabell": [
+     {
+      "produkt": "Hasselnöt",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Mango",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Vanilj-Kola",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -14779,6 +15501,30 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp upp till 24 timmar. Skaka väl före användning. Serveras bäst kyld. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 3.2 KCAL Drink, smak Vanilj-Kola: Vatten, glukossirap, rapsolja, kollagenhydrolysat, sackaros, mjölkprotein, maltodextrin, stabiliseringsmedel (E 460, E 466), aromer, emulgeringsmedel (E 471, sojalecitiner, E 472e), kalciumfosfat, kaliumklorid, surhetsreglerande medel (E 524, E 525), kaliumfosfat, vitamin C, kaliumcitrat, kalciumcitrat, magnesiumklorid, magnesiumoxid, järndifosfat, natriumklorid, zinksulfat, niacin, manganklorid, vitamin E, pantotensyra, kopparsulfat, natriumfluorid, riboflavin, tiamin, vitamin B6, ß-karoten, vitamin A, kromklorid, folsyra, natriummolybdat, kaliumjodid, natriumselenit, biotin, vitamin D, vitamin K, vitamin B12.",
     "smaker": "Vanilj-Kola: finns i förpackning om 4x125 ml EasyBottle, varunummer 844378, artikelnummer 7246801. Minsta beställningsmultipel Tamro: 6x4x125 ml. Minsta beställningsmultipel Apotek: 1x4x125 ml. Produkten finns i totalt tre olika smaker: Hasselnöt, Mango och Vanilj-Kola i 125 ml EasyBottle."
+   },
+   "iddsi": {
+    "nivå": "3",
+    "namn": "måttligt trögflytande",
+    "tabell": [
+     {
+      "produkt": "Hasselnöt",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Mango",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     },
+     {
+      "produkt": "Vanilj-Kola",
+      "kylskåpskall": "3",
+      "rumstempererad": "3"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -14993,6 +15739,40 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY Drink, smak Cappuccino: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), mjölkprotein, socker, kalciumkaseinat (från mjölk), arom (med mjölk), kaliumcitrat, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), karamelliserat socker, natriumklorid, kaliumklorid, vitamin C, kolinklorid, magnesiumoxid, surhetsreglerande medel (E 330), järndifosfat, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, färgämne (E 150d), folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Cappuccino: finns i förpackning om 4x200 ml EasyBottle, varunummer 845648, artikelnummer 8161601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Svarta vinbär",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Tropisk frukt",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -15207,6 +15987,40 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY Drink, smak Jordgubb: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), socker, mjölkprotein, kalciumkaseinat (från mjölk), aromer, kaliumcitrat, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), rödbetspulver, natriumklorid, kaliumklorid, vitamin C, kolinklorid, magnesiumoxid, surhetsreglerande medel (E 330, järndifosfat, zinksulfat, niacin, vitamin E, pantotensyra ,manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Jordgubb: finns i förpackning om 4x200 ml EasyBottle, varunummer 845657, artikelnummer 8163601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Svarta vinbär",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Tropisk frukt",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -15421,6 +16235,40 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY Drink, smak Svarta vinbär: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), mjölkprotein, socker, kalciumkaseinat (från mjölk), aromer, kaliumcitrat, natriumcitrat, rödbetspulver, emulgeringsmedel (E 471, sojalecitin), natriumklorid, kaliumklorid, vitamin C, kolinklorid, magnesiumoxid, järndifosfat, surhetsreglerande medel (E 330), zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Svarta vinbär: finns i förpackning om 4x200 ml EasyBottle, varunummer 845659, artikelnummer 8160601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Svarta vinbär",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Tropisk frukt",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -15635,6 +16483,40 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY Drink, smak Tropisk frukt: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), mjölkprotein, socker, kalciumkaseinat (från mjölk), aromer, kaliumcitrat, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), natriumklorid, kaliumklorid, vitamin C, kolinklorid, magnesiumoxid, surhetsreglerande medel (E 330), järndifosfat, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Tropisk frukt: finns i förpackning om 4x200 ml EasyBottle, varunummer 845660, artikelnummer 8164601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Svarta vinbär",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Tropisk frukt",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -15849,6 +16731,40 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin ENERGY Drink, smak Vanilj: Vatten, maltodextrin, vegetabiliska oljor (rapsolja, solrosolja), socker, mjölkprotein, kalciumkaseinat (från mjölk), arom, kaliumcitrat, natriumcitrat, emulgeringsmedel (E 471, sojalecitin), natriumklorid, kaliumklorid, vitamin C, kolinklorid, magnesiumoxid, surhetsreglerande medel (E 330), järndifosfat, zinksulfat, niacin, vitamin E, pantotensyra, manganklorid, kopparsulfat, riboflavin, vitamin B6, natriumfluorid, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 845661, artikelnummer 8165601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "0–1",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Jordgubb",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Svarta vinbär",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Tropisk frukt",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     },
+     {
+      "produkt": "Cappuccino",
+      "kylskåpskall": "1",
+      "rumstempererad": "0"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -16868,6 +17784,20 @@
     "viktigt": "Används under medicinsk övervakning. Lämplig som enda näringskälla. Ej lämplig för barn under 3 år. Används med försiktighet till barn under 6 år. Förvaringsanvisning: Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och används inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin PLANT-BASED Drink, smak Vanilj: Vatten, glukossirap, sojaprotein rapsolja, socker, vetedextrin, inulin, cellulosa, kaliumkarbonat, kaliumklorid, arom, kolinbitartrat, kalciumklorid, natriumklorid, emulgeringsmedel (sojalecitin), stabiliseringsmedel (E 460, E 466, E 407), kaliumcitrat, magnesiumoxid, vitamin C, zinksulfat, surhetsreglerande medel (E 524), järnsulfat, niacin, manganklorid, pantotensyra, vitamin E, tiamin, natriumfluorid, vitamin B6, riboflavin, kopparsulfat, vitamin A, ß-karoten, kromklorid, folsyra, kaliumjodid, natriumselenit, biotin, vitamin K, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 846748, artikelnummer 8439601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -17288,6 +18218,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 2 KCAL Drink, smak Neutral: Vatten, glukossirap, vegetabiliska oljor (solrosolja, rapsolja), kalciumkaseinat (från mjölk), mjölkprotein, maltodextrin, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), surhetsreglerande medel (E 507), kaliumkarbonat, natriumklorid, natriumkarbonat, vitamin C, magnesiumoxid, järndifosfat, zinksulfat, niacin, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, tiamin, natriumfluorid, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Neutral: finns i förpackning om 4x200 ml EasyBottle, varunummer 850479, artikelnummer 8027641. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Toffee",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Skogsbär",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -17498,6 +18457,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 2 KCAL Drink, smak Skogsbär: Vatten, glukossirap, vegetabiliska oljor (solrosolja, rapsolja), kalciumkaseinat (från mjölk), mjölkprotein, socker, maltodextrin, aromer, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), kaliumkarbonat, surhetsreglerande medel (E 507), rödbetspulver, natriumklorid, natriumkarbonat, vitamin C, magnesiumoxid, järndifosfat, zinksulfat, niacin, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, tiamin, natriumfluorid, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Skogsbär: finns i förpackning om 4x200 ml EasyBottle, varunummer 845256, artikelnummer 8129601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Toffee",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Skogsbär",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -17708,6 +18696,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 2 KCAL Drink, smak Toffee: Vatten, glukossirap, vegetabiliska oljor (solrosolja, rapsolja), kalciumkaseinat (från mjölk), mjölkprotein, socker, maltodextrin, aromer, kaliumcitrat, emulgeringsmedel (E 471, sojalecitin), kaliumkarbonat, surhetsreglerande medel (E 507), natriumklorid, natriumkarbonat, karamelliserat socker, vitamin C, magnesiumoxid, järndifosfat, zinksulfat, niacin, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, tiamin, natriumfluorid, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Toffee: finns i förpackning om 4x200 ml EasyBottle, varunummer 845257, artikelnummer 7735601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Toffee",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Skogsbär",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -17918,6 +18935,35 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Serveras bäst kyld. Skaka väl innan användning. Förpackad i en skyddande atmosfär.",
     "ingredienser": "Fresubin 2 KCAL Drink, smak Vanilj: Vatten, glukossirap, vegetabiliska oljor (solrosolja, rapsolja), kalciumkaseinat (från mjölk), mjölkprotein, socker, maltodextrin, kaliumcitrat, arom, emulgeringsmedel (E 471, sojalecitin), kaliumkarbonat, surhetsreglerande medel (E 507), natriumklorid, natriumkarbonat, vitamin C, magnesiumoxid, järndifosfat, zinksulfat, niacin, manganklorid, pantotensyra, vitamin E, kopparsulfat, riboflavin, vitamin B6, tiamin, ß-karoten, vitamin A, folsyra, kromklorid, natriummolybdat, kaliumjodid, natriumselenit, vitamin K, biotin, vitamin D, vitamin B12.",
     "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 845258, artikelnummer 8131601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   },
+   "iddsi": {
+    "nivå": "1–2",
+    "not": "Nivån beror på temperaturen (kylskåpskall/rumstempererad).",
+    "tabell": [
+     {
+      "produkt": "Toffee",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Vanilj",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     },
+     {
+      "produkt": "Skogsbär",
+      "kylskåpskall": "2",
+      "rumstempererad": "1"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -18005,6 +19051,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp i upp till 14 dagar och användas under hygieniska förhållanden. Förpackad i skyddande atmosfär.",
     "ingredienser": "Fresubin 5 KCAL SHOT, smak Citron: Vatten, rapsolja, medellånga fettsyror (MCT), sackaros, emulgeringsmedel (E 472c), stabiliseringsmedel (E 460, E 466), aromer, förtjockningsmedel (E 415).",
     "smaker": "Citron: finns i förpackning om 4x120 ml EasyBottle, varunummer 845514, artikelnummer 7266801. Minsta beställningsmultipel: 6x4x120 ml. Minsta beställningsmultipel Apotek: 1x4x120 ml."
+   },
+   "iddsi": {
+    "nivå": "2",
+    "namn": "lätt trögflytande",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "2"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "2"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -18092,6 +19157,25 @@
     "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp i upp till 14 dagar och användas under hygieniska förhållanden. Förpackad i skyddande atmosfär.",
     "ingredienser": "Fresubin 5 KCAL SHOT, smak Neutral: Vatten, rapsolja, medellånga fettsyror (MCT), sackaros, emulgeringsmedel (E 472c), stabiliseringsmedel (E 460, E 466), aromer, förtjockningsmedel (E 415).",
     "smaker": "Neutral: finns i förpackning om 4x120 ml EasyBottle, varunummer 845513, artikelnummer 7267801. Minsta beställningsmultipel: 6x4x120 ml. Minsta beställningsmultipel Apotek: 1x4x120 ml."
+   },
+   "iddsi": {
+    "nivå": "2",
+    "namn": "lätt trögflytande",
+    "tabell": [
+     {
+      "produkt": "Citron",
+      "kylskåpskall": "2",
+      "rumstempererad": "2"
+     },
+     {
+      "produkt": "Neutral",
+      "kylskåpskall": "2",
+      "rumstempererad": "2"
+     }
+    ],
+    "källa": "Fresenius Kabi UK: IDDSI Framework and Fresubin ONS, maj 2026 (GB-FreONS-2600053)",
+    "källa_url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/gb/documents/medical-support/Fresubin%20ONS%20IDDSI%20Levels%20May%202026.pdf.coredownload.inline.pdf",
+    "källa_not": "Testat av Fresenius Kabi i Storbritannien på brittiska varianter, kylskåpskall (6 °C) och rumstempererad (25 °C). * = gränsfall mellan nivåer. Svenska recept kan skilja sig."
    }
   },
   {
@@ -20366,6 +21450,7 @@
    "egenskaper": [
     "glutenfri",
     "laktosfri",
+    "mjölkproteinfri",
     "näringsmässigt komplett"
    ],
    "näringsdeklaration": {
@@ -20580,6 +21665,7 @@
    "osmolalitet": 565,
    "egenskaper": [
     "glutenfri",
+    "mjölkproteinfri",
     "näringsmässigt komplett",
     "sondnäring"
    ],

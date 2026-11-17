@@ -17,7 +17,7 @@ type Detail = {
   osmolaritet?: number
   osmolalitet?: number
   egenskaper?: string[]
-  iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number; rumstempererad: number }[] }
+  iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number | string; rumstempererad: number | string }[]; källa?: string; källa_url?: string; källa_not?: string }
   'näringsdeklaration'?: Record<string, { enhet: string; värde: string }>
   fettkälla?: string
   proteinkälla?: string
@@ -127,8 +127,11 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
                   {me.iddsi.tabell && me.iddsi.tabell.length > 0 && (me.iddsi.not || me.iddsi.tabell.length > 1) && (
                     <table className="ps-iddsi-table">
                       <thead><tr><th></th><th>Kylskåpskall</th><th>Rumstempererad</th></tr></thead>
-                      <tbody>{me.iddsi.tabell.map(r => <tr key={r.produkt}><th scope="row">{r.produkt}</th><td>{r.kylskåpskall}</td><td>{r.rumstempererad}</td></tr>)}</tbody>
+                      <tbody>{me.iddsi.tabell.map(r => <tr key={r.produkt} className={r.produkt === me.flavour ? 'me' : ''}><th scope="row">{r.produkt}</th><td>{r.kylskåpskall}</td><td>{r.rumstempererad}</td></tr>)}</tbody>
                     </table>
+                  )}
+                  {me.iddsi.källa && (
+                    <p className="ps-iddsi-note">Källa: <a href={me.iddsi.källa_url} target="_blank" rel="noopener noreferrer">{me.iddsi.källa}</a>. {me.iddsi.källa_not}</p>
                   )}
                 </div>
               </div>

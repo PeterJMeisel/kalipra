@@ -11,7 +11,8 @@ sys.path.insert(0, HERE)
 from parse_fk import parse_file
 from parse_nes import parse_text
 from parse_nut import parse_text as parse_nut
-from details import details_for
+from details import details_for, IDDSI_NAMN
+IDDSI_UK = json.load(open(os.path.join(HERE, 'iddsi_fk_uk.json')))
 
 KEYS = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'SUGAR', 'FASAT', 'FAMS', 'FAPU',
         'ALC', 'NACL', 'NA', 'VITA', 'VITD', 'VITE', 'VITC', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6',
@@ -161,6 +162,18 @@ def main(dst):
     for p in prods:
         p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
         p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''), wide=p['manufacturer'] == 'Nutricia')
+        # IDDSI från Fresenius Kabi UK:s tabell när det svenska bladet saknar nivå
+        uk = IDDSI_UK['produkter'].get(p['product'])
+        if p['manufacturer'] == 'Fresenius Kabi' and uk and p.get('flavour') in uk and not p['details'].get('iddsi'):
+            own = uk[p['flavour']]
+            nums = sorted({int(x) for v in own for x in re.findall(r'\d', v)})
+            p['details']['iddsi'] = {
+                'nivå': str(nums[0]) if len(nums) == 1 else f'{nums[0]}–{nums[-1]}',
+                **({'namn': IDDSI_NAMN[nums[0]]} if len(nums) == 1 else {}),
+                **({'not': 'Nivån beror på temperaturen (kylskåpskall/rumstempererad).'} if own[0] != own[1] else {}),
+                'tabell': [{'produkt': f, 'kylskåpskall': v[0], 'rumstempererad': v[1]} for f, v in uk.items()],
+                'källa': IDDSI_UK['källa'], 'källa_url': IDDSI_UK['url'], 'källa_not': IDDSI_UK['not'],
+            }
         eg = p['details'].setdefault('egenskaper', [])
         # Diabetesanpassade produkter (enligt tillverkarens produktnamn/indikation)
         if re.match(r'(Diben|Diasip|Nutrison advanced Diason|Diason)', p['product'], re.I) and 'diabetesanpassad' not in eg:

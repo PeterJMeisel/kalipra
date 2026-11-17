@@ -20,7 +20,7 @@ FLAGS = [
     ('fibrer', r'med fiber|fiberberikad|innehåller fiber|med kostfiber'),
     ('MCT', r'\bMCT\b|medellånga fettsyror'),
     ('vegetabilisk/växtbaserad', r'växtbaserad|plant ?based|vegansk'),
-    ('mjölkproteinfri', r'mjölkproteinfri|fri från mjölkprotein'),
+    ('mjölkproteinfri', r'mjölkproteinfri|fri från mjölkprotein|fri från mjölk|aminosyrabaserad specialnäring'),
     ('sojafri', r'sojafri'),
     ('näringsmässigt komplett', r'näringsmässigt komplett|lämplig som enda näringskälla'),
     ('ej komplett', r'inte lämplig som enda näringskälla|ej lämplig som enda näringskälla|ej näringsmässigt komplett'),

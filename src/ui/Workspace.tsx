@@ -221,8 +221,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
                   const kcal = ((f?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100
                   return (
                     <tr key={e.id}>
-                      <td className="name">{e.source && e.source !== 'lmv' && <SourceTag source={f?.group ?? e.source} />}{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}
-                        {f?.source === 'nutrition' && <button type="button" className="ws-sheetlink" onClick={() => setSheetFor(f.number)}>Produktblad</button>}</td>
+                      <td className="name">{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
                         <input aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
                           onBlur={ev => {
@@ -375,7 +374,6 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
       </ul>
       <div className="ws-addrow">
         <span className="pickedname">{picked ? picked.name : 'Välj ett livsmedel i listan'}
-          {picked?.source === 'nutrition' && <button type="button" className="ws-sheetlink" onClick={() => onShowSheet(picked.number)}>Visa produktblad</button>}
         </span>
         <label className="inline">{picked?.unit === 'ml' ? 'Ml' : 'Gram'}{' '}
           <input ref={gramsRef} inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)}
