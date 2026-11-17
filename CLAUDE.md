@@ -26,3 +26,7 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Alla dokument som programmet länkar till (produktblad, IDDSI-dokument m.m.) ska ha en lokal kopia på Peters dator: `C:\Users\p-mei\Downloads\Kalipra-källdokument\<Tillverkare>\`, med `index.csv` (lokal fil; webbadress; hämtad).
 - I programmet går länken till webbadressen. Kopplingen fil → adress finns även i `scripts/nutrition/källdokument.json`.
 - När ett nytt dokument börjar användas: lägg det i mappen, uppdatera index.csv och källdokument.json.
+
+## Tokenkostnad
+- Om en uppgift i förväg ser ut att kosta mycket tokens (t.ex. många filer genom chatten, stora omtag, lång felsökning i webbläsaren): fråga Peter först och föreslå ett billigare sätt (ny konversation, mindre modell, annat arbetssätt).
+- Claude kan inte byta modell själv; föreslå modell när det är relevant (Opus för data/bedömningar/planering, Sonnet för små UI-ändringar).
