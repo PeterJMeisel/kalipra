@@ -40,4 +40,5 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Bara produkter som finns i Sverige ska vara med (källor: tillverkarnas svenska sajter och svenska produktblad).
 
 ## Öppna punkter
-- Ofullständiga Nutricia-produkter (visas med varning i produktbladet, värden saknas): Loprofin Frukostflingor (energi, protein), Stimulance (total fiber), D-mannose, Lorenzos oil, XLYS TRY Glutaridon (energin enligt bladet stämmer inte med 4/9/4-kontrollen; proteinekvivalenter). Uppdrag för agent i ny chatt: leta officiella tillverkarkällor för de saknade värdena.
+- Loprofin Frukostflingor (Loops) saknar fortfarande energi och protein (det svenska bladets 182 kcal / 767 kJ stämmer inte). Officiella källor säger olika saker: Nutricia UK (nutricia.co.uk/hcp/products/loprofin-cereal-loops/) anger 359 kcal / 1502 kJ och protein 0,32 g, och de stämmer med bladets makron. Ett äldre svenskt Loprofin-blad anger 385 kcal / 1636 kJ. Vilket värde som ska gälla är inte bestämt (eller om Nutricia Sverige ska tillfrågas).
+- Stimulance, D-mannose, Lorenzos oil och XLYS TRY Glutaridon rättades 2026-11-17 med värden ur de svenska bladen (`NUT_FIX` i build_nutrition.py).

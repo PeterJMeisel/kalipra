@@ -51791,8 +51791,7 @@
    },
    "text": {
     "ingredienser": "Näringsvärde Per 100 g L-leucin, L-glutaminsyra, L-prolin, L-arginin, L-valin, L-isoleucin, glycin, Lasparaginsyra, L-treonin, L-tyrosin, L-fenylalanin, L-serin, torkad glukossirap, Lalanin, L-histidin, L-cystin, L-metionin, L-glutamin, trikalciumfosfat, taurin, Lkarnitin. Kolhydrat (5 E%) LYS TRY Glutaridon innehåller per 100 g pulver Fiber (0 E%) 332 kcal 0 g fett 4 g kolhydrat från glukossirap 79 g proteinekvivalenter L-arginin L-asparaginsyra illredning L-cystine ekommenderad spädning är 1:20, exempelvis 1 g pulver plus 20 ml vatten. Bipackad kopa innehåller 50 ml (31,5 g). Blanda rekommenderad mängd pulver med lite vatten ch blanda där efter gradvis ner resterande mängd vatten tills pulvret är helt upplöst. L-histidin osering oseringen är individuell och görs i samråd med dietist eller läkare. L-lysin L-metionin ållbarhet och förvaring L-fenylalanin öppnad burk förvaras torrt, ej över normal rumstemperatur. Öppnad burk används nom 1 månad. Tillredd näring kan förvaras i kylskåp upp t ill ett dygn. Bäst-före-datum nges som dag-mån-år. L-tryptofan nvändning LYS TRY Glutaridon är ett livsmedel för speciella medicinska ändamål och används nder inrådan av dietist eller läkare. Intaget bör spridas över dagen och intas i samband ed måltid och extra vätska. Ej lämplig som enda näringskälla. Natrium eställning årdenheter kan beställa direkt från vår webshop: www.nutriciastore.se eller ia vår e-mail order.se@danone.com. Karnitin Produkt"
-   },
-   "ofullständig": true
+   }
   },
   {
    "id": 259,
@@ -52117,8 +52116,7 @@
    "text": {
     "ingredienser": "Lorenzo’s Oil Bestnr: 75 89 38 Förpackning: 1 flaska à 500 ml Glycerol trioleate-olja, glycerol trierucate-olja. GTO Oil"
    },
-   "egenskaper": [],
-   "ofullständig": true
+   "egenskaper": []
   },
   {
    "id": 262,
@@ -52451,7 +52449,8 @@
    "basis": "g",
    "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-Stimulance-2026.pdf",
    "egenskaper": [
-    "glutenfri"
+    "glutenfri",
+    "fibrer"
    ],
    "näringsdeklaration": {
     "Energi (kJ)": {
@@ -52521,8 +52520,7 @@
    },
    "text": {
     "ingredienser": "Näringsvärde Per 100 g Per skopa, 6,3 g Glutenfri kostfiberblandning (sojafiber, inulin, resistent stärkelse, gummi arabicum, oligofruktos, cellulosa. kcal Fett (1 E%) timulance innehåller mättat fett"
-   },
-   "ofullständig": true
+   }
   },
   {
    "id": 265,
@@ -52790,8 +52788,7 @@
    "text": {
     "ingredienser": "D-Mannose Bestnr: 76 55 50 Förpackning: 1 burk à 250 g D-Mannose."
    },
-   "egenskaper": [],
-   "ofullständig": true
+   "egenskaper": []
   },
   {
    "id": 268,

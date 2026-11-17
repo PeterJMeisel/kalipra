@@ -83,17 +83,20 @@ NUT_SKIP = re.compile(r'(?i)produktguide|recept|beställningsmall|besta_cc|hur-f
 # och produktbladet anger att uppgifter saknas (se tillverkarens blad).
 NUT_INCOMPLETE = {
     'HYPER-LYS-Anamix-Infant': {},
-    'Produktblad-XLYS-TRY-Glutaridon-–-GA1-2026': {},  # proteinekvivalenter från aminosyror, energin enligt bladet
     'Produktblad-Loprofin-Frukostflingor-Loops-2026': {'ENERC|kcal': None, 'ENERC|kJ': None},  # energin stämmer inte med kolhydraterna
     'Produktblad-Loprofin-aggersattning-2026': {},
-    'Produktblad-Stimulance-2026': {'FIBT': None},  # bladets fiberrad (0 g) motsäger 'olösliga 30 g'
-    'Produktblad-D-Mannose-1': {},
-    'Produktblad-GTO-Oil-Lorenzos-Oil_k2': {},
 }
 # Uppenbara fel i Nutricias blad, rättade (ursprungsvärde i kommentaren)
 NUT_FIX = {
     # Bladet anger fett 14,8 g/100 g; portionsvärdet 0,36 g per 30 g och 4 E% ger ca 1,2 g/100 g
     'Produktblad-PKU-GMPro-Delight-15-20-2026': {'FAT': 1.2},
+    # Tabellens proteinrad (95 g) är summan av aminosyrorna; bladets text anger 79 g proteinekvivalenter (4·79 + 4·4 = 332 kcal)
+    'Produktblad-XLYS-TRY-Glutaridon-–-GA1-2026': {'PROT': 79.0},
+    # Bladets fiberrad anger 0 g; lösliga 46 g + olösliga 30 g = 76 g (stämmer med 220 kcal)
+    'Produktblad-Stimulance-2026': {'FIBT': 76.0},
+    # kcal-värdet hamnar utanför tabellen i textutdraget; värdet står i bladet
+    'Produktblad-D-Mannose-1': {'ENERC|kcal': 398.0},
+    'Produktblad-GTO-Oil-Lorenzos-Oil_k2': {'ENERC|kcal': 807.0},  # Lorenzo's Oil-kolumnen
 }
 
 
