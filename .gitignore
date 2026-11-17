@@ -26,3 +26,4 @@ dist-single
 
 # Produktblad (PDF) för nutritionsprodukter – stora filer, texten (.txt) räcker för att bygga om
 scripts/nutrition/*/*.pdf
+__pycache__/

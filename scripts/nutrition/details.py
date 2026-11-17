@@ -72,6 +72,34 @@ def osmo(txt):
     return out
 
 
+def table_rows_cells(txt):
+    """Som table_rows men kolumnbaserat över hela radbredden (Nutricias blad har tabellen långt till höger)."""
+    unit_re = re.compile('^(?:' + UNITS + r'|g \(E ?%\)|mg \(mmol\)|Kcal)$')
+    val_re = re.compile(r'^(' + NUMV + r')')
+    rows = {}
+    for ln in txt.split('\n'):
+        c = [x for x in re.split(r'\s{2,}', ln.strip()) if x]
+        for i in range(0, len(c) - 1):
+            if not unit_re.match(c[i]):
+                continue
+            m = val_re.match(c[i + 1])
+            if not m:
+                continue
+            if i == 0 and c[i].lower() != 'kcal':
+                continue
+            label = 'Energi' if i == 0 else re.sub(r'\s+', ' ', c[i - 1]).strip(' –-')
+            if c[i] not in ('kJ', 'kcal', 'Kcal') and (not re.match(r'[A-Za-zÅÄÖåäöµμα]', label) or len(label) > 45) or re.search(r'per 100|\d+\s*x\s*\d', label):
+                continue
+            label = re.sub(r'^(varav|därav)\s+', r'\1 ', label)
+            if c[i] in ('kJ', 'kcal', 'Kcal') or label.lower().startswith('energi'):
+                label = 'Energi (kJ)' if c[i] == 'kJ' else 'Energi'
+                c[i] = 'kcal' if c[i] == 'Kcal' else c[i]
+            if label not in rows:
+                # "mg (mmol)": första värdet är mg
+                rows[label] = {'enhet': re.sub(r' \(.*\)$', '', c[i]).replace('μ', 'µ'), 'värde': m.group(1).replace(' ', '')}
+    return rows
+
+
 def table_rows(txt):
     """Alla rader 'etikett  enhet  värde' i näringsdeklarationen (första värdet = per 100 ml/g)."""
     rows = {}
@@ -168,14 +196,14 @@ def column_block(txt, head):
     return None
 
 
-def details_for(txt, whole_sheet=None):
+def details_for(txt, whole_sheet=None, wide=False):
     """txt = texten för en produkt/smak (ett block); whole_sheet = hela bladet för egenskaper och sektioner."""
     sheet = whole_sheet or txt
     d = {
         'vatten_per_100': water(txt) if water(txt) is not None else water(sheet),
         **osmo(txt or sheet),
         'egenskaper': flags(sheet),
-        'näringsdeklaration': table_rows(txt),
+        'näringsdeklaration': table_rows_cells(txt) if wide else table_rows(txt),
         **left_extras(txt or sheet),
     }
     # Sektionerna tas ur produktens eget block (en smak) så att texten inte upprepas för alla smaker

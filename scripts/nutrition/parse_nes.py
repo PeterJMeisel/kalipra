@@ -8,7 +8,7 @@ import re, glob, os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from parse_fk import LABELS
 
-UNIT = r'(?:kcal|kJ|g|mg|µg|μg|mcg|µg RE|μg RE|mg α-TE|mg α‑TE|mg a-TE|mg/mg NE|mg NE|g/100 ml|mmol|mOsm/L|mOsm/kg H20|mOsm/kg H2O)'
+UNIT = r'(?:kcal|kJ|g|mg \(mmol\)|mg NE \(mg\)|mg a-TE|mg α-TE|μg RE|µg RE|mg|µg|μg|mcg|µg RE|μg RE|mg α-TE|mg α‑TE|mg a-TE|mg/mg NE|mg NE|g/100 ml|mmol|mOsm/L|mOsm/kg H20|mOsm/kg H2O)'
 VAL = r'[<≤]?\s?\d[\d,.]*\*{0,3}(?:\s?/\s?[<≤]?\s?\d[\d,.]*\*{0,3})*'
 ROW = re.compile(r'(?:^|\s{2,})(?P<label>(?:[–\-]\s*)?[A-Za-zÅÄÖåäöμα](?:[^ ]| (?! ))*?)?\s+(?P<unit>' + UNIT + r')\s{2,}(?P<val>' + VAL + r')(?:\s{2,}(?P<val2>' + VAL + r'))?(?=\s{2,}|\s*$)')
 
@@ -44,6 +44,9 @@ def parse_text(txt, variants=1):
             if not vals:
                 continue
             key = None
+            # Text i spalten till vänster (t.ex. ingredienslistan) kan hamna som "etikett" – räkna den som tom
+            if label and (',' in label or len(label) > 32) and unit in ('kcal', 'kJ'):
+                label = ''
             if unit == 'kcal' and (not label or label.startswith('Energi')):
                 key = 'ENERC|kcal'
             elif unit == 'kJ' and (not label or label.startswith('Energi')):

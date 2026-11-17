@@ -5,7 +5,7 @@ NUM = r'[≤<]?\s?\d+(?:[,.]\d+)?'
 
 # Etikett i produktbladet -> Kalipra-nyckel. Ordningen spelar roll (mer specifika först).
 LABELS = [
-    (r'^(varav )?laktos$', 'LACT'),
+    (r'^(varav |därav )?laktos$', 'LACT'),
     (r'^(varav )?mättat|^(varav )?mättade', 'FASAT'),
     (r'enkelomättat|enkelomättade', 'FAMS'),
     (r'fleromättat|fleromättade', 'FAPU'),

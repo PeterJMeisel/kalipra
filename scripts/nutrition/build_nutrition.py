@@ -1,7 +1,8 @@
 """Bygger src/data/nutrition.json (sondnäring och kosttillägg) av tolkade produktblad.
 
 Användning: python3 build_nutrition.py <utfil>
-Kataloger: fk/ (Fresubin konsumentsajt), fks/ (Fresenius Kabi vårdsajt), nes/ (Nestlé Health Science).
+Kataloger: fk/ (Fresubin konsumentsajt), fks/ (Fresenius Kabi vårdsajt), nes/ (Nestlé Health Science),
+nut/ (Nutricia vårdgivarsajt; pages.json = produktsidor med PDF-länkar).
 """
 import json, os, re, sys, glob
 from datetime import date
@@ -9,6 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from parse_fk import parse_file
 from parse_nes import parse_text
+from parse_nut import parse_text as parse_nut
 from details import details_for
 
 KEYS = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'SUGAR', 'FASAT', 'FAMS', 'FAPU',
@@ -74,6 +76,57 @@ def nes_products():
     return out
 
 
+# Nutricia: material som inte är produktblad
+NUT_SKIP = re.compile(r'(?i)produktguide|recept|beställningsmall|besta_cc|hur-fungerar|broschyr|patient|guide|sortiment')
+# Uppenbara fel i Nutricias blad, rättade (ursprungsvärde i kommentaren)
+NUT_FIX = {
+    # Bladet anger fett 14,8 g/100 g; portionsvärdet 0,36 g per 30 g och 4 E% ger ca 1,2 g/100 g
+    'Produktblad-PKU-GMPro-Delight-15-20-2026': {'FAT': 1.2},
+}
+
+
+def nut_name_from_stem(stem):
+    n = re.sub(r'^(Produktblad|Produktfaktablad|Produkblad)[-_ ]*', '', stem)
+    n = re.sub(r'[-_ ]*(20\d\d)(-\d+)?.*$|[-_]\d$|[-_]u?ppdaterad$', '', n)
+    n = n.replace('_', ' ').replace('-', ' ').replace('MultiFibre', 'Multi Fibre')
+    return re.sub(r'\s+', ' ', n).strip()
+
+
+def nut_products():
+    pages = json.load(open(os.path.join(HERE, 'nut', 'pages.json')))
+    out, seen_stem, seen_name = [], set(), set()
+    for pg in pages:
+        found = []
+        for u in pg['pdfs']:
+            stem = re.sub(r'\.pdf$', '', u.rsplit('/', 1)[-1])
+            path = os.path.join(HERE, 'nut', stem + '.txt')
+            if NUT_SKIP.search(stem) or stem in seen_stem or not os.path.exists(path):
+                continue
+            txt = open(path, encoding='utf-8', errors='replace').read()
+            basis, v = parse_nut(txt)
+            v.update(NUT_FIX.get(stem, {}))
+            if not check(v):
+                print('Nutricia, tolkades inte:', stem)
+                continue
+            # Pulver: första kolumnen är per 100 g pulver även om bladet också nämner per 100 ml
+            if basis == 'ml' and v['ENERC|kcal'] > 250 and re.search(r'pulver', txt, re.I):
+                basis = 'g'
+            seen_stem.add(stem)
+            found.append((stem, u, txt, basis, v))
+        for stem, u, txt, basis, v in found:
+            name = clean(pg['title']) if len(found) == 1 else nut_name_from_stem(stem)
+            # Kombinerade blad (pulver + LQ/Liquid): första kolumnen gäller pulvret, så namnet tas ur bladets rubrik
+            if basis == 'g' and re.search(r'\bLQ\b|Liquid', name):
+                name = clean(next(l for l in txt.split('\n') if l.strip()))
+            key = ' '.join(sorted(re.findall(r'\w+', name.lower())))  # "PKU Anamix Junior" = "Anamix Junior PKU"
+            if key in seen_name:
+                continue
+            seen_name.add(key)
+            out.append(dict(manufacturer='Nutricia', product=name, flavour=None, name=name,
+                            basis=basis, category=None, url=u, values=v, _txt=txt))
+    return out
+
+
 def free_sugar(p, txt):
     """Fritt socker = sockerarter minus laktos (laktos från mjölkråvara räknas inte som fritt socker enligt NNR).
     Laktos tas från näringsdeklarationen ("varav laktos"); saknas raden men bladet säger laktosfri räknas laktos = 0.
@@ -92,7 +145,7 @@ def free_sugar(p, txt):
 
 
 # Sondnäring (allt annat räknas som kosttillägg: näringsdrycker, puddingar, berikning, förtjockning m.m.)
-SOND = re.compile(r'^(NutriChef|Compleat (Mix|Mix Protein|paediatric Mix)$|Isosource|MiniMax Barnsondnäring|Novasource|Peptamen)')
+SOND = re.compile(r'^(Nutrison|Nutrini(?!drink)|NutriniMax|Infatrini Peptisorb Sond|NutriChef|Compleat (Mix|Mix Protein|paediatric Mix)$|Isosource|MiniMax Barnsondnäring|Novasource|Peptamen)')
 
 
 def category(p):
@@ -102,12 +155,12 @@ def category(p):
 
 
 def main(dst):
-    prods = fk_products() + nes_products()
+    prods = fk_products() + nes_products() + nut_products()
     for p in prods:
         p['category'] = category(p)
     for p in prods:
         p['values']['SUGFR'] = free_sugar(p, p.get('_txt', ''))
-        p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''))
+        p['details'] = details_for(p.get('_block') or p.get('_txt', ''), p.get('_txt', ''), wide=p['manufacturer'] == 'Nutricia')
         w = p['details'].get('vatten_per_100')
         if w is not None and p['basis'] == 'ml':
             p['values']['WATER'] = w
@@ -124,7 +177,7 @@ def main(dst):
                     | ({'prepared': [p['prepared'].get(k) for k in KEYS]} if p.get('prepared') else {}))
     data = {
         'id': 'nutrition',
-        'source': 'Tillverkarnas produktblad (Fresenius Kabi, Nestlé Health Science), hämtade '
+        'source': 'Tillverkarnas produktblad (Fresenius Kabi, Nestlé Health Science, Nutricia), hämtade '
                   + date.today().isoformat(),
         'fetched': date.today().isoformat(),
         'keys': KEYS,
@@ -139,7 +192,7 @@ def main(dst):
     json.dump(data, open(dst, 'w'), ensure_ascii=False, separators=(',', ':'))
     # Övrig information ur bladen i en egen fil (laddas inte in i appen ännu)
     det = {'note': 'Övrig information ur tillverkarnas produktblad, samma ordning/id som foods i nutrition.json. '
-                   'Fullständig text finns i scripts/nutrition/{fk,fks,nes}/*.txt.',
+                   'Fullständig text finns i scripts/nutrition/{fk,fks,nes,nut}/*.txt.',
            'fetched': date.today().isoformat(),
            'products': [{'id': i, 'name': p['name'], 'product': p['product'], 'flavour': p.get('flavour'), 'manufacturer': p['manufacturer'],
                          'category': p.get('category'), 'basis': p['basis'], 'url': p['url'],

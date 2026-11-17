@@ -99,7 +99,7 @@ export function ProductSheet({ foodNumber, onClose }: { foodNumber: number; onCl
                     const vals = group.map(f)
                     const same = vals.every(v => v === vals[0])
                     return (
-                      <tr key={l} className={/^(varav|av vilka|–)/i.test(l) ? 'sub' : ''}>
+                      <tr key={l} className={/^(varav|därav|av vilka|–)/i.test(l) ? 'sub' : ''}>
                         <th scope="row">{l}</th>
                         {same ? <td colSpan={group.length}>{vals[0]}</td> : vals.map((v, i) => <td key={group[i].id} className="diff">{v}</td>)}
                       </tr>
