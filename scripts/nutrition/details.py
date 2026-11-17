@@ -187,14 +187,14 @@ def galactosemia_ok(txt):
             if not cell:
                 continue
             before = ln[cell.start():m.start()]
-            if re.search(r'kontraindikation|(ej|inte)\s+(lämplig|avsedd)', before, re.I):
+            if re.search(r'kontraindikation|olämplig|(ej|inte)\s+(lämplig|avsedd)', before, re.I):
                 continue
             if not re.search(r'lämplig', before, re.I):
                 # "lämplig" kan stå på raden ovanför i samma kolumn
                 if i == 0:
                     continue
                 prev = next((c for c in cell_re.finditer(lines[i - 1]) if c.start() < cell.start() + 30 and c.end() > cell.start()), None)
-                if not prev or not re.search(r'lämplig[^.]*$', prev.group(0), re.I) or re.search(r'(ej|inte)\s+lämplig[^.]*$|kontraindikation', prev.group(0), re.I):
+                if not prev or not re.search(r'lämplig[^.]*$', prev.group(0), re.I) or re.search(r'(olämplig|(ej|inte)\s+lämplig)[^.]*$|kontraindikation', prev.group(0), re.I):
                     continue
                 return True
             # "lämplig" står först i cellen: kolla om raden ovanför i samma kolumn slutar med Ej/Inte
@@ -226,7 +226,12 @@ def flags(txt):
     low = txt.lower()
     out = [name for name, pat in FLAGS if re.search(pat, low)]
     # Ovanlig sjukdom: den som nämns oftast (blad nämner ibland andra produkter i serien)
-    hits = {name: len(re.findall(word, txt, re.I)) + len(re.findall(abbr, txt)) for name, word, abbr in RARE}
+    flat = re.sub(r'\s+', ' ', txt)
+    neg = re.compile(r'(olämplig|ej lämplig|inte lämplig|kontraindik|ej avsedd|inte avsedd|störningar såsom)[^.]{0,120}$', re.I)
+
+    def count(pat, flags):
+        return sum(1 for m in re.finditer(pat, flat, flags) if not neg.search(flat[max(0, m.start() - 120):m.start()]))
+    hits = {name: count(word, re.I) + count(abbr, 0) for name, word, abbr in RARE}
     top = max(hits.values())
     if top:
         out += [f'anpassad för {n}' for n, c in hits.items() if c == top]

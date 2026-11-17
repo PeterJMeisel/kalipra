@@ -4,7 +4,7 @@ Användning: python3 build_nutrition.py <utfil>
 Kataloger: fk/ (Fresubin konsumentsajt), fks/ (Fresenius Kabi vårdsajt), nes/ (Nestlé Health Science),
 nut/ (Nutricia vårdgivarsajt; pages.json = produktsidor med PDF-länkar).
 """
-import json, os, re, sys, glob
+import json, os, re, sys, glob, urllib.parse
 from datetime import date
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -99,13 +99,16 @@ def nut_products():
     for pg in pages:
         found = []
         for u in pg['pdfs']:
-            stem = re.sub(r'\.pdf$', '', u.rsplit('/', 1)[-1])
+            stem = re.sub(r'\.pdf$', '', urllib.parse.unquote(u.rsplit('/', 1)[-1]))
             path = os.path.join(HERE, 'nut', stem + '.txt')
             if NUT_SKIP.search(stem) or stem in seen_stem or not os.path.exists(path):
                 continue
             txt = open(path, encoding='utf-8', errors='replace').read()
             basis, v = parse_nut(txt)
             v.update(NUT_FIX.get(stem, {}))
+            # Ibland hamnar kJ-värdet på kcal-raden i textutdraget
+            if not check(v) and v.get('ENERC|kcal') and check({**v, 'ENERC|kcal': v['ENERC|kcal'] / 4.184}):
+                v['ENERC|kJ'], v['ENERC|kcal'] = v['ENERC|kcal'], round(v['ENERC|kcal'] / 4.184)
             if not check(v):
                 print('Nutricia, tolkades inte:', stem)
                 continue
@@ -118,7 +121,8 @@ def nut_products():
             name = clean(pg['title']) if len(found) == 1 else nut_name_from_stem(stem)
             # Kombinerade blad (pulver + LQ/Liquid): första kolumnen gäller pulvret, så namnet tas ur bladets rubrik
             if basis == 'g' and re.search(r'\bLQ\b|Liquid', name):
-                name = clean(next(l for l in txt.split('\n') if l.strip()))
+                head = next((clean(l) for l in txt.split('\n') if l.strip() and not re.search(r'\b20\d\d\b|^\d|^METABOLICS$', l.strip())), '')
+                name = head if 3 < len(head) < 50 else name
             key = ' '.join(sorted(re.findall(r'\w+', name.lower())))  # "PKU Anamix Junior" = "Anamix Junior PKU"
             if key in seen_name:
                 continue
@@ -150,7 +154,7 @@ SOND = re.compile(r'^(Nutrison|Nutrini(?!drink)|NutriniMax|Infatrini Peptisorb S
 
 
 def category(p):
-    if p.get('category') == 'Sondnäring' or SOND.match(p['product']):
+    if p.get('category') == 'Sondnäring' or SOND.match(p['product']) or re.match(r'(?i)nutrison', p['product']):
         return 'Sondnäring'
     return 'Kosttillägg'
 
@@ -176,7 +180,7 @@ def main(dst):
             }
         eg = p['details'].setdefault('egenskaper', [])
         # Diabetesanpassade produkter (enligt tillverkarens produktnamn/indikation)
-        if re.match(r'(Diben|Diasip|Nutrison advanced Diason|Diason)', p['product'], re.I) and 'diabetesanpassad' not in eg:
+        if re.search(r'\b(Diben|Diasip|Diason)\b', p['product'], re.I) and 'diabetesanpassad' not in eg:
             eg.append('diabetesanpassad')
         # Extra fiber: minst 1,5 g/100 ml (vätska) eller 3 g/100 g (pulver), eller fiber nämns på bladet
         fib = p['values'].get('FIBT') or 0
