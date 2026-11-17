@@ -192,7 +192,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
           {meals.length > 1 && (
             <button type="button" className={`ws-remove ${armed === `meal:${currentDay}:${meal}` ? 'armed' : ''}`} onClick={() => removeMeal(meal)}>
-              {armed === `meal:${currentDay}:${meal}` ? `Ta bort ${meal.toLowerCase()} med ${mealEntries.length} livsmedel? Klicka igen` : `Ta bort ${meal.toLowerCase()}`}
+              {armed === `meal:${currentDay}:${meal}` ? `Ta bort måltiden med ${mealEntries.length} livsmedel? Klicka igen` : 'Ta bort måltid'}
             </button>
           )}
         </div>
