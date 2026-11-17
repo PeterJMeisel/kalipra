@@ -321,10 +321,12 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
   // Som i Dietist Net: utan sökord visas listan i bokstavsordning.
   const hits = useMemo(() => {
     if (query.trim()) return db.search(query, 120, sources)
-    return db.foods
-      .filter(f => sources.includes(f.source))
-      .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-      .slice(0, 300)
+    // Utan sökord: nutritionsprodukter (näringsdrycker, sondnäring m.m.) först, sedan övriga i bokstavsordning
+    const byName = (a: Food, b: Food) => a.name.localeCompare(b.name, 'sv')
+    const all = db.foods.filter(f => sources.includes(f.source))
+    const nutr = all.filter(f => f.source === 'nutrition').sort(byName)
+    const rest = all.filter(f => f.source !== 'nutrition').sort(byName)
+    return [...nutr, ...rest].slice(0, Math.max(300, nutr.length + 100))
   }, [db, query, sources])
 
   function toggleSource(id: SourceId) {
