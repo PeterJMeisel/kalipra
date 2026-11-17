@@ -83,7 +83,6 @@ NUT_SKIP = re.compile(r'(?i)produktguide|recept|beställningsmall|besta_cc|hur-f
 # och produktbladet anger att uppgifter saknas (se tillverkarens blad).
 NUT_INCOMPLETE = {
     'HYPER-LYS-Anamix-Infant': {},
-    'Produktblad-Loprofin-Frukostflingor-Loops-2026': {'ENERC|kcal': None, 'ENERC|kJ': None},  # energin stämmer inte med kolhydraterna
     'Produktblad-Loprofin-aggersattning-2026': {},
 }
 # Uppenbara fel i Nutricias blad, rättade (ursprungsvärde i kommentaren)
@@ -97,6 +96,30 @@ NUT_FIX = {
     # kcal-värdet hamnar utanför tabellen i textutdraget; värdet står i bladet
     'Produktblad-D-Mannose-1': {'ENERC|kcal': 398.0},
     'Produktblad-GTO-Oil-Lorenzos-Oil_k2': {'ENERC|kcal': 807.0},  # Lorenzo's Oil-kolumnen
+    # Svenska bladets energi (182 kcal/767 kJ) stämmer inte och protein saknas; värden från Nutricia UK (övriga värden lika)
+    'Produktblad-Loprofin-Frukostflingor-Loops-2026': {'ENERC|kcal': 359.0, 'ENERC|kJ': 1502.0, 'PROT': 0.32},
+}
+# Värden som hämtats från annan källa än det svenska bladet: visas i produktbladet med hänvisning,
+# och raderna i näringsdeklarationen ersätts/läggs till
+NUT_OTHER_SOURCE = {
+    'Produktblad-Loprofin-Frukostflingor-Loops-2026': {
+        'källa': 'Nutricia UK – Loprofin Cereal Loops',
+        'url': 'https://www.nutricia.co.uk/hcp/products/loprofin-cereal-loops/',
+        'hämtad': '2026-11-17',
+        'not': 'Energi och protein är hämtade från Nutricia UK eftersom det svenska produktbladets energiuppgift '
+               '(182 kcal) inte stämmer med näringsinnehållet. Övriga värden är desamma i båda källorna.',
+        'rader': {'Energi (kJ)': ('kJ', '1502'), 'Energi': ('kcal', '359'), 'Protein': ('g', '0,32')},
+    },
+}
+# Andra produkten i ett kombinerat blad (egen kolumn): stem -> (namn, värden, deklarationsrader)
+NUT_SECOND_COLUMN = {
+    'Produktblad-GTO-Oil-Lorenzos-Oil_k2': ('GTO Oil',
+        {'ENERC|kcal': 819.0, 'ENERC|kJ': 3367.0, 'FAT': 91.0, 'FASAT': 3.8, 'FAMS': 83.4, 'FAPU': 3.8},
+        {'Energi (kJ)': ('kJ', '3367'), 'Energi': ('kcal', '819'), 'Fett (100 E%)': ('g', '91'), 'mättat': ('g', '3,8'),
+         'enkelomättat': ('g', '83,4'), 'fleromättat': ('g', '3,8'), 'C16:0/ Palmitinsyra': ('mg', '870'),
+         'C17:0/ Margarinsyra': ('mg', '174'), 'C17:1/ Heptadecensyra': ('mg', '174'), 'C18:0/ Stearinsyra': ('mg', '2610'),
+         'C18:1/ Oljesyra': ('mg', '79170'), 'C18:2/ Linolsyra': ('mg', '3480'), 'C18:3/ a-linolensyra': ('mg', '174'),
+         'C20:1/ Gadoleinsyra': ('mg', '348')}),
 }
 
 
@@ -148,7 +171,12 @@ def nut_products():
                 continue
             seen_name.add(key)
             out.append(dict(manufacturer='Nutricia', product=name, flavour=None, name=name,
-                            basis=basis, category=None, url=u, values=v, _txt=txt, incomplete=incomplete))
+                            basis=basis, category=None, url=u, values=v, _txt=txt, incomplete=incomplete, _stem=stem))
+            if stem in NUT_SECOND_COLUMN:
+                nm2, v2, _ = NUT_SECOND_COLUMN[stem]
+                seen_name.add(' '.join(sorted(re.findall(r'\w+', nm2.lower()))))
+                out.append(dict(manufacturer='Nutricia', product=nm2, flavour=None, name=nm2, basis=basis, category=None,
+                                url=u, values=dict(v2), _txt=txt, incomplete=False, _stem=stem, _second=True))
     return out
 
 
@@ -218,6 +246,21 @@ def main(dst):
             eg.remove('fibrer')
         if p.get('incomplete'):
             p['details']['ofullständig'] = True
+        stem = p.get('_stem')
+        if p.get('_second'):
+            p['details']['näringsdeklaration'] = {k: {'enhet': e, 'värde': x} for k, (e, x) in NUT_SECOND_COLUMN[stem][2].items()}
+        elif stem in NUT_OTHER_SOURCE:
+            src = NUT_OTHER_SOURCE[stem]
+            nd = p['details'].setdefault('näringsdeklaration', {})
+            for k, (e, x) in src['rader'].items():
+                if k in nd or 'Fiber' not in nd:
+                    nd[k] = {'enhet': e, 'värde': x}
+                else:  # ny rad läggs efter fiberraden
+                    items = list(nd.items())
+                    i = [a for a, _ in items].index('Fiber') + 1
+                    nd = dict(items[:i] + [(k, {'enhet': e, 'värde': x})] + items[i:])
+            p['details']['näringsdeklaration'] = nd
+            p['details']['annan_källa'] = {k: src[k] for k in ('källa', 'url', 'hämtad', 'not')}
         w = p['details'].get('vatten_per_100')
         if w is not None and p['basis'] == 'ml':
             p['values']['WATER'] = w

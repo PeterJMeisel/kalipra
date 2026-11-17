@@ -381,7 +381,7 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
           <input ref={gramsRef} inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') add() }} aria-label="Mängd" />
         </label>
-        <button type="button" className="primary" disabled={!picked} onClick={add}>Lägg till {meal.toLowerCase()}</button>
+        <button type="button" className="primary" disabled={!picked} onClick={add} title={`Lägg till i ${meal.toLowerCase()}`}>Lägg till</button>
       </div>
       {multi && (
         // Källor: diskret knapp längst ner; öppnas för att bocka i vilka databaser som ska sökas

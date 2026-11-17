@@ -41751,11 +41751,11 @@
    "näringsdeklaration": {
     "Energi (kJ)": {
      "enhet": "kJ",
-     "värde": "767"
+     "värde": "1502"
     },
     "Energi": {
      "enhet": "kcal",
-     "värde": "182"
+     "värde": "359"
     },
     "Fett": {
      "enhet": "g",
@@ -41777,6 +41777,10 @@
      "enhet": "g",
      "värde": "7,0"
     },
+    "Protein": {
+     "enhet": "g",
+     "värde": "0,32"
+    },
     "fenylalanin": {
      "enhet": "mg",
      "värde": "6,2"
@@ -41796,7 +41800,12 @@
    "egenskaper": [
     "fibrer"
    ],
-   "ofullständig": true
+   "annan_källa": {
+    "källa": "Nutricia UK – Loprofin Cereal Loops",
+    "url": "https://www.nutricia.co.uk/hcp/products/loprofin-cereal-loops/",
+    "hämtad": "2026-11-17",
+    "not": "Energi och protein är hämtade från Nutricia UK eftersom det svenska produktbladets energiuppgift (182 kcal) inte stämmer med näringsinnehållet. Övriga värden är desamma i båda källorna."
+   }
   },
   {
    "id": 204,
@@ -52120,6 +52129,78 @@
   },
   {
    "id": 262,
+   "name": "GTO Oil",
+   "product": "GTO Oil",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "ml",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-GTO-Oil-Lorenzos-Oil_k2.pdf",
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "3367"
+    },
+    "Energi": {
+     "enhet": "kcal",
+     "värde": "819"
+    },
+    "Fett (100 E%)": {
+     "enhet": "g",
+     "värde": "91"
+    },
+    "mättat": {
+     "enhet": "g",
+     "värde": "3,8"
+    },
+    "enkelomättat": {
+     "enhet": "g",
+     "värde": "83,4"
+    },
+    "fleromättat": {
+     "enhet": "g",
+     "värde": "3,8"
+    },
+    "C16:0/ Palmitinsyra": {
+     "enhet": "mg",
+     "värde": "870"
+    },
+    "C17:0/ Margarinsyra": {
+     "enhet": "mg",
+     "värde": "174"
+    },
+    "C17:1/ Heptadecensyra": {
+     "enhet": "mg",
+     "värde": "174"
+    },
+    "C18:0/ Stearinsyra": {
+     "enhet": "mg",
+     "värde": "2610"
+    },
+    "C18:1/ Oljesyra": {
+     "enhet": "mg",
+     "värde": "79170"
+    },
+    "C18:2/ Linolsyra": {
+     "enhet": "mg",
+     "värde": "3480"
+    },
+    "C18:3/ a-linolensyra": {
+     "enhet": "mg",
+     "värde": "174"
+    },
+    "C20:1/ Gadoleinsyra": {
+     "enhet": "mg",
+     "värde": "348"
+    }
+   },
+   "text": {
+    "ingredienser": "Lorenzo’s Oil Bestnr: 75 89 38 Förpackning: 1 flaska à 500 ml Glycerol trioleate-olja, glycerol trierucate-olja. GTO Oil"
+   },
+   "egenskaper": []
+  },
+  {
+   "id": 263,
    "name": "Locasol",
    "product": "Locasol",
    "flavour": null,
@@ -52269,7 +52350,7 @@
    "egenskaper": []
   },
   {
-   "id": 263,
+   "id": 264,
    "name": "Energivit",
    "product": "Energivit",
    "flavour": null,
@@ -52440,7 +52521,7 @@
    }
   },
   {
-   "id": 264,
+   "id": 265,
    "name": "Stimulance",
    "product": "Stimulance",
    "flavour": null,
@@ -52523,7 +52604,7 @@
    }
   },
   {
-   "id": 265,
+   "id": 266,
    "name": "Paediatric Seravit",
    "product": "Paediatric Seravit",
    "flavour": null,
@@ -52683,7 +52764,7 @@
    "egenskaper": []
   },
   {
-   "id": 266,
+   "id": 267,
    "name": "MCT-oil",
    "product": "MCT-oil",
    "flavour": null,
@@ -52742,7 +52823,7 @@
    }
   },
   {
-   "id": 267,
+   "id": 268,
    "name": "D-mannose",
    "product": "D-mannose",
    "flavour": null,
@@ -52791,7 +52872,7 @@
    "egenskaper": []
   },
   {
-   "id": 268,
+   "id": 269,
    "name": "Heparon Junior",
    "product": "Heparon Junior",
    "flavour": null,
@@ -52998,7 +53079,7 @@
    }
   },
   {
-   "id": 269,
+   "id": 270,
    "name": "Protifar",
    "product": "Protifar",
    "flavour": null,
@@ -53073,7 +53154,7 @@
    }
   },
   {
-   "id": 270,
+   "id": 271,
    "name": "Branched Chain Amino Acid Module",
    "product": "Branched Chain Amino Acid Module",
    "flavour": null,
@@ -53184,7 +53265,7 @@
    }
   },
   {
-   "id": 271,
+   "id": 272,
    "name": "Kindergen",
    "product": "Kindergen",
    "flavour": null,
@@ -53382,7 +53463,7 @@
    }
   },
   {
-   "id": 272,
+   "id": 273,
    "name": "Monogen",
    "product": "Monogen",
    "flavour": null,
@@ -53597,7 +53678,7 @@
    }
   },
   {
-   "id": 273,
+   "id": 274,
    "name": "Basic F",
    "product": "Basic F",
    "flavour": null,
@@ -53790,7 +53871,7 @@
    }
   },
   {
-   "id": 274,
+   "id": 275,
    "name": "Nutrical",
    "product": "Nutrical",
    "flavour": null,
@@ -53864,7 +53945,7 @@
    }
   },
   {
-   "id": 275,
+   "id": 276,
    "name": "Duocal",
    "product": "Duocal",
    "flavour": null,
@@ -53953,7 +54034,7 @@
    }
   },
   {
-   "id": 276,
+   "id": 277,
    "name": "Galactomin 19",
    "product": "Galactomin 19",
    "flavour": null,
@@ -54137,7 +54218,7 @@
    }
   },
   {
-   "id": 277,
+   "id": 278,
    "name": "Fantomalt",
    "product": "Fantomalt",
    "flavour": null,
@@ -54181,7 +54262,7 @@
    }
   },
   {
-   "id": 278,
+   "id": 279,
    "name": "Liquigen",
    "product": "Liquigen",
    "flavour": null,
