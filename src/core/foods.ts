@@ -131,8 +131,16 @@ export class FoodDatabase {
   }
 }
 
+// Accenter tas bort (créme → creme, ü → u) men å, ä och ö behålls som egna bokstäver
+const SWEDISH: Record<string, string> = { å: '\u0001', ä: '\u0002', ö: '\u0003' }
+const SWEDISH_BACK: Record<string, string> = { '\u0001': 'å', '\u0002': 'ä', '\u0003': 'ö' }
+
 export function normalize(s: string): string {
-  return s.toLowerCase().replace(/[,()/%]/g, ' ').replace(/\s+/g, ' ').trim()
+  return s.toLowerCase().normalize('NFC')
+    .replace(/[åäö]/g, c => SWEDISH[c])
+    .normalize('NFD').replace(/\p{M}/gu, '')
+    .replace(/[\u0001-\u0003]/g, c => SWEDISH_BACK[c])
+    .replace(/[,()/%]/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 /** Summera näringsinnehållet för en mängd (gram) av ett livsmedel. */

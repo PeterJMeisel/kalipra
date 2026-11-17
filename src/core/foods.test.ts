@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import data from '../data/livsmedel.json'
-import { FoodDatabase, summarizeDiary, type FoodData } from './foods'
+import { FoodDatabase, normalize, summarizeDiary, type FoodData } from './foods'
 import { energyDistribution } from './nutrients'
 import { microReferences, macroReferences } from './references'
 import type { DiaryEntry } from './types'
@@ -10,6 +10,13 @@ const db = new FoodDatabase(data as unknown as FoodData)
 describe('livsmedelsdatabasen', () => {
   it('innehåller hela databasen', () => {
     expect(db.foods.length).toBeGreaterThan(2500)
+  })
+
+  it('söker utan accenter men skiljer på å, ä och ö', () => {
+    expect(normalize('Crème brûlée Créme')).toBe('creme brulee creme')
+    expect(normalize('Müsli')).toBe('musli')
+    expect(normalize('Ärtsoppa Ål Öl')).toBe('ärtsoppa ål öl')
+    expect(normalize('ärt')).not.toBe(normalize('art'))
   })
 
   it('hittar livsmedel på flera ord oavsett ordning', () => {

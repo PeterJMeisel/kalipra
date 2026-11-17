@@ -41801,10 +41801,11 @@
     "fibrer"
    ],
    "annan_källa": {
+    "gäller": "Energi",
     "källa": "Nutricia UK – Loprofin Cereal Loops",
     "url": "https://www.nutricia.co.uk/hcp/products/loprofin-cereal-loops/",
     "hämtad": "2026-11-17",
-    "not": "Energi och protein är hämtade från Nutricia UK eftersom det svenska produktbladets energiuppgift (182 kcal) inte stämmer med näringsinnehållet. Övriga värden är desamma i båda källorna."
+    "not": "Energin är hämtad från Nutricia UK eftersom det svenska produktbladets energiuppgift (182 kcal) inte stämmer med näringsinnehållet. Övriga värden är desamma i båda källorna."
    }
   },
   {

@@ -18,7 +18,7 @@ type Detail = {
   osmolalitet?: number
   egenskaper?: string[]
   ofullständig?: boolean
-  annan_källa?: { källa: string; url: string; hämtad: string; not: string }
+  annan_källa?: { gäller: string; källa: string; url: string; hämtad: string; not: string }
   iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number | string; rumstempererad: number | string }[]; källa?: string; källa_url?: string; källa_not?: string; källa_utgivare?: string; källa_hämtad?: string }
   'näringsdeklaration'?: Record<string, { enhet: string; värde: string }>
   fettkälla?: string
@@ -68,6 +68,21 @@ function rdiPct(label: string, r: { enhet: string; värde: string } | undefined,
 const fmtCell = (v: string) => {
   const [a, b] = v.split('\u2003')
   return b ? <>{a}<span className="ps-rdi">{b}</span></> : a
+}
+
+// IDDSI:s standardfärger per nivå (bakgrund, text)
+const IDDSI_COLOR: Record<string, [string, string]> = {
+  '0': ['#ffffff', '#222'], '1': ['#9e9e9e', '#fff'], '2': ['#e8a3c4', '#222'], '3': ['#f5d33b', '#222'],
+  '4': ['#5bb35b', '#fff'], '5': ['#f08c2e', '#fff'], '6': ['#3a7dc9', '#fff'], '7': ['#222222', '#fff'],
+}
+function iddsiBadgeStyle(nivå: string): React.CSSProperties {
+  const levels = (nivå.match(/\d/g) ?? []).filter(l => IDDSI_COLOR[l])
+  if (levels.length === 0) return {}
+  const a = IDDSI_COLOR[levels[0]], b = IDDSI_COLOR[levels[levels.length - 1]]
+  return {
+    background: a === b ? a[0] : `linear-gradient(135deg, ${a[0]} 50%, ${b[0]} 50%)`,
+    color: a === b ? a[1] : '#222', textShadow: a === b ? undefined : '0 0 3px #fff',
+  }
 }
 
 const flavourName = (d: Detail) => d.flavour ?? 'Neutral/ingen smak'
@@ -122,7 +137,7 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
 
             {me.iddsi && (
               <div className="ps-iddsi" aria-label={`IDDSI nivå ${me.iddsi.nivå}`}>
-                <div className="ps-iddsi-badge"><span>IDDSI</span><strong>{me.iddsi.nivå}</strong></div>
+                <div className="ps-iddsi-badge" style={iddsiBadgeStyle(me.iddsi.nivå)}><span>IDDSI</span><strong>{me.iddsi.nivå}</strong></div>
                 <div>
                   <p className="ps-iddsi-title">IDDSI nivå {me.iddsi.nivå}{me.iddsi.namn ? ` – ${me.iddsi.namn}` : ''}</p>
                   {me.iddsi.not && <p className="ps-iddsi-note">{me.iddsi.not}</p>}
@@ -198,7 +213,7 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
             </p>
             {me.annan_källa && (
               <p className="ps-foot">
-                Vissa värden: <a href={me.annan_källa.url} target="_blank" rel="noopener noreferrer">{me.annan_källa.källa}</a>
+                {me.annan_källa.gäller}: <a href={me.annan_källa.url} target="_blank" rel="noopener noreferrer">{me.annan_källa.källa}</a>
                 <span className="muted"> · Hämtat {me.annan_källa.hämtad}. {me.annan_källa.not}</span>
               </p>
             )}

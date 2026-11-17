@@ -701,7 +701,7 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ps-chip { background: var(--tint); color: var(--ink); border: 1.5px solid color-mix(in srgb, var(--brand) 45%, transparent); border-radius: 8px; padding: 5px 12px; font-size: 14px; font-weight: 600 }
 .ps-iddsi { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px }
 .ps-iddsi-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--line); color: var(--brand); line-height: 1 }
-.ps-iddsi-badge span { font-size: 9px; font-weight: 600; letter-spacing: .06em; color: var(--muted) }
+.ps-iddsi-badge span { font-size: 9px; font-weight: 600; letter-spacing: .06em; opacity: .85 }
 .ps-iddsi-badge strong { font-size: 16px; margin-top: 2px }
 .ps-iddsi-title { margin: 1px 0 2px; font-weight: 600; font-size: 14px }
 .ps-iddsi-note { margin: 0; font-size: 13px; color: var(--muted) }

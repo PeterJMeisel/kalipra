@@ -96,19 +96,21 @@ NUT_FIX = {
     # kcal-värdet hamnar utanför tabellen i textutdraget; värdet står i bladet
     'Produktblad-D-Mannose-1': {'ENERC|kcal': 398.0},
     'Produktblad-GTO-Oil-Lorenzos-Oil_k2': {'ENERC|kcal': 807.0},  # Lorenzo's Oil-kolumnen
-    # Svenska bladets energi (182 kcal/767 kJ) stämmer inte och protein saknas; värden från Nutricia UK (övriga värden lika)
+    # Svenska bladets energi (182 kcal/767 kJ) stämmer inte: energin från Nutricia UK (övriga värden lika).
+    # Protein 0,32 g står i det svenska bladet men hamnar fel i textutdraget.
     'Produktblad-Loprofin-Frukostflingor-Loops-2026': {'ENERC|kcal': 359.0, 'ENERC|kJ': 1502.0, 'PROT': 0.32},
 }
 # Värden som hämtats från annan källa än det svenska bladet: visas i produktbladet med hänvisning,
 # och raderna i näringsdeklarationen ersätts/läggs till
 NUT_OTHER_SOURCE = {
     'Produktblad-Loprofin-Frukostflingor-Loops-2026': {
+        'gäller': 'Energi',
         'källa': 'Nutricia UK – Loprofin Cereal Loops',
         'url': 'https://www.nutricia.co.uk/hcp/products/loprofin-cereal-loops/',
         'hämtad': '2026-11-17',
-        'not': 'Energi och protein är hämtade från Nutricia UK eftersom det svenska produktbladets energiuppgift '
+        'not': 'Energin är hämtad från Nutricia UK eftersom det svenska produktbladets energiuppgift '
                '(182 kcal) inte stämmer med näringsinnehållet. Övriga värden är desamma i båda källorna.',
-        'rader': {'Energi (kJ)': ('kJ', '1502'), 'Energi': ('kcal', '359'), 'Protein': ('g', '0,32')},
+        'rader': {'Energi (kJ)': ('kJ', '1502'), 'Energi': ('kcal', '359'), 'Protein': ('g', '0,32')},  # protein ur svenska bladet
     },
 }
 # Andra produkten i ett kombinerat blad (egen kolumn): stem -> (namn, värden, deklarationsrader)
@@ -260,7 +262,7 @@ def main(dst):
                     i = [a for a, _ in items].index('Fiber') + 1
                     nd = dict(items[:i] + [(k, {'enhet': e, 'värde': x})] + items[i:])
             p['details']['näringsdeklaration'] = nd
-            p['details']['annan_källa'] = {k: src[k] for k in ('källa', 'url', 'hämtad', 'not')}
+            p['details']['annan_källa'] = {k: src[k] for k in ('gäller', 'källa', 'url', 'hämtad', 'not')}
         w = p['details'].get('vatten_per_100')
         if w is not None and p['basis'] == 'ml':
             p['values']['WATER'] = w
