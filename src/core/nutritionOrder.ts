@@ -1,10 +1,11 @@
 /**
  * Ordning för nutritionsprodukter i livsmedelssöket utan sökord: kosttillägg först, sedan sondnäring.
- * Vanligast använda produkttyperna högst upp; inom varje grupp står motsvarande produkter från
+ * Växtbaserade produkter högst upp, därefter vanligast använda produkttyperna; inom varje grupp står motsvarande produkter från
  * Fresenius Kabi, Nutricia och Nestlé bredvid varandra. Produkter som inte matchar någon grupp
  * (t.ex. metabola specialprodukter) kommer sist i bokstavsordning.
  */
 const KOST: RegExp[][] = [
+  [/^Fresubin PLANT-BASED Drink/, /^Nutridrink PlantBased/],
   [/^Fresubin ENERGY Drink/, /^Nutridrink( –|$)/, /^Resource Activ/],
   [/^Fresubin ENERGY FIBRE Drink/, /^Nutridrink Multi Fibre/],
   [/^Fresubin PROTEIN ENERGY Drink/, /^Nutridrink Protein( –|$)/, /^Resource Protein/],
@@ -14,7 +15,6 @@ const KOST: RegExp[][] = [
   [/^Fresubin 3\.2 KCAL/],
   [/^Fresubin JUCY/, /^Nutridrink Jucy/, /^Resource Ultra Fruit/, /^ProvideXtra/],
   [/^Fresubin YODRINK/],
-  [/^Fresubin PLANT-BASED Drink/, /^Nutridrink PlantBased/],
   [/^Fresubin 2 KCAL CRÈME/, /^Fresubin YOCRÈME/, /^Fresubin DESSERT/],
   [/^Fresubin 5 KCAL Shot/, /^Calogen/, /^Resource Addera/, /^Fantomalt/, /^Duocal/],
   [/^Fresubin PROTEIN POWDER/, /^Protifar/, /^OptiXpress/],
@@ -27,6 +27,7 @@ const KOST: RegExp[][] = [
   [/^PreOp/, /^Oral Impact/, /^Souvenaid/, /^Modulen/],
 ]
 const SOND: RegExp[][] = [
+  [/^Fresubin SOYA/, /^Nutrison Plant/i],
   [/^Fresubin ORIGINAL$/, /^Nutrison$/, /^Isosource Standard$/],
   [/^Fresubin ORIGINAL FIBRE$/, /^Nutrison Multi Fibre/, /^Isosource Standard Fibre/],
   [/^Fresubin ENERGY$/, /^Nutrison Energy( OpTri.*)?$/i, /^Isosource Energy$/],
@@ -36,7 +37,6 @@ const SOND: RegExp[][] = [
   [/^Fresubin INTENSIVE/, /^Nutrison Protein Intense/, /^Peptamen Intense/],
   [/^Survimed/, /^Nutrison Advanced Peptisorb/, /^Peptamen (AF|HN|Neutral)/],
   [/^Diben($| 1,5)/, /^Nutrison Diason/],
-  [/^Fresubin SOYA/, /^Nutrison Plant/i],
   [/^NutriChef/, /^Compleat Mix/],
   [/^Novasource/, /^Nutrison Advanced Cubison/],
   [/^Frebini/, /^Nutrini/, /^Isosource Junior/, /^Compleat paediatric/, /^MiniMax/, /^Peptamen Junior/],
