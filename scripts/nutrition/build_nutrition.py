@@ -36,7 +36,7 @@ def check(v):
     kcal = v.get('ENERC|kcal')
     if not kcal:
         return False
-    calc = v.get('PROT', 0) * 4 + v.get('FAT', 0) * 9 + v.get('CHO', 0) * 4 + v.get('FIBT', 0) * 2
+    calc = (v.get('PROT') or 0) * 4 + (v.get('FAT') or 0) * 9 + (v.get('CHO') or 0) * 4 + (v.get('FIBT') or 0) * 2
     return abs(calc - kcal) / kcal < 0.05
 
 
@@ -78,7 +78,18 @@ def nes_products():
 
 
 # Nutricia: material som inte är produktblad
-NUT_SKIP = re.compile(r'(?i)produktguide|recept|beställningsmall|besta_cc|hur-fungerar|broschyr|patient|guide|sortiment')
+NUT_SKIP = re.compile(r'(?i)produktguide|recept|beställningsmall|besta_cc|hur-fungerar|broschyr|patient|guide|sortiment|infoblad|tillredning|hygienrek|goda_råd|L-märkta|enkla-små|anvandartips|onepager')
+# Blad som inte går igenom energikontrollen men tas med ändå; värden som inte går att lita på tas bort
+# och produktbladet anger att uppgifter saknas (se tillverkarens blad).
+NUT_INCOMPLETE = {
+    'HYPER-LYS-Anamix-Infant': {},
+    'Produktblad-XLYS-TRY-Glutaridon-–-GA1-2026': {},  # proteinekvivalenter från aminosyror, energin enligt bladet
+    'Produktblad-Loprofin-Frukostflingor-Loops-2026': {'ENERC|kcal': None, 'ENERC|kJ': None},  # energin stämmer inte med kolhydraterna
+    'Produktblad-Loprofin-aggersattning-2026': {},
+    'Produktblad-Stimulance-2026': {'FIBT': None},  # bladets fiberrad (0 g) motsäger 'olösliga 30 g'
+    'Produktblad-D-Mannose-1': {},
+    'Produktblad-GTO-Oil-Lorenzos-Oil_k2': {},
+}
 # Uppenbara fel i Nutricias blad, rättade (ursprungsvärde i kommentaren)
 NUT_FIX = {
     # Bladet anger fett 14,8 g/100 g; portionsvärdet 0,36 g per 30 g och 4 E% ger ca 1,2 g/100 g
@@ -109,15 +120,21 @@ def nut_products():
             # Ibland hamnar kJ-värdet på kcal-raden i textutdraget
             if not check(v) and v.get('ENERC|kcal') and check({**v, 'ENERC|kcal': v['ENERC|kcal'] / 4.184}):
                 v['ENERC|kJ'], v['ENERC|kcal'] = v['ENERC|kcal'], round(v['ENERC|kcal'] / 4.184)
-            if not check(v):
+            incomplete = False
+            if not check(v) and stem in NUT_INCOMPLETE:
+                if not v.get('ENERC|kcal') and v.get('ENERC|kJ'):
+                    v['ENERC|kcal'] = round(v['ENERC|kJ'] / 4.184)
+                v.update(NUT_INCOMPLETE[stem])
+                incomplete = True
+            elif not check(v):
                 print('Nutricia, tolkades inte:', stem)
                 continue
             # Pulver: första kolumnen är per 100 g pulver även om bladet också nämner per 100 ml
             if basis == 'ml' and v['ENERC|kcal'] > 250 and re.search(r'pulver', txt, re.I):
                 basis = 'g'
             seen_stem.add(stem)
-            found.append((stem, u, txt, basis, v))
-        for stem, u, txt, basis, v in found:
+            found.append((stem, u, txt, basis, v, incomplete))
+        for stem, u, txt, basis, v, incomplete in found:
             name = clean(pg['title']) if len(found) == 1 else nut_name_from_stem(stem)
             # Kombinerade blad (pulver + LQ/Liquid): första kolumnen gäller pulvret, så namnet tas ur bladets rubrik
             if basis == 'g' and re.search(r'\bLQ\b|Liquid', name):
@@ -128,7 +145,7 @@ def nut_products():
                 continue
             seen_name.add(key)
             out.append(dict(manufacturer='Nutricia', product=name, flavour=None, name=name,
-                            basis=basis, category=None, url=u, values=v, _txt=txt))
+                            basis=basis, category=None, url=u, values=v, _txt=txt, incomplete=incomplete))
     return out
 
 
@@ -154,6 +171,8 @@ SOND = re.compile(r'^(Nutrison|Nutrini(?!drink)|NutriniMax|Infatrini Peptisorb S
 
 
 def category(p):
+    if re.match(r'(?i)Fresubin RENAL', p['product']):
+        return 'Kosttillägg'  # näringsdryck som även kan ges som sondnäring
     if p.get('category') == 'Sondnäring' or SOND.match(p['product']) or re.match(r'(?i)nutrison', p['product']):
         return 'Sondnäring'
     return 'Kosttillägg'
@@ -186,12 +205,16 @@ def main(dst):
         # Njursjukdom utan dialys (lågt protein och sänkta elektrolyter enligt tillverkaren)
         if re.search(r'\b(Renalive LP|Renilon 4\.0|Fresubin Renal)\b', p['product'], re.I):
             eg.append('anpassad för njursjukdom utan dialys')
+        if re.search(r'\bRenilon 7\.5\b', p['product'], re.I):
+            eg.append('anpassad för njursjukdom med dialys')
         # Extra fiber: minst 1,5 g/100 ml (vätska) eller 3 g/100 g (pulver), eller fiber nämns på bladet
         fib = p['values'].get('FIBT') or 0
         if fib >= (1.5 if p['basis'] == 'ml' else 3) and 'fibrer' not in eg and 'fiberfri' not in eg:
             eg.append('fibrer')
         if 'fibrer' in eg and fib < 0.5:
             eg.remove('fibrer')
+        if p.get('incomplete'):
+            p['details']['ofullständig'] = True
         w = p['details'].get('vatten_per_100')
         if w is not None and p['basis'] == 'ml':
             p['values']['WATER'] = w

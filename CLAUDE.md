@@ -29,6 +29,7 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 
 ## Tokenkostnad
 - Om en uppgift i förväg ser ut att kosta mycket tokens (t.ex. många filer genom chatten, stora omtag, lång felsökning i webbläsaren): fråga Peter först och föreslå ett billigare sätt (ny konversation, mindre modell, annat arbetssätt).
+- Rekommendera Peter att byta till en ny chatt när kostnaden för att fortsätta i den nuvarande (lång historik) bedöms vara större än vinsten med sammanhanget, helst vid en naturlig paus (del klar och committad).
 - Claude kan inte byta modell själv; föreslå modell när det är relevant (Opus för data/bedömningar/planering, Sonnet för små UI-ändringar).
 
 ## Agentupplägg
@@ -37,3 +38,6 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 
 ## Nutritionsprodukter – urval
 - Bara produkter som finns i Sverige ska vara med (källor: tillverkarnas svenska sajter och svenska produktblad).
+
+## Öppna punkter
+- Ofullständiga Nutricia-produkter (visas med varning i produktbladet, värden saknas): Loprofin Frukostflingor (energi, protein), Stimulance (total fiber), D-mannose, Lorenzos oil, XLYS TRY Glutaridon (energin enligt bladet stämmer inte med 4/9/4-kontrollen; proteinekvivalenter). Uppdrag för agent i ny chatt: leta officiella tillverkarkällor för de saknade värdena.

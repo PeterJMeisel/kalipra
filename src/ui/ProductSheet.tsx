@@ -17,6 +17,7 @@ type Detail = {
   osmolaritet?: number
   osmolalitet?: number
   egenskaper?: string[]
+  ofullständig?: boolean
   iddsi?: { nivå: string; namn?: string; not?: string; tabell?: { produkt: string; kylskåpskall: number | string; rumstempererad: number | string }[]; källa?: string; källa_url?: string; källa_not?: string; källa_utgivare?: string; källa_hämtad?: string }
   'näringsdeklaration'?: Record<string, { enhet: string; värde: string }>
   fettkälla?: string
@@ -133,6 +134,10 @@ export function ProductSheet({ foodNumber, onClose, refs }: { foodNumber: number
                   {me.iddsi.källa && <p className="ps-iddsi-note">Källa: se längst ner.</p>}
                 </div>
               </div>
+            )}
+
+            {me.ofullständig && (
+              <p className="ps-warn">Vissa näringsvärden saknas eller kunde inte läsas ut ur produktbladet. Se tillverkarens produktblad (länk längst ner).</p>
             )}
 
             <h3 className="ps-h">Näringsvärden per 100 {me.basis}</h3>

@@ -103,5 +103,10 @@
   "title": "Survimed® OPD HN",
   "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/survimed-opd-hn/Survimed%20OPD%20HN%20produktblad.pdf.coredownload.inline.pdf",
   "key": "survimed-opd-hn"
+ },
+ "fresubin-renal": {
+  "title": "Fresubin® RENAL",
+  "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-renal2/Fresubin%20RENAL%20produktblad.pdf.coredownload.inline.pdf",
+  "key": "fresubin-renal"
  }
 }

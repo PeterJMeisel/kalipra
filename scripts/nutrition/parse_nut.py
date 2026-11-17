@@ -50,6 +50,9 @@ def parse_text(txt):
     vals = {}
     m = re.search(r'[Pp]er 100 (ml|g)', txt)
     basis = m.group(1) if m else ('g' if re.search(r'pulver|portionspåse', txt, re.I) else 'ml')
+    m = re.search(r'kJ/kcal\s+(\d+)/(\d+)', txt)
+    if m:
+        vals['ENERC|kJ'], vals['ENERC|kcal'] = float(m.group(1)), float(m.group(2))
     for ln in txt.split('\n'):
         for mm in cells(ln):
             label = (mm['label'] or '').strip()

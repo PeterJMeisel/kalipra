@@ -709,6 +709,7 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ps-iddsi-table th, .ps-iddsi-table td { padding: 2px 10px 2px 0; text-align: left }
 .ps-iddsi-table td { text-align: center }
 .ps-iddsi-table tr.me th, .ps-iddsi-table tr.me td { color: var(--brand); font-weight: 700 }
+.ps-warn { margin: 12px 0 0; padding: 8px 12px; border-left: 4px solid var(--saffron); background: color-mix(in srgb, var(--saffron) 14%, transparent); font-size: 13px }
 .ps-rdi { margin-left: 10px; color: var(--muted); font-size: 12px; white-space: nowrap }
 .ps-h { font-size: 15px; margin: 18px 0 6px }
 .ps-note { margin: 0 0 6px; font-size: 13px }

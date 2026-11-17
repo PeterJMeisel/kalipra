@@ -4551,6 +4551,243 @@
   },
   {
    "id": 22,
+   "name": "Fresubin RENAL – Vanilj",
+   "product": "Fresubin RENAL",
+   "flavour": "Vanilj",
+   "manufacturer": "Fresenius Kabi",
+   "category": "Kosttillägg",
+   "basis": "ml",
+   "url": "https://www.fresenius-kabi.com/content/dam/fresenius-kabi/se/products/product-documents/fresubin-renal2/Fresubin%20RENAL%20produktblad.pdf.coredownload.inline.pdf",
+   "laktos": 0.4,
+   "vatten_per_100": 71.0,
+   "osmolaritet": 500,
+   "osmolalitet": 710,
+   "egenskaper": [
+    "glutenfri",
+    "låglaktos",
+    "fibrer",
+    "näringsmässigt komplett",
+    "sondnäring",
+    "anpassad för njursjukdom utan dialys"
+   ],
+   "näringsdeklaration": {
+    "Energi (kcal)": {
+     "enhet": "kcal",
+     "värde": "200"
+    },
+    "Fett": {
+     "enhet": "g",
+     "värde": "8,9"
+    },
+    "varav mättat fett": {
+     "enhet": "g",
+     "värde": "2,7"
+    },
+    "varav MCT": {
+     "enhet": "g",
+     "värde": "2,2"
+    },
+    "varav enkelomättat fett": {
+     "enhet": "g",
+     "värde": "4,7"
+    },
+    "varav fleromättat fett": {
+     "enhet": "g",
+     "värde": "1,47"
+    },
+    "varav EPA*": {
+     "enhet": "g",
+     "värde": "0,04"
+    },
+    "varav DHA*": {
+     "enhet": "g",
+     "värde": "0,02"
+    },
+    "Kolhydrater": {
+     "enhet": "g",
+     "värde": "26,4"
+    },
+    "varav socker": {
+     "enhet": "g",
+     "värde": "8,17"
+    },
+    "varav laktos": {
+     "enhet": "g",
+     "värde": "≤0,4"
+    },
+    "Fiber": {
+     "enhet": "g",
+     "värde": "1,2"
+    },
+    "Protein": {
+     "enhet": "g",
+     "värde": "3,0"
+    },
+    "varav kasein/vassle": {
+     "enhet": "%",
+     "värde": "80/20"
+    },
+    "Salt": {
+     "enhet": "g",
+     "värde": "0,17"
+    },
+    "Vitamin A": {
+     "enhet": "µg RE°",
+     "värde": "81,3"
+    },
+    "av vilka ß-karoten": {
+     "enhet": "µg RE°",
+     "värde": "33,3"
+    },
+    "Vitamin D": {
+     "enhet": "µg",
+     "värde": "1,0"
+    },
+    "Vitamin E": {
+     "enhet": "mg α -TE°°",
+     "värde": "3,0"
+    },
+    "Vitamin K": {
+     "enhet": "µg",
+     "värde": "10,5"
+    },
+    "Vitamin C": {
+     "enhet": "mg",
+     "värde": "10"
+    },
+    "Tiamin": {
+     "enhet": "mg",
+     "värde": "0,26"
+    },
+    "Riboflavin": {
+     "enhet": "mg",
+     "värde": "0,3"
+    },
+    "Niacin": {
+     "enhet": "mg/mg NE°°°",
+     "värde": "3,4/4,2"
+    },
+    "Vitamin B6": {
+     "enhet": "mg",
+     "värde": "0,67"
+    },
+    "Folsyra": {
+     "enhet": "µg",
+     "värde": "100"
+    },
+    "Vitamin B12": {
+     "enhet": "µg",
+     "värde": "0,6"
+    },
+    "Biotin": {
+     "enhet": "µg",
+     "värde": "12"
+    },
+    "Pantotensyra": {
+     "enhet": "mg",
+     "värde": "1,2"
+    },
+    "Natrium": {
+     "enhet": "mg",
+     "värde": "68"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "100"
+    },
+    "Klorid": {
+     "enhet": "mg",
+     "värde": "62"
+    },
+    "Kalcium": {
+     "enhet": "mg",
+     "värde": "84"
+    },
+    "Fosfor": {
+     "enhet": "mg",
+     "värde": "55"
+    },
+    "Magnesium": {
+     "enhet": "mg",
+     "värde": "20"
+    },
+    "Järn": {
+     "enhet": "mg",
+     "värde": "2,0"
+    },
+    "Zink": {
+     "enhet": "mg",
+     "värde": "1,8"
+    },
+    "Koppar": {
+     "enhet": "mg",
+     "värde": "0,20"
+    },
+    "Mangan": {
+     "enhet": "mg",
+     "värde": "0,4"
+    },
+    "Fluor": {
+     "enhet": "mg",
+     "värde": "0,3"
+    },
+    "Selen": {
+     "enhet": "µg",
+     "värde": "10"
+    },
+    "Krom": {
+     "enhet": "µg",
+     "värde": "3,0"
+    },
+    "Molybden": {
+     "enhet": "µg",
+     "värde": "7,0"
+    },
+    "Jod": {
+     "enhet": "µg",
+     "värde": "20"
+    },
+    "Kolin": {
+     "enhet": "mg",
+     "värde": "55"
+    },
+    "Taurin": {
+     "enhet": "mg",
+     "värde": "20"
+    },
+    "Karnatin": {
+     "enhet": "mg",
+     "värde": "10"
+    },
+    "Myo-inositol": {
+     "enhet": "mg",
+     "värde": "24"
+    },
+    "Osmolaritet": {
+     "enhet": "mosmol/l",
+     "värde": "500"
+    },
+    "Osmolalitet": {
+     "enhet": "mosmol/kg H2O",
+     "värde": "710"
+    }
+   },
+   "fettkälla": "rapsolja, solrosolja, MCT-fett och fiskolja",
+   "proteinkälla": "mjölk.",
+   "kolhydratkälla": "maltodextrin, isomaltulos , modifierad stärkelse",
+   "fiberkälla": "tapiokadextrin.",
+   "energifördelning": "Fett 40 E %, kolhydrater 53 E %, fiber 1 E %, protein 6 E %",
+   "text": {
+    "produktinformation": "Livsmedel för speciella medicinska ändamål. För kostbehandling av patienter med eller med risk för undernäring, särskilt de med kronisk njursjukdom eller icke-katabola former av akut njurskada. Näringsmässigt komplett kosttillägg och sondnäring med högt energiinnehåll (2,0 kcal/ml), med fiber. Reducerat protein- och elektrolytinnehåll, natrium, kalium, fosfor. Med fiskolja. Med långsamma kolhydrater för förbättrad glykemisk kontroll. Låglaktos. Glutenfri.",
+    "dosering": "Som kosttillägg rekommenderas 2-3 flaskor/dag eller som enda näringskälla ≥ 5 flaskor/dag. Ska användas i samråd med sjukvårdspersonal.",
+    "viktigt": "Ska användas under medicinsk övervakning. Kontrollera tillförselhastighet när den används som sondnäring. Lämplig som enda näringskälla. Ej lämplig för barn under 3 år. Använd med försiktighet till barn under 6 år. Ej lämplig till patienter med galaktosemi.",
+    "anvisning": "Förvaras i rumstemperatur. Öppnad flaska kan förvaras i kylskåp och användas inom 24 timmar. Skaka flaskan väl innan öppning. Om den används som sondnäring, blanda inte med läkemedel. Inte för parenteral (i.v.) användning! Förpackad i en skyddande atmosfär.",
+    "ingredienser": "Fresubin Renal, smak Vanilj: Vatten, maltodextrin, isomaltulos□ , vegetabiliska oljor (rapsolja, solrosolja), tapiokadextrin, mjölkprotein, medellånga triglycerider (MCT), emulgeringsmedel (E 471, sojalecitin), arom, natriumcitrat, fiskolja (med sojalecitin), kolinvätetartrat, kaliumklorid, kaliumcitrat, vitamin C, magnesiumoxid, myo-inositol, taurin, surhetsreglerande medel (E 524), L-karnitin, järnpyrofosfat, zinksulfat, niacin, pantotensyra, manganklorid, vitamin E, vitamin B6, natriumfluorid, kopparsulfat, riboflavin, tiamin, ß-karoten, folsyra, vitamin A, natriumselenit, biotin, kaliumjodid, natriummolybdat, vitamin K1, kromklorid, vitamin B12, vitamin D3. □ isomaltulos kommer från glukos och fruktos",
+    "smaker": "Vanilj: finns i förpackning om 4x200 ml EasyBottle, varunummer 844383, artikelnummer 8142601. Minsta beställningsmultipel: 6x4x200 ml. Minsta beställningsmultipel Apotek: 1x4x200 ml."
+   }
+  },
+  {
+   "id": 23,
    "name": "Fresubin JUCY Drink – Apelsin",
    "product": "Fresubin JUCY Drink",
    "flavour": "Apelsin",
@@ -4772,7 +5009,7 @@
    }
   },
   {
-   "id": 23,
+   "id": 24,
    "name": "Fresubin JUCY Drink – Äpple",
    "product": "Fresubin JUCY Drink",
    "flavour": "Äpple",
@@ -4994,7 +5231,7 @@
    }
   },
   {
-   "id": 24,
+   "id": 25,
    "name": "Fresubin PRO FIBRE COMPACT Drink – Jordgubb",
    "product": "Fresubin PRO FIBRE COMPACT Drink",
    "flavour": "Jordgubb",
@@ -5207,7 +5444,7 @@
    }
   },
   {
-   "id": 25,
+   "id": 26,
    "name": "Fresubin PRO FIBRE COMPACT Drink – Vanilj",
    "product": "Fresubin PRO FIBRE COMPACT Drink",
    "flavour": "Vanilj",
@@ -5420,7 +5657,7 @@
    }
   },
   {
-   "id": 26,
+   "id": 27,
    "name": "Frebini ENERGY Drink – Banan",
    "product": "Frebini ENERGY Drink",
    "flavour": "Banan",
@@ -5668,7 +5905,7 @@
    }
   },
   {
-   "id": 27,
+   "id": 28,
    "name": "Frebini ENERGY Drink – Jordgubb",
    "product": "Frebini ENERGY Drink",
    "flavour": "Jordgubb",
@@ -5916,7 +6153,7 @@
    }
   },
   {
-   "id": 28,
+   "id": 29,
    "name": "Survimed OPD 1.5 KCAL Drink – Cappuccino",
    "product": "Survimed OPD 1.5 KCAL Drink",
    "flavour": "Cappuccino",
@@ -6143,7 +6380,7 @@
    }
   },
   {
-   "id": 29,
+   "id": 30,
    "name": "NutriChef sondnäring med färska livsmedelsingredienser – Chicken Mix Style",
    "product": "NutriChef sondnäring med färska livsmedelsingredienser",
    "flavour": "Chicken Mix Style",
@@ -6343,7 +6580,7 @@
    }
   },
   {
-   "id": 30,
+   "id": 31,
    "name": "NutriChef sondnäring med färska livsmedelsingredienser – Fruit Smoothie Style",
    "product": "NutriChef sondnäring med färska livsmedelsingredienser",
    "flavour": "Fruit Smoothie Style",
@@ -6543,7 +6780,7 @@
    }
   },
   {
-   "id": 31,
+   "id": 32,
    "name": "NutriChef sondnäring med färska livsmedelsingredienser – Garden Soup Style",
    "product": "NutriChef sondnäring med färska livsmedelsingredienser",
    "flavour": "Garden Soup Style",
@@ -6747,7 +6984,7 @@
    }
   },
   {
-   "id": 32,
+   "id": 33,
    "name": "ProvideXtra Drink – Apelsin-Ananas",
    "product": "ProvideXtra Drink",
    "flavour": "Apelsin-Ananas",
@@ -6937,7 +7174,7 @@
    }
   },
   {
-   "id": 33,
+   "id": 34,
    "name": "ProvideXtra Drink – Äpple",
    "product": "ProvideXtra Drink",
    "flavour": "Äpple",
@@ -7127,7 +7364,7 @@
    }
   },
   {
-   "id": 34,
+   "id": 35,
    "name": "ProvideXtra Drink – Svarta vinbär",
    "product": "ProvideXtra Drink",
    "flavour": "Svarta vinbär",
@@ -7317,7 +7554,7 @@
    }
   },
   {
-   "id": 35,
+   "id": 36,
    "name": "Diben Drink – Cappuccino",
    "product": "Diben Drink",
    "flavour": "Cappuccino",
@@ -7545,7 +7782,7 @@
    }
   },
   {
-   "id": 36,
+   "id": 37,
    "name": "Diben Drink – Nougat",
    "product": "Diben Drink",
    "flavour": "Nougat",
@@ -7773,7 +8010,7 @@
    }
   },
   {
-   "id": 37,
+   "id": 38,
    "name": "Diben Drink – Skogsbär",
    "product": "Diben Drink",
    "flavour": "Skogsbär",
@@ -8001,7 +8238,7 @@
    }
   },
   {
-   "id": 38,
+   "id": 39,
    "name": "Diben Drink – Vanilj",
    "product": "Diben Drink",
    "flavour": "Vanilj",
@@ -8229,7 +8466,7 @@
    }
   },
   {
-   "id": 39,
+   "id": 40,
    "name": "Frebini ENERGY FIBRE Drink – Choklad",
    "product": "Frebini ENERGY FIBRE Drink",
    "flavour": "Choklad",
@@ -8478,7 +8715,7 @@
    }
   },
   {
-   "id": 40,
+   "id": 41,
    "name": "Frebini ENERGY FIBRE Drink – Vanilj",
    "product": "Frebini ENERGY FIBRE Drink",
    "flavour": "Vanilj",
@@ -8727,7 +8964,7 @@
    }
   },
   {
-   "id": 41,
+   "id": 42,
    "name": "Fresubin PROTEIN POWDER",
    "product": "Fresubin PROTEIN POWDER",
    "flavour": null,
@@ -8796,7 +9033,7 @@
    }
   },
   {
-   "id": 42,
+   "id": 43,
    "name": "Fresubin THICKENED LEVEL 2 Drink – Smultron",
    "product": "Fresubin THICKENED LEVEL 2 Drink",
    "flavour": "Smultron",
@@ -9010,7 +9247,7 @@
    }
   },
   {
-   "id": 43,
+   "id": 44,
    "name": "Fresubin THICKENED LEVEL 2 Drink – Vanilj",
    "product": "Fresubin THICKENED LEVEL 2 Drink",
    "flavour": "Vanilj",
@@ -9224,7 +9461,7 @@
    }
   },
   {
-   "id": 44,
+   "id": 45,
    "name": "Fresubin THICKENED LEVEL 3 Drink – Smultron",
    "product": "Fresubin THICKENED LEVEL 3 Drink",
    "flavour": "Smultron",
@@ -9438,7 +9675,7 @@
    }
   },
   {
-   "id": 45,
+   "id": 46,
    "name": "Fresubin THICKENED LEVEL 3 Drink – Vanilj",
    "product": "Fresubin THICKENED LEVEL 3 Drink",
    "flavour": "Vanilj",
@@ -9652,7 +9889,7 @@
    }
   },
   {
-   "id": 46,
+   "id": 47,
    "name": "Renalive LP – Vanilj",
    "product": "Renalive LP",
    "flavour": "Vanilj",
@@ -9888,7 +10125,7 @@
    }
   },
   {
-   "id": 47,
+   "id": 48,
    "name": "Fresubin 2 KCAL FIBRE Drink – Aprikos-Persika",
    "product": "Fresubin 2 KCAL FIBRE Drink",
    "flavour": "Aprikos-Persika",
@@ -10133,7 +10370,7 @@
    }
   },
   {
-   "id": 48,
+   "id": 49,
    "name": "Fresubin 2 KCAL FIBRE Drink – Cappuccino",
    "product": "Fresubin 2 KCAL FIBRE Drink",
    "flavour": "Cappuccino",
@@ -10378,7 +10615,7 @@
    }
   },
   {
-   "id": 49,
+   "id": 50,
    "name": "Fresubin 2 KCAL FIBRE Drink – Choklad",
    "product": "Fresubin 2 KCAL FIBRE Drink",
    "flavour": "Choklad",
@@ -10623,7 +10860,7 @@
    }
   },
   {
-   "id": 50,
+   "id": 51,
    "name": "Fresubin 2 KCAL FIBRE Drink – Citron",
    "product": "Fresubin 2 KCAL FIBRE Drink",
    "flavour": "Citron",
@@ -10868,7 +11105,7 @@
    }
   },
   {
-   "id": 51,
+   "id": 52,
    "name": "Fresubin PRO Drink – Aprikos-Persika",
    "product": "Fresubin PRO Drink",
    "flavour": "Aprikos-Persika",
@@ -11060,7 +11297,7 @@
    }
   },
   {
-   "id": 52,
+   "id": 53,
    "name": "Fresubin PRO Drink – Cappuccino",
    "product": "Fresubin PRO Drink",
    "flavour": "Cappuccino",
@@ -11252,7 +11489,7 @@
    }
   },
   {
-   "id": 53,
+   "id": 54,
    "name": "Fresubin PRO Drink – Hasselnöt",
    "product": "Fresubin PRO Drink",
    "flavour": "Hasselnöt",
@@ -11444,7 +11681,7 @@
    }
   },
   {
-   "id": 54,
+   "id": 55,
    "name": "Fresubin PRO Drink – Tropiska frukter",
    "product": "Fresubin PRO Drink",
    "flavour": "Tropiska frukter",
@@ -11636,7 +11873,7 @@
    }
   },
   {
-   "id": 55,
+   "id": 56,
    "name": "Fresubin PRO Drink – Vanilj",
    "product": "Fresubin PRO Drink",
    "flavour": "Vanilj",
@@ -11828,7 +12065,7 @@
    }
   },
   {
-   "id": 56,
+   "id": 57,
    "name": "Calshake – Banan",
    "product": "Calshake",
    "flavour": "Banan",
@@ -11960,7 +12197,7 @@
    }
   },
   {
-   "id": 57,
+   "id": 58,
    "name": "Calshake – Choklad",
    "product": "Calshake",
    "flavour": "Choklad",
@@ -12089,7 +12326,7 @@
    }
   },
   {
-   "id": 58,
+   "id": 59,
    "name": "Calshake – Jordgubb",
    "product": "Calshake",
    "flavour": "Jordgubb",
@@ -12217,7 +12454,7 @@
    }
   },
   {
-   "id": 59,
+   "id": 60,
    "name": "Calshake – Neutral",
    "product": "Calshake",
    "flavour": "Neutral",
@@ -12345,7 +12582,7 @@
    }
   },
   {
-   "id": 60,
+   "id": 61,
    "name": "Calshake – Vanilj",
    "product": "Calshake",
    "flavour": "Vanilj",
@@ -12473,7 +12710,7 @@
    }
   },
   {
-   "id": 61,
+   "id": 62,
    "name": "Fresubin ORIGINAL Drink – Vanilj",
    "product": "Fresubin ORIGINAL Drink",
    "flavour": "Vanilj",
@@ -12707,7 +12944,7 @@
    }
   },
   {
-   "id": 62,
+   "id": 63,
    "name": "Fresubin ENERGY FIBRE Drink – Choklad",
    "product": "Fresubin ENERGY FIBRE Drink",
    "flavour": "Choklad",
@@ -12947,7 +13184,7 @@
    }
   },
   {
-   "id": 63,
+   "id": 64,
    "name": "Fresubin ENERGY FIBRE Drink – Jordgubb",
    "product": "Fresubin ENERGY FIBRE Drink",
    "flavour": "Jordgubb",
@@ -13187,7 +13424,7 @@
    }
   },
   {
-   "id": 64,
+   "id": 65,
    "name": "Fresubin PROTEIN ENERGY Drink – Cappuccino",
    "product": "Fresubin PROTEIN ENERGY Drink",
    "flavour": "Cappuccino",
@@ -13431,7 +13668,7 @@
    }
   },
   {
-   "id": 65,
+   "id": 66,
    "name": "Fresubin PROTEIN ENERGY Drink – Choklad",
    "product": "Fresubin PROTEIN ENERGY Drink",
    "flavour": "Choklad",
@@ -13675,7 +13912,7 @@
    }
   },
   {
-   "id": 66,
+   "id": 67,
    "name": "Fresubin PROTEIN ENERGY Drink – Smultron",
    "product": "Fresubin PROTEIN ENERGY Drink",
    "flavour": "Smultron",
@@ -13919,7 +14156,7 @@
    }
   },
   {
-   "id": 67,
+   "id": 68,
    "name": "Fresubin PROTEIN ENERGY Drink – Tropiska frukter",
    "product": "Fresubin PROTEIN ENERGY Drink",
    "flavour": "Tropiska frukter",
@@ -14163,7 +14400,7 @@
    }
   },
   {
-   "id": 68,
+   "id": 69,
    "name": "Fresubin PROTEIN ENERGY Drink – Vanilj",
    "product": "Fresubin PROTEIN ENERGY Drink",
    "flavour": "Vanilj",
@@ -14407,7 +14644,7 @@
    }
   },
   {
-   "id": 69,
+   "id": 70,
    "name": "Fresubin YODRINK – Citron",
    "product": "Fresubin YODRINK",
    "flavour": "Citron",
@@ -14637,7 +14874,7 @@
    }
   },
   {
-   "id": 70,
+   "id": 71,
    "name": "Fresubin YODRINK – Hallon",
    "product": "Fresubin YODRINK",
    "flavour": "Hallon",
@@ -14867,7 +15104,7 @@
    }
   },
   {
-   "id": 71,
+   "id": 72,
    "name": "Fresubin 3.2 KCAL Drink – Hasselnöt",
    "product": "Fresubin 3.2 KCAL Drink",
    "flavour": "Hasselnöt",
@@ -15107,7 +15344,7 @@
    }
   },
   {
-   "id": 72,
+   "id": 73,
    "name": "Fresubin 3.2 KCAL Drink – Mango",
    "product": "Fresubin 3.2 KCAL Drink",
    "flavour": "Mango",
@@ -15347,7 +15584,7 @@
    }
   },
   {
-   "id": 73,
+   "id": 74,
    "name": "Fresubin 3.2 KCAL Drink – Vanilj-Kola",
    "product": "Fresubin 3.2 KCAL Drink",
    "flavour": "Vanilj-Kola",
@@ -15587,7 +15824,7 @@
    }
   },
   {
-   "id": 74,
+   "id": 75,
    "name": "Fresubin ENERGY Drink – Cappuccino",
    "product": "Fresubin ENERGY Drink",
    "flavour": "Cappuccino",
@@ -15837,7 +16074,7 @@
    }
   },
   {
-   "id": 75,
+   "id": 76,
    "name": "Fresubin ENERGY Drink – Jordgubb",
    "product": "Fresubin ENERGY Drink",
    "flavour": "Jordgubb",
@@ -16087,7 +16324,7 @@
    }
   },
   {
-   "id": 76,
+   "id": 77,
    "name": "Fresubin ENERGY Drink – Svarta vinbär",
    "product": "Fresubin ENERGY Drink",
    "flavour": "Svarta vinbär",
@@ -16337,7 +16574,7 @@
    }
   },
   {
-   "id": 77,
+   "id": 78,
    "name": "Fresubin ENERGY Drink – Tropisk frukt",
    "product": "Fresubin ENERGY Drink",
    "flavour": "Tropisk frukt",
@@ -16587,7 +16824,7 @@
    }
   },
   {
-   "id": 78,
+   "id": 79,
    "name": "Fresubin ENERGY Drink – Vanilj",
    "product": "Fresubin ENERGY Drink",
    "flavour": "Vanilj",
@@ -16837,7 +17074,7 @@
    }
   },
   {
-   "id": 79,
+   "id": 80,
    "name": "Fresubin DESSERT FRUIT – Äpple",
    "product": "Fresubin DESSERT FRUIT",
    "flavour": "Äpple",
@@ -17041,7 +17278,7 @@
    }
   },
   {
-   "id": 80,
+   "id": 81,
    "name": "Fresubin DESSERT FRUIT – Äpple-Jordgubb",
    "product": "Fresubin DESSERT FRUIT",
    "flavour": "Äpple-Jordgubb",
@@ -17245,7 +17482,7 @@
    }
   },
   {
-   "id": 81,
+   "id": 82,
    "name": "Fresubin DESSERT FRUIT – Äpple-Persika",
    "product": "Fresubin DESSERT FRUIT",
    "flavour": "Äpple-Persika",
@@ -17449,7 +17686,7 @@
    }
   },
   {
-   "id": 82,
+   "id": 83,
    "name": "Fresubin DESSERT FRUIT – Äpple-Plommon",
    "product": "Fresubin DESSERT FRUIT",
    "flavour": "Äpple-Plommon",
@@ -17654,7 +17891,7 @@
    }
   },
   {
-   "id": 83,
+   "id": 84,
    "name": "Fresubin PLANT-BASED Drink – Vanilj",
    "product": "Fresubin PLANT-BASED Drink",
    "flavour": "Vanilj",
@@ -17872,7 +18109,7 @@
    }
   },
   {
-   "id": 84,
+   "id": 85,
    "name": "Fresubin 2 KCAL Drink – Jordgubb",
    "product": "Fresubin 2 KCAL Drink",
    "flavour": "Jordgubb",
@@ -18082,7 +18319,7 @@
    }
   },
   {
-   "id": 85,
+   "id": 86,
    "name": "Fresubin 2 KCAL Drink – Neutral",
    "product": "Fresubin 2 KCAL Drink",
    "flavour": "Neutral",
@@ -18323,7 +18560,7 @@
    }
   },
   {
-   "id": 86,
+   "id": 87,
    "name": "Fresubin 2 KCAL Drink – Skogsbär",
    "product": "Fresubin 2 KCAL Drink",
    "flavour": "Skogsbär",
@@ -18564,7 +18801,7 @@
    }
   },
   {
-   "id": 87,
+   "id": 88,
    "name": "Fresubin 2 KCAL Drink – Toffee",
    "product": "Fresubin 2 KCAL Drink",
    "flavour": "Toffee",
@@ -18805,7 +19042,7 @@
    }
   },
   {
-   "id": 88,
+   "id": 89,
    "name": "Fresubin 2 KCAL Drink – Vanilj",
    "product": "Fresubin 2 KCAL Drink",
    "flavour": "Vanilj",
@@ -19046,7 +19283,7 @@
    }
   },
   {
-   "id": 89,
+   "id": 90,
    "name": "Fresubin 5 KCAL Shot – Citron",
    "product": "Fresubin 5 KCAL Shot",
    "flavour": "Citron",
@@ -19154,7 +19391,7 @@
    }
   },
   {
-   "id": 90,
+   "id": 91,
    "name": "Fresubin 5 KCAL Shot – Neutral",
    "product": "Fresubin 5 KCAL Shot",
    "flavour": "Neutral",
@@ -19262,7 +19499,7 @@
    }
   },
   {
-   "id": 91,
+   "id": 92,
    "name": "Fresubin YOCRÈME – Aprikos-Persika",
    "product": "Fresubin YOCRÈME",
    "flavour": "Aprikos-Persika",
@@ -19465,7 +19702,7 @@
    }
   },
   {
-   "id": 92,
+   "id": 93,
    "name": "Fresubin YOCRÈME – Citron",
    "product": "Fresubin YOCRÈME",
    "flavour": "Citron",
@@ -19668,7 +19905,7 @@
    }
   },
   {
-   "id": 93,
+   "id": 94,
    "name": "Fresubin YOCRÈME – Digestivekex",
    "product": "Fresubin YOCRÈME",
    "flavour": "Digestivekex",
@@ -19871,7 +20108,7 @@
    }
   },
   {
-   "id": 94,
+   "id": 95,
    "name": "Fresubin YOCRÈME – Hallon",
    "product": "Fresubin YOCRÈME",
    "flavour": "Hallon",
@@ -20074,7 +20311,7 @@
    }
   },
   {
-   "id": 95,
+   "id": 96,
    "name": "Fresubin 2 KCAL CRÈME – Cappuccino",
    "product": "Fresubin 2 KCAL CRÈME",
    "flavour": "Cappuccino",
@@ -20277,7 +20514,7 @@
    }
   },
   {
-   "id": 96,
+   "id": 97,
    "name": "Fresubin 2 KCAL CRÈME – Choklad",
    "product": "Fresubin 2 KCAL CRÈME",
    "flavour": "Choklad",
@@ -20481,7 +20718,7 @@
    }
   },
   {
-   "id": 97,
+   "id": 98,
    "name": "Fresubin 2 KCAL CRÈME – Nougat",
    "product": "Fresubin 2 KCAL CRÈME",
    "flavour": "Nougat",
@@ -20684,7 +20921,7 @@
    }
   },
   {
-   "id": 98,
+   "id": 99,
    "name": "Fresubin 2 KCAL CRÈME – Smultron",
    "product": "Fresubin 2 KCAL CRÈME",
    "flavour": "Smultron",
@@ -20887,7 +21124,7 @@
    }
   },
   {
-   "id": 99,
+   "id": 100,
    "name": "Fresubin 2 KCAL CRÈME – Vanilj",
    "product": "Fresubin 2 KCAL CRÈME",
    "flavour": "Vanilj",
@@ -21090,7 +21327,7 @@
    }
   },
   {
-   "id": 100,
+   "id": 101,
    "name": "Althéra",
    "product": "Althéra",
    "flavour": null,
@@ -21300,7 +21537,7 @@
    }
   },
   {
-   "id": 101,
+   "id": 102,
    "name": "Alfaré",
    "product": "Alfaré",
    "flavour": null,
@@ -21519,7 +21756,7 @@
    }
   },
   {
-   "id": 102,
+   "id": 103,
    "name": "Alfamino",
    "product": "Alfamino",
    "flavour": null,
@@ -21735,7 +21972,7 @@
    }
   },
   {
-   "id": 103,
+   "id": 104,
    "name": "Alfamino Junior",
    "product": "Alfamino Junior",
    "flavour": null,
@@ -21963,7 +22200,7 @@
    }
   },
   {
-   "id": 104,
+   "id": 105,
    "name": "Compleat Mix",
    "product": "Compleat Mix",
    "flavour": null,
@@ -22171,7 +22408,7 @@
    }
   },
   {
-   "id": 105,
+   "id": 106,
    "name": "Compleat Mix Protein",
    "product": "Compleat Mix Protein",
    "flavour": null,
@@ -22384,7 +22621,7 @@
    }
   },
   {
-   "id": 106,
+   "id": 107,
    "name": "Compleat paediatric Mix",
    "product": "Compleat paediatric Mix",
    "flavour": null,
@@ -22596,7 +22833,7 @@
    }
   },
   {
-   "id": 107,
+   "id": 108,
    "name": "Compleat paediatric Oral Blends",
    "product": "Compleat paediatric Oral Blends",
    "flavour": null,
@@ -22763,7 +23000,7 @@
    }
   },
   {
-   "id": 108,
+   "id": 109,
    "name": "Infasource",
    "product": "Infasource",
    "flavour": null,
@@ -22966,7 +23203,7 @@
    }
   },
   {
-   "id": 109,
+   "id": 110,
    "name": "Isosource Junior Fibre",
    "product": "Isosource Junior Fibre",
    "flavour": null,
@@ -23190,7 +23427,7 @@
    }
   },
   {
-   "id": 110,
+   "id": 111,
    "name": "Isosource Junior Energy Fibre",
    "product": "Isosource Junior Energy Fibre",
    "flavour": null,
@@ -23413,7 +23650,7 @@
    }
   },
   {
-   "id": 111,
+   "id": 112,
    "name": "Isosource Energy",
    "product": "Isosource Energy",
    "flavour": null,
@@ -23609,7 +23846,7 @@
    }
   },
   {
-   "id": 112,
+   "id": 113,
    "name": "Isosource Energy Fibre",
    "product": "Isosource Energy Fibre",
    "flavour": null,
@@ -23805,7 +24042,7 @@
    }
   },
   {
-   "id": 113,
+   "id": 114,
    "name": "Isosource Protein",
    "product": "Isosource Protein",
    "flavour": null,
@@ -24000,7 +24237,7 @@
    }
   },
   {
-   "id": 114,
+   "id": 115,
    "name": "Isosource Protein Fibre",
    "product": "Isosource Protein Fibre",
    "flavour": null,
@@ -24195,7 +24432,7 @@
    }
   },
   {
-   "id": 115,
+   "id": 116,
    "name": "Isosource Standard",
    "product": "Isosource Standard",
    "flavour": null,
@@ -24391,7 +24628,7 @@
    }
   },
   {
-   "id": 116,
+   "id": 117,
    "name": "Isosource Standard Fibre",
    "product": "Isosource Standard Fibre",
    "flavour": null,
@@ -24587,7 +24824,7 @@
    }
   },
   {
-   "id": 117,
+   "id": 118,
    "name": "Resource MiniMax",
    "product": "Resource MiniMax",
    "flavour": null,
@@ -24790,7 +25027,7 @@
    }
   },
   {
-   "id": 118,
+   "id": 119,
    "name": "MiniMax Barnsondnäring",
    "product": "MiniMax Barnsondnäring",
    "flavour": null,
@@ -24994,7 +25231,7 @@
    }
   },
   {
-   "id": 119,
+   "id": 120,
    "name": "Modulen IBD",
    "product": "Modulen IBD",
    "flavour": null,
@@ -25188,7 +25425,7 @@
    }
   },
   {
-   "id": 120,
+   "id": 121,
    "name": "Novasource GI Control",
    "product": "Novasource GI Control",
    "flavour": null,
@@ -25383,7 +25620,7 @@
    }
   },
   {
-   "id": 121,
+   "id": 122,
    "name": "Novasource GI Advanced",
    "product": "Novasource GI Advanced",
    "flavour": null,
@@ -25578,7 +25815,7 @@
    }
   },
   {
-   "id": 122,
+   "id": 123,
    "name": "OptiXpress",
    "product": "OptiXpress",
    "flavour": null,
@@ -25620,7 +25857,7 @@
    }
   },
   {
-   "id": 123,
+   "id": 124,
    "name": "Oral Impact",
    "product": "Oral Impact",
    "flavour": null,
@@ -25819,7 +26056,7 @@
    }
   },
   {
-   "id": 124,
+   "id": 125,
    "name": "Peptamen AF",
    "product": "Peptamen AF",
    "flavour": null,
@@ -26010,7 +26247,7 @@
    }
   },
   {
-   "id": 125,
+   "id": 126,
    "name": "Peptamen HN",
    "product": "Peptamen HN",
    "flavour": null,
@@ -26218,7 +26455,7 @@
    }
   },
   {
-   "id": 126,
+   "id": 127,
    "name": "Peptamen Intense",
    "product": "Peptamen Intense",
    "flavour": null,
@@ -26426,7 +26663,7 @@
    }
   },
   {
-   "id": 127,
+   "id": 128,
    "name": "Peptamen Neutral",
    "product": "Peptamen Neutral",
    "flavour": null,
@@ -26630,7 +26867,7 @@
    }
   },
   {
-   "id": 128,
+   "id": 129,
    "name": "Peptamen Junior Advance",
    "product": "Peptamen Junior Advance",
    "flavour": null,
@@ -26847,7 +27084,7 @@
    }
   },
   {
-   "id": 129,
+   "id": 130,
    "name": "Peptamen Junior 0.6",
    "product": "Peptamen Junior 0.6",
    "flavour": null,
@@ -27063,7 +27300,7 @@
    }
   },
   {
-   "id": 130,
+   "id": 131,
    "name": "Peptamen 2.0",
    "product": "Peptamen 2.0",
    "flavour": null,
@@ -27262,7 +27499,7 @@
    }
   },
   {
-   "id": 131,
+   "id": 132,
    "name": "Resource 2.0",
    "product": "Resource 2.0",
    "flavour": null,
@@ -27453,7 +27690,7 @@
    }
   },
   {
-   "id": 132,
+   "id": 133,
    "name": "Resource 2.0+fibre",
    "product": "Resource 2.0+fibre",
    "flavour": null,
@@ -27476,7 +27713,7 @@
    }
   },
   {
-   "id": 133,
+   "id": 134,
    "name": "Resource Activ",
    "product": "Resource Activ",
    "flavour": null,
@@ -27696,7 +27933,7 @@
    }
   },
   {
-   "id": 134,
+   "id": 135,
    "name": "Resource Addera Plus",
    "product": "Resource Addera Plus",
    "flavour": null,
@@ -27717,7 +27954,7 @@
    }
   },
   {
-   "id": 135,
+   "id": 136,
    "name": "Resource Protein",
    "product": "Resource Protein",
    "flavour": null,
@@ -27738,7 +27975,7 @@
    }
   },
   {
-   "id": 136,
+   "id": 137,
    "name": "Resource Ultra 125 ml",
    "product": "Resource Ultra 125 ml",
    "flavour": null,
@@ -27938,7 +28175,7 @@
    }
   },
   {
-   "id": 137,
+   "id": 138,
    "name": "Resource Ultra Fruit",
    "product": "Resource Ultra Fruit",
    "flavour": null,
@@ -28072,7 +28309,7 @@
    }
   },
   {
-   "id": 138,
+   "id": 139,
    "name": "ThickenUp",
    "product": "ThickenUp",
    "flavour": null,
@@ -28128,7 +28365,7 @@
    "egenskaper": []
   },
   {
-   "id": 139,
+   "id": 140,
    "name": "ThickenUp Clear",
    "product": "ThickenUp Clear",
    "flavour": null,
@@ -28190,7 +28427,7 @@
    ]
   },
   {
-   "id": 140,
+   "id": 141,
    "name": "Nutridrink PlantBased Protein 2.0",
    "product": "Nutridrink PlantBased Protein 2.0",
    "flavour": null,
@@ -28362,7 +28599,7 @@
    }
   },
   {
-   "id": 141,
+   "id": 142,
    "name": "Nutridrink Protein 2.0",
    "product": "Nutridrink Protein 2.0",
    "flavour": null,
@@ -28540,7 +28777,7 @@
    }
   },
   {
-   "id": 142,
+   "id": 143,
    "name": "Nutridrink Multi Fibre",
    "product": "Nutridrink Multi Fibre",
    "flavour": null,
@@ -28766,7 +29003,7 @@
    }
   },
   {
-   "id": 143,
+   "id": 144,
    "name": "Nutridrink Compact",
    "product": "Nutridrink Compact",
    "flavour": null,
@@ -28949,7 +29186,7 @@
    }
   },
   {
-   "id": 144,
+   "id": 145,
    "name": "Nutridrink PlantBased",
    "product": "Nutridrink PlantBased",
    "flavour": null,
@@ -29144,7 +29381,7 @@
    }
   },
   {
-   "id": 145,
+   "id": 146,
    "name": "Nutridrink Compact Fibre",
    "product": "Nutridrink Compact Fibre",
    "flavour": null,
@@ -29352,7 +29589,7 @@
    }
   },
   {
-   "id": 146,
+   "id": 147,
    "name": "Nutridrink Compact Protein",
    "product": "Nutridrink Compact Protein",
    "flavour": null,
@@ -29550,7 +29787,7 @@
    }
   },
   {
-   "id": 147,
+   "id": 148,
    "name": "Nutridrink Jucy Plus",
    "product": "Nutridrink Jucy Plus",
    "flavour": null,
@@ -29727,7 +29964,7 @@
    }
   },
   {
-   "id": 148,
+   "id": 149,
    "name": "Nutridrink Protein",
    "product": "Nutridrink Protein",
    "flavour": null,
@@ -29909,7 +30146,7 @@
    }
   },
   {
-   "id": 149,
+   "id": 150,
    "name": "Anamix Infant – (GA1)",
    "product": "Anamix Infant – (GA1)",
    "flavour": null,
@@ -30189,7 +30426,7 @@
    }
   },
   {
-   "id": 150,
+   "id": 151,
    "name": "Nutridrink Jucy",
    "product": "Nutridrink Jucy",
    "flavour": null,
@@ -30355,7 +30592,7 @@
    }
   },
   {
-   "id": 151,
+   "id": 152,
    "name": "Nutridrink",
    "product": "Nutridrink",
    "flavour": null,
@@ -30561,7 +30798,7 @@
    }
   },
   {
-   "id": 152,
+   "id": 153,
    "name": "Anamix Infant – (HCU)",
    "product": "Anamix Infant – (HCU)",
    "flavour": null,
@@ -30837,7 +31074,7 @@
    }
   },
   {
-   "id": 153,
+   "id": 154,
    "name": "Nutridrink Compact Protein Sensations",
    "product": "Nutridrink Compact Protein Sensations",
    "flavour": null,
@@ -31050,7 +31287,7 @@
    }
   },
   {
-   "id": 154,
+   "id": 155,
    "name": "Anamix Junior – (GA1)",
    "product": "Anamix Junior – (GA1)",
    "flavour": null,
@@ -31295,7 +31532,270 @@
    }
   },
   {
-   "id": 155,
+   "id": 156,
+   "name": "Anamix Infant – HYPER LYS",
+   "product": "Anamix Infant – HYPER LYS",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2025/05/HYPER-LYS-Anamix-Infant.pdf",
+   "osmolalitet": 380,
+   "egenskaper": [
+    "glutenfri",
+    "näringsmässigt komplett",
+    "ej komplett",
+    "anpassad för hyperlysinemi",
+    "fibrer"
+   ],
+   "näringsdeklaration": {
+    "Fett (45 E%)": {
+     "enhet": "g",
+     "värde": "23,0"
+    },
+    "varav mättade fettsyror": {
+     "enhet": "g",
+     "värde": "7,7"
+    },
+    "enkelomättade fettsyror": {
+     "enhet": "g",
+     "värde": "11,3"
+    },
+    "fleromättade fettsyror": {
+     "enhet": "g",
+     "värde": "4,0"
+    },
+    "linolsyra (LA)": {
+     "enhet": "mg",
+     "värde": "3210"
+    },
+    "α-linolensyra (ALA)": {
+     "enhet": "mg",
+     "värde": "320"
+    },
+    "arakidonsyra (ARA)": {
+     "enhet": "mg",
+     "värde": "0,12"
+    },
+    "Dokosahexaensyra (DHA)": {
+     "enhet": "mg",
+     "värde": "0,12"
+    },
+    "Kolhydrater (43 E%)": {
+     "enhet": "g",
+     "värde": "50,1"
+    },
+    "varav sockerarter": {
+     "enhet": "g",
+     "värde": "7,5"
+    },
+    "Kostfiber (1 E%)": {
+     "enhet": "g",
+     "värde": "3,7"
+    },
+    "Proteinekvivalenter (11 E%)": {
+     "enhet": "g",
+     "värde": "13,1"
+    },
+    "Aminosyror": {
+     "enhet": "g",
+     "värde": "15,5"
+    },
+    "L-alanin": {
+     "enhet": "g",
+     "värde": "0,66"
+    },
+    "L-arginin": {
+     "enhet": "g",
+     "värde": "1,17"
+    },
+    "L-asparaginsyre": {
+     "enhet": "g",
+     "värde": "0,98"
+    },
+    "L-cystin": {
+     "enhet": "g",
+     "värde": "0,43"
+    },
+    "L-glutamin": {
+     "enhet": "g",
+     "värde": "0,13"
+    },
+    "L-glutaminsyre": {
+     "enhet": "g",
+     "värde": "1,30"
+    },
+    "Glysin": {
+     "enhet": "g",
+     "värde": "1,05"
+    },
+    "L-histidin": {
+     "enhet": "g",
+     "värde": "0,67"
+    },
+    "L-isoleucin": {
+     "enhet": "g",
+     "värde": "1,05"
+    },
+    "L-leucin": {
+     "enhet": "g",
+     "värde": "1,78"
+    },
+    "L-metionin": {
+     "enhet": "g",
+     "värde": "0,29"
+    },
+    "L-fenylalanin": {
+     "enhet": "g",
+     "värde": "0,79"
+    },
+    "L-prolin": {
+     "enhet": "g",
+     "värde": "1,26"
+    },
+    "L-serin": {
+     "enhet": "g",
+     "värde": "0,78"
+    },
+    "L-treonin": {
+     "enhet": "g",
+     "värde": "0,87"
+    },
+    "L-tryptofan": {
+     "enhet": "g",
+     "värde": "0,35"
+    },
+    "L-tyrosin": {
+     "enhet": "g",
+     "värde": "0,79"
+    },
+    "L-valin": {
+     "enhet": "g",
+     "värde": "1,14"
+    },
+    "Salt": {
+     "enhet": "g",
+     "värde": "0,48"
+    },
+    "Natrium": {
+     "enhet": "mg",
+     "värde": "191"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "505"
+    },
+    "Klorid": {
+     "enhet": "mg",
+     "värde": "355"
+    },
+    "Kalsium": {
+     "enhet": "mg",
+     "värde": "410"
+    },
+    "Magnesium": {
+     "enhet": "mg",
+     "värde": "58,3"
+    },
+    "Järn": {
+     "enhet": "mg",
+     "värde": "7,92"
+    },
+    "Sink": {
+     "enhet": "mg",
+     "värde": "5,59"
+    },
+    "Koppar": {
+     "enhet": "mg",
+     "värde": "0,42"
+    },
+    "Mangan": {
+     "enhet": "mg",
+     "värde": "0,029"
+    },
+    "Molybden": {
+     "enhet": "µg",
+     "värde": "12,1"
+    },
+    "Selen": {
+     "enhet": "µg",
+     "värde": "17,7"
+    },
+    "Krom": {
+     "enhet": "µg",
+     "värde": "14,0"
+    },
+    "Jod": {
+     "enhet": "µg",
+     "värde": "97,9"
+    },
+    "Vitamin A": {
+     "enhet": "µg",
+     "värde": "408"
+    },
+    "Vitamin D": {
+     "enhet": "µg",
+     "värde": "11,2"
+    },
+    "Vitamin C": {
+     "enhet": "mg",
+     "värde": "48,9"
+    },
+    "Vitamin K": {
+     "enhet": "µg",
+     "värde": "37,3"
+    },
+    "Tiamin": {
+     "enhet": "mg",
+     "värde": "0,51"
+    },
+    "Riboflavin": {
+     "enhet": "mg",
+     "värde": "0,51"
+    },
+    "Pantotensyra": {
+     "enhet": "mg",
+     "värde": "2,81"
+    },
+    "Vitamin B6": {
+     "enhet": "mg",
+     "värde": "0,51"
+    },
+    "Folsyra": {
+     "enhet": "µg",
+     "värde": "55,0"
+    },
+    "Vitamin B12": {
+     "enhet": "µg",
+     "värde": "1,21"
+    },
+    "Biotin": {
+     "enhet": "µg",
+     "värde": "18,2"
+    },
+    "L-karnitin": {
+     "enhet": "mg",
+     "värde": "10,1"
+    },
+    "Kolin": {
+     "enhet": "mg",
+     "värde": "146"
+    },
+    "Inositol": {
+     "enhet": "mg",
+     "värde": "97,9"
+    },
+    "Taurin": {
+     "enhet": "mg",
+     "värde": "30,0"
+    }
+   },
+   "text": {
+    "ingredienser": "Jod μg 97,9 14,7 Glukossirap, vegetabiliska oljor (solrosolja med hög oljehalt, kokosolja, rapsolja, solrosolja), galaktooligosackarider (från komjölk), L-Leucin, L-glutaminsyra,Lprolin, L-arginin, L-valin, L-isoleucin, glycin, emulgeringsmedel (citronsyraestrar av monooch diglycerider av fettsyror), L-asparaginsyra, kalciumfosfat, Ltreonin, L-tyrosin, L-fenylalanin, L-serin, L-alanin, L-histidin, kaliumcitrat, Vitamin C fruktooligosackarider, kaliumklorid, L-cystin, kolinbitartrat, magnesiumacetat, Vitamin K kalciumglycerofosfat, L-fosfatnatrium, L-fosfat, vätefosfat, natriumväte. Tiamin Crypthecodinium cohnii-olja, Mortierella alpina-olja, natriumklorid, L-glutamin, inositol, L-askorbinsyra, antioxidanter (solroslecitin, askorbylpalmitat), taurin, järnsulfat, zinksulfat, L-karnitin, DL-α-tocopheryl, DL-α-tocopheryl, DL-αtocopheryl. sulfat, tiaminhydroklorid, pyridoxinhydroklorid, riboflavin, retinylacetat, kaliumjodid, mangansulfat, pteroylmonoglutaminsyra, kromklorid, fytomenadionnatriumselenit, natriummolybdat, D-biotin, kolecyanokobalamin,. Folsyra Vitamin B12 Biotin"
+   }
+  },
+  {
+   "id": 157,
    "name": "Anamix Junior – (IVA)",
    "product": "Anamix Junior – (IVA)",
    "flavour": null,
@@ -31544,7 +32044,7 @@
    }
   },
   {
-   "id": 156,
+   "id": 158,
    "name": "Anamix Junior- (HCU)",
    "product": "Anamix Junior- (HCU)",
    "flavour": null,
@@ -31797,7 +32297,7 @@
    }
   },
   {
-   "id": 157,
+   "id": 159,
    "name": "Anamix Junior LQ – (HCU)",
    "product": "Anamix Junior LQ – (HCU)",
    "flavour": null,
@@ -32052,7 +32552,7 @@
    }
   },
   {
-   "id": 158,
+   "id": 160,
    "name": "Anamix Infant – (MMA/PA)",
    "product": "Anamix Infant – (MMA/PA)",
    "flavour": null,
@@ -32324,7 +32824,7 @@
    }
   },
   {
-   "id": 159,
+   "id": 161,
    "name": "Anamix Junior (MSUD)",
    "product": "Anamix Junior (MSUD)",
    "flavour": null,
@@ -32563,7 +33063,7 @@
    }
   },
   {
-   "id": 160,
+   "id": 162,
    "name": "Anamix Infant – (IVA)",
    "product": "Anamix Infant – (IVA)",
    "flavour": null,
@@ -32843,7 +33343,7 @@
    }
   },
   {
-   "id": 161,
+   "id": 163,
    "name": "Anamix Infant (MSUD)",
    "product": "Anamix Infant (MSUD)",
    "flavour": null,
@@ -33115,7 +33615,7 @@
    }
   },
   {
-   "id": 162,
+   "id": 164,
    "name": "Anamix Junior – (MMA/PA)",
    "product": "Anamix Junior – (MMA/PA)",
    "flavour": null,
@@ -33352,7 +33852,7 @@
    }
   },
   {
-   "id": 163,
+   "id": 165,
    "name": "TYR Anamix Junior",
    "product": "TYR Anamix Junior",
    "flavour": null,
@@ -33583,7 +34083,7 @@
    }
   },
   {
-   "id": 164,
+   "id": 166,
    "name": "PKU Anamix Junior",
    "product": "PKU Anamix Junior",
    "flavour": null,
@@ -33824,7 +34324,7 @@
    }
   },
   {
-   "id": 165,
+   "id": 167,
    "name": "Anamix First Spoon PKU",
    "product": "Anamix First Spoon PKU",
    "flavour": null,
@@ -34070,7 +34570,7 @@
    }
   },
   {
-   "id": 166,
+   "id": 168,
    "name": "Anamix Infant PKU",
    "product": "Anamix Infant PKU",
    "flavour": null,
@@ -34346,7 +34846,7 @@
    }
   },
   {
-   "id": 167,
+   "id": 169,
    "name": "Anamix Infant (TYR)",
    "product": "Anamix Infant (TYR)",
    "flavour": null,
@@ -34622,7 +35122,7 @@
    }
   },
   {
-   "id": 168,
+   "id": 170,
    "name": "Cubitan",
    "product": "Cubitan",
    "flavour": null,
@@ -34822,7 +35322,7 @@
    }
   },
   {
-   "id": 169,
+   "id": 171,
    "name": "Calogen Jordgubb",
    "product": "Calogen Jordgubb",
    "flavour": null,
@@ -34958,7 +35458,7 @@
    }
   },
   {
-   "id": 170,
+   "id": 172,
    "name": "Elemental 028 Extra",
    "product": "Elemental 028 Extra",
    "flavour": null,
@@ -35126,7 +35626,7 @@
    }
   },
   {
-   "id": 171,
+   "id": 173,
    "name": "Calogen Neutral",
    "product": "Calogen Neutral",
    "flavour": null,
@@ -35252,7 +35752,7 @@
    }
   },
   {
-   "id": 172,
+   "id": 174,
    "name": "Calogen Extra shots",
    "product": "Calogen Extra shots",
    "flavour": null,
@@ -35470,7 +35970,7 @@
    }
   },
   {
-   "id": 173,
+   "id": 175,
    "name": "Diasip",
    "product": "Diasip",
    "flavour": null,
@@ -35654,7 +36154,7 @@
    }
   },
   {
-   "id": 174,
+   "id": 176,
    "name": "Anamix Infant (UCD)",
    "product": "Anamix Infant (UCD)",
    "flavour": null,
@@ -35885,7 +36385,7 @@
    }
   },
   {
-   "id": 175,
+   "id": 177,
    "name": "PKU GMPro Delight",
    "product": "PKU GMPro Delight",
    "flavour": null,
@@ -36133,7 +36633,7 @@
    }
   },
   {
-   "id": 176,
+   "id": 178,
    "name": "Fortini Smoothie",
    "product": "Fortini Smoothie",
    "flavour": null,
@@ -36342,7 +36842,7 @@
    }
   },
   {
-   "id": 177,
+   "id": 179,
    "name": "Fortini + Mix Multi Fibre",
    "product": "Fortini + Mix Multi Fibre",
    "flavour": null,
@@ -36534,7 +37034,7 @@
    }
   },
   {
-   "id": 178,
+   "id": 180,
    "name": "Fortini Compact Multi Fibre",
    "product": "Fortini Compact Multi Fibre",
    "flavour": null,
@@ -36745,7 +37245,7 @@
    }
   },
   {
-   "id": 179,
+   "id": 181,
    "name": "Fortini Multi Fibre",
    "product": "Fortini Multi Fibre",
    "flavour": null,
@@ -36961,7 +37461,7 @@
    }
   },
   {
-   "id": 180,
+   "id": 182,
    "name": "Fortini Creamy Fruit",
    "product": "Fortini Creamy Fruit",
    "flavour": null,
@@ -37170,7 +37670,7 @@
    }
   },
   {
-   "id": 181,
+   "id": 183,
    "name": "Fortini",
    "product": "Fortini",
    "flavour": null,
@@ -37374,7 +37874,7 @@
    }
   },
   {
-   "id": 182,
+   "id": 184,
    "name": "PKU GMPro Powder",
    "product": "PKU GMPro Powder",
    "flavour": null,
@@ -37625,7 +38125,7 @@
    }
   },
   {
-   "id": 183,
+   "id": 185,
    "name": "PKU GMPro LQ",
    "product": "PKU GMPro LQ",
    "flavour": null,
@@ -37871,7 +38371,7 @@
    }
   },
   {
-   "id": 184,
+   "id": 186,
    "name": "PKU GMPro Ultra",
    "product": "PKU GMPro Ultra",
    "flavour": null,
@@ -38080,7 +38580,7 @@
    }
   },
   {
-   "id": 185,
+   "id": 187,
    "name": "PKU GMPro Mix-In",
    "product": "PKU GMPro Mix-In",
    "flavour": null,
@@ -38232,7 +38732,7 @@
    }
   },
   {
-   "id": 186,
+   "id": 188,
    "name": "KetoCal 2,5:1 LQ MCT Multi Fiber",
    "product": "KetoCal 2,5:1 LQ MCT Multi Fiber",
    "flavour": null,
@@ -38401,7 +38901,7 @@
    }
   },
   {
-   "id": 187,
+   "id": 189,
    "name": "Infatrini Peptisorb",
    "product": "Infatrini Peptisorb",
    "flavour": null,
@@ -38618,7 +39118,7 @@
    }
   },
   {
-   "id": 188,
+   "id": 190,
    "name": "Infatrini",
    "product": "Infatrini",
    "flavour": null,
@@ -38836,7 +39336,7 @@
    }
   },
   {
-   "id": 189,
+   "id": 191,
    "name": "TYR GMPro Mix-In",
    "product": "TYR GMPro Mix-In",
    "flavour": null,
@@ -38988,7 +39488,7 @@
    }
   },
   {
-   "id": 190,
+   "id": 192,
    "name": "Lophlex Select",
    "product": "Lophlex Select",
    "flavour": null,
@@ -39223,7 +39723,7 @@
    }
   },
   {
-   "id": 191,
+   "id": 193,
    "name": "HCU Lophlex",
    "product": "HCU Lophlex",
    "flavour": null,
@@ -39463,7 +39963,7 @@
    }
   },
   {
-   "id": 192,
+   "id": 194,
    "name": "MSUD Lophlex",
    "product": "MSUD Lophlex",
    "flavour": null,
@@ -39704,7 +40204,7 @@
    }
   },
   {
-   "id": 193,
+   "id": 195,
    "name": "HCU LOPHLEX LQ",
    "product": "HCU LOPHLEX LQ",
    "flavour": null,
@@ -39939,7 +40439,7 @@
    }
   },
   {
-   "id": 194,
+   "id": 196,
    "name": "KetoCal 4:1",
    "product": "KetoCal 4:1",
    "flavour": null,
@@ -40109,7 +40609,7 @@
    }
   },
   {
-   "id": 195,
+   "id": 197,
    "name": "KetoCal 3:1",
    "product": "KetoCal 3:1",
    "flavour": null,
@@ -40315,7 +40815,7 @@
    }
   },
   {
-   "id": 196,
+   "id": 198,
    "name": "KetoCal 4:1 LQ",
    "product": "KetoCal 4:1 LQ",
    "flavour": null,
@@ -40483,7 +40983,7 @@
    }
   },
   {
-   "id": 197,
+   "id": 199,
    "name": "Lophlex LQ 20 (MSUD)",
    "product": "Lophlex LQ 20 (MSUD)",
    "flavour": null,
@@ -40711,7 +41211,7 @@
    }
   },
   {
-   "id": 198,
+   "id": 200,
    "name": "Lophlex PKU",
    "product": "Lophlex PKU",
    "flavour": null,
@@ -40942,7 +41442,7 @@
    }
   },
   {
-   "id": 199,
+   "id": 201,
    "name": "TYR Lophlex LQ",
    "product": "TYR Lophlex LQ",
    "flavour": null,
@@ -41173,7 +41673,133 @@
    }
   },
   {
-   "id": 200,
+   "id": 202,
+   "name": "Loprofin äggersättning",
+   "product": "Loprofin äggersättning",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-Loprofin-aggersattning-2026.pdf",
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "1241"
+    },
+    "Energi": {
+     "enhet": "kcal",
+     "värde": "296"
+    },
+    "Fett": {
+     "enhet": "g",
+     "värde": "0,3"
+    },
+    "mättat": {
+     "enhet": "g",
+     "värde": "0,13"
+    },
+    "Kolhydrat": {
+     "enhet": "g",
+     "värde": "56,0"
+    },
+    "varav sockerarter": {
+     "enhet": "g",
+     "värde": "0,20"
+    },
+    "Fiber": {
+     "enhet": "g",
+     "värde": "34,0"
+    },
+    "Protein": {
+     "enhet": "g",
+     "värde": "0,33"
+    },
+    "fenylalanin": {
+     "enhet": "mg",
+     "värde": "5,0"
+    },
+    "Salt": {
+     "enhet": "g",
+     "värde": "0,81"
+    },
+    "Natrium": {
+     "enhet": "mg",
+     "värde": "324"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "166"
+    }
+   },
+   "text": {
+    "ingredienser": "Näringsvärde Per 100 g Potatisstärkelse, stärkelse (tapioka), stabiliseringsmedel (natruymkarboximetylcellulosa, monobasiskt kalciumfosfat), färgämne (karotener), bakpulver (kaliumbikarbonat). Fett varav ållbarhet och förvaring öppnad förpackning förvaras torrt och svalt. Bäst före-datum anges på förpackningen. Kolhydrat ppnad påse försluts väl och förvaras i en lufttät behållare, och bör användas inom 3 – varav sockerarter ånader. Fiber Protein osering varav rågad tesked (ca 5 g) pulver + 2,5 matskedar vatten motsvarar ett ägg. fenylalanin eställning årdenheter kan beställa direkt från vår webshop: www.nutriciastore.se eller ia vår e-mail order.se@danone.com. Kalium Fosfor Produkt Loprofin Egg Replacer"
+   },
+   "egenskaper": [
+    "fibrer"
+   ],
+   "ofullständig": true
+  },
+  {
+   "id": 203,
+   "name": "Loprofin Frukostflingor",
+   "product": "Loprofin Frukostflingor",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-Loprofin-Frukostflingor-Loops-2026.pdf",
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "767"
+    },
+    "Energi": {
+     "enhet": "kcal",
+     "värde": "182"
+    },
+    "Fett": {
+     "enhet": "g",
+     "värde": "1,1"
+    },
+    "mättat": {
+     "enhet": "g",
+     "värde": "0,86"
+    },
+    "Kolhydrat": {
+     "enhet": "g",
+     "värde": "83,5"
+    },
+    "varav sockerarter": {
+     "enhet": "g",
+     "värde": "28,8"
+    },
+    "Fiber": {
+     "enhet": "g",
+     "värde": "7,0"
+    },
+    "fenylalanin": {
+     "enhet": "mg",
+     "värde": "6,2"
+    },
+    "Natrium": {
+     "enhet": "mg",
+     "värde": "82,0"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "50,0"
+    }
+   },
+   "text": {
+    "ingredienser": "Näringsvärde Per 100 g Vetestärkelse, socker, modifierad stärkelse, inulin, torkade plommon (plommon, majsstärkelse, svaveldioxid), honungspulver (honung, maltodextrin), emulgeringsmedel (monodiglycerider av fettsyror), salt, färgämne (betakaroten). Fett varav ållbarhet och förvaring öppnad förpackning förvaras torrt och svalt. Bäst före-datum anges på förpackningen. Kolhydrat – varav sockerarter eställning årdenheter kan beställa direkt från vår webshop: www.nutriciastore.se eller Protein ia vår e-mail order.se@danone.com. varav fenylalanin Produkt Salt Mineraler Loprofin Frukostflingor (Loops) Natrium Kalium Fosfor"
+   },
+   "egenskaper": [
+    "fibrer"
+   ],
+   "ofullständig": true
+  },
+  {
+   "id": 204,
    "name": "Lophlex LQ PKU",
    "product": "Lophlex LQ PKU",
    "flavour": null,
@@ -41340,7 +41966,7 @@
    }
   },
   {
-   "id": 201,
+   "id": 205,
    "name": "TYR Lophlex",
    "product": "TYR Lophlex",
    "flavour": null,
@@ -41576,7 +42202,7 @@
    }
   },
   {
-   "id": 202,
+   "id": 206,
    "name": "Loprofin Mix",
    "product": "Loprofin Mix",
    "flavour": null,
@@ -41640,7 +42266,7 @@
    "egenskaper": []
   },
   {
-   "id": 203,
+   "id": 207,
    "name": "Loprofin Ris",
    "product": "Loprofin Ris",
    "flavour": null,
@@ -41704,7 +42330,7 @@
    "egenskaper": []
   },
   {
-   "id": 204,
+   "id": 208,
    "name": "XLYS LOW TRY Maxamum – (GA1)",
    "product": "XLYS LOW TRY Maxamum – (GA1)",
    "flavour": null,
@@ -41934,7 +42560,7 @@
    }
   },
   {
-   "id": 205,
+   "id": 209,
    "name": "Loprofin Pasta",
    "product": "Loprofin Pasta",
    "flavour": null,
@@ -41994,7 +42620,7 @@
    "egenskaper": []
   },
   {
-   "id": 206,
+   "id": 210,
    "name": "Loprofin Kex",
    "product": "Loprofin Kex",
    "flavour": null,
@@ -42058,7 +42684,7 @@
    "egenskaper": []
   },
   {
-   "id": 207,
+   "id": 211,
    "name": "Loprofin Sno-Pro",
    "product": "Loprofin Sno-Pro",
    "flavour": null,
@@ -42177,7 +42803,7 @@
    }
   },
   {
-   "id": 208,
+   "id": 212,
    "name": "Loprofin PKU-dryck",
    "product": "Loprofin PKU-dryck",
    "flavour": null,
@@ -42245,7 +42871,7 @@
    "egenskaper": []
   },
   {
-   "id": 209,
+   "id": 213,
    "name": "XMET Maxamum – (HCU)",
    "product": "XMET Maxamum – (HCU)",
    "flavour": null,
@@ -42469,7 +43095,7 @@
    "egenskaper": []
   },
   {
-   "id": 210,
+   "id": 214,
    "name": "XLEU Maxamum – (IVA)",
    "product": "XLEU Maxamum – (IVA)",
    "flavour": null,
@@ -42699,7 +43325,7 @@
    }
   },
   {
-   "id": 211,
+   "id": 215,
    "name": "Neocate LCP",
    "product": "Neocate LCP",
    "flavour": null,
@@ -42912,7 +43538,7 @@
    }
   },
   {
-   "id": 212,
+   "id": 216,
    "name": "MSUD Maxamum",
    "product": "MSUD Maxamum",
    "flavour": null,
@@ -43130,7 +43756,7 @@
    }
   },
   {
-   "id": 213,
+   "id": 217,
    "name": "XMTVI Maxamum – (MMA/PA)",
    "product": "XMTVI Maxamum – (MMA/PA)",
    "flavour": null,
@@ -43352,7 +43978,7 @@
    }
   },
   {
-   "id": 214,
+   "id": 218,
    "name": "Neocate Spoon",
    "product": "Neocate Spoon",
    "flavour": null,
@@ -43544,7 +44170,7 @@
    "egenskaper": []
   },
   {
-   "id": 215,
+   "id": 219,
    "name": "Neocate Junior",
    "product": "Neocate Junior",
    "flavour": null,
@@ -43741,7 +44367,7 @@
    }
   },
   {
-   "id": 216,
+   "id": 220,
    "name": "XPHEN TYR Maxamum",
    "product": "XPHEN TYR Maxamum",
    "flavour": null,
@@ -43967,7 +44593,7 @@
    }
   },
   {
-   "id": 217,
+   "id": 221,
    "name": "Neocate Syneo",
    "product": "Neocate Syneo",
    "flavour": null,
@@ -44185,7 +44811,7 @@
    }
   },
   {
-   "id": 218,
+   "id": 222,
    "name": "XP Maxamum",
    "product": "XP Maxamum",
    "flavour": null,
@@ -44408,7 +45034,7 @@
    }
   },
   {
-   "id": 219,
+   "id": 223,
    "name": "Nutrini Multi Fibre",
    "product": "Nutrini Multi Fibre",
    "flavour": null,
@@ -44630,7 +45256,7 @@
    }
   },
   {
-   "id": 220,
+   "id": 224,
    "name": "Nutilis Complete Level 3",
    "product": "Nutilis Complete Level 3",
    "flavour": null,
@@ -44840,7 +45466,7 @@
    }
   },
   {
-   "id": 221,
+   "id": 225,
    "name": "Nutrilon Proteinberikning",
    "product": "Nutrilon Proteinberikning",
    "flavour": null,
@@ -44940,7 +45566,7 @@
    "egenskaper": []
   },
   {
-   "id": 222,
+   "id": 226,
    "name": "Nutriprem HMF",
    "product": "Nutriprem HMF",
    "flavour": null,
@@ -45119,7 +45745,7 @@
    "egenskaper": []
   },
   {
-   "id": 223,
+   "id": 227,
    "name": "Nutilis Clear",
    "product": "Nutilis Clear",
    "flavour": null,
@@ -45200,7 +45826,7 @@
    }
   },
   {
-   "id": 224,
+   "id": 228,
    "name": "Nutilis Fruit Level 4",
    "product": "Nutilis Fruit Level 4",
    "flavour": null,
@@ -45407,7 +46033,7 @@
    }
   },
   {
-   "id": 225,
+   "id": 229,
    "name": "Nutrison Plantbased 2 kcal HP Multi Fibre",
    "product": "Nutrison Plantbased 2 kcal HP Multi Fibre",
    "flavour": null,
@@ -45601,7 +46227,7 @@
    }
   },
   {
-   "id": 226,
+   "id": 230,
    "name": "Nutrison",
    "product": "Nutrison",
    "flavour": null,
@@ -45807,7 +46433,7 @@
    }
   },
   {
-   "id": 227,
+   "id": 231,
    "name": "Nutrison Diason Energy HP",
    "product": "Nutrison Diason Energy HP",
    "flavour": null,
@@ -46006,7 +46632,7 @@
    }
   },
   {
-   "id": 228,
+   "id": 232,
    "name": "NUTRISON Energy",
    "product": "NUTRISON Energy",
    "flavour": null,
@@ -46216,7 +46842,7 @@
    }
   },
   {
-   "id": 229,
+   "id": 233,
    "name": "Nutrison Energy OpTri k2",
    "product": "Nutrison Energy OpTri k2",
    "flavour": null,
@@ -46412,7 +47038,7 @@
    }
   },
   {
-   "id": 230,
+   "id": 234,
    "name": "Nutrison Multi Fibre",
    "product": "Nutrison Multi Fibre",
    "flavour": null,
@@ -46623,7 +47249,7 @@
    }
   },
   {
-   "id": 231,
+   "id": 235,
    "name": "Nutrison Energy Multi Fibre",
    "product": "Nutrison Energy Multi Fibre",
    "flavour": null,
@@ -46846,7 +47472,7 @@
    }
   },
   {
-   "id": 232,
+   "id": 236,
    "name": "Nutrison Complete 1200 Multi Fibre",
    "product": "Nutrison Complete 1200 Multi Fibre",
    "flavour": null,
@@ -47068,7 +47694,7 @@
    }
   },
   {
-   "id": 233,
+   "id": 237,
    "name": "Nutrison Complete 1000 Multi Fibre",
    "product": "Nutrison Complete 1000 Multi Fibre",
    "flavour": null,
@@ -47290,7 +47916,7 @@
    }
   },
   {
-   "id": 234,
+   "id": 238,
    "name": "Nutrison Protein Plus Energy Multi Fibre",
    "product": "Nutrison Protein Plus Energy Multi Fibre",
    "flavour": null,
@@ -47512,7 +48138,7 @@
    }
   },
   {
-   "id": 235,
+   "id": 239,
    "name": "Nutrison Advanced Cubison",
    "product": "Nutrison Advanced Cubison",
    "flavour": null,
@@ -47729,7 +48355,7 @@
    }
   },
   {
-   "id": 236,
+   "id": 240,
    "name": "Nutrison Protein Plus Multi Fibre",
    "product": "Nutrison Protein Plus Multi Fibre",
    "flavour": null,
@@ -47951,7 +48577,7 @@
    }
   },
   {
-   "id": 237,
+   "id": 241,
    "name": "Nutrison Advanced Peptisorb",
    "product": "Nutrison Advanced Peptisorb",
    "flavour": null,
@@ -48156,7 +48782,7 @@
    }
   },
   {
-   "id": 238,
+   "id": 242,
    "name": "Nutrison Powder",
    "product": "Nutrison Powder",
    "flavour": null,
@@ -48344,7 +48970,7 @@
    }
   },
   {
-   "id": 239,
+   "id": 243,
    "name": "Nutrison PlantBased Soya",
    "product": "Nutrison PlantBased Soya",
    "flavour": null,
@@ -48528,7 +49154,7 @@
    }
   },
   {
-   "id": 240,
+   "id": 244,
    "name": "Nutrison Protein Intense",
    "product": "Nutrison Protein Intense",
    "flavour": null,
@@ -48741,7 +49367,7 @@
    }
   },
   {
-   "id": 241,
+   "id": 245,
    "name": "Nutrison Protein Plus",
    "product": "Nutrison Protein Plus",
    "flavour": null,
@@ -48959,7 +49585,7 @@
    }
   },
   {
-   "id": 242,
+   "id": 246,
    "name": "Pepticate Syneo 1",
    "product": "Pepticate Syneo 1",
    "flavour": null,
@@ -49182,7 +49808,7 @@
    }
   },
   {
-   "id": 243,
+   "id": 247,
    "name": "Souvenaid",
    "product": "Souvenaid",
    "flavour": null,
@@ -49374,7 +50000,7 @@
    }
   },
   {
-   "id": 244,
+   "id": 248,
    "name": "Pepticate",
    "product": "Pepticate",
    "flavour": null,
@@ -49601,7 +50227,7 @@
    }
   },
   {
-   "id": 245,
+   "id": 249,
    "name": "PreOp",
    "product": "PreOp",
    "flavour": null,
@@ -49690,7 +50316,7 @@
    }
   },
   {
-   "id": 246,
+   "id": 250,
    "name": "Renilon 7.5",
    "product": "Renilon 7.5",
    "flavour": null,
@@ -49705,7 +50331,8 @@
    "egenskaper": [
     "glutenfri",
     "näringsmässigt komplett",
-    "ej komplett"
+    "ej komplett",
+    "anpassad för njursjukdom med dialys"
    ],
    "iddsi": {
     "tabell": [
@@ -49913,7 +50540,7 @@
    }
   },
   {
-   "id": 247,
+   "id": 251,
    "name": "Renilon 4.0",
    "product": "Renilon 4.0",
    "flavour": null,
@@ -50109,7 +50736,7 @@
    }
   },
   {
-   "id": 248,
+   "id": 252,
    "name": "Scandishake Mix",
    "product": "Scandishake Mix",
    "flavour": null,
@@ -50239,7 +50866,7 @@
    }
   },
   {
-   "id": 249,
+   "id": 253,
    "name": "MADD Module – (GA2)",
    "product": "MADD Module – (GA2)",
    "flavour": null,
@@ -50458,7 +51085,7 @@
    }
   },
   {
-   "id": 250,
+   "id": 254,
    "name": "PK Aid 4",
    "product": "PK Aid 4",
    "flavour": null,
@@ -50583,7 +51210,7 @@
    }
   },
   {
-   "id": 251,
+   "id": 255,
    "name": "Phlexy 10 Tablets",
    "product": "Phlexy 10 Tablets",
    "flavour": null,
@@ -50715,7 +51342,7 @@
    }
   },
   {
-   "id": 252,
+   "id": 256,
    "name": "Dialamine",
    "product": "Dialamine",
    "flavour": null,
@@ -50831,7 +51458,7 @@
    }
   },
   {
-   "id": 253,
+   "id": 257,
    "name": "PKU Synergy",
    "product": "PKU Synergy",
    "flavour": null,
@@ -51042,7 +51669,133 @@
    }
   },
   {
-   "id": 254,
+   "id": 258,
+   "name": "XLYS TRY Glutaridon – (GA1)",
+   "product": "XLYS TRY Glutaridon – (GA1)",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2017/12/Produktblad-XLYS-TRY-Glutaridon-–-GA1-2026.pdf",
+   "osmolalitet": 360,
+   "egenskaper": [
+    "näringsmässigt komplett",
+    "ej komplett",
+    "anpassad för glutarsyrauri typ 1"
+   ],
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "1411"
+    },
+    "Energi": {
+     "enhet": "kcal",
+     "värde": "332"
+    },
+    "Fett (0 E%)": {
+     "enhet": "g",
+     "värde": "0"
+    },
+    "Kolhydrat (5 E%)": {
+     "enhet": "g",
+     "värde": "4"
+    },
+    "varav sockerarter": {
+     "enhet": "g",
+     "värde": "0,4"
+    },
+    "Fiber (0 E%)": {
+     "enhet": "g",
+     "värde": "0"
+    },
+    "Protein (95 E%)": {
+     "enhet": "g",
+     "värde": "95"
+    },
+    "L-alanin": {
+     "enhet": "g",
+     "värde": "4,17"
+    },
+    "L-arginin": {
+     "enhet": "g",
+     "värde": "7,29"
+    },
+    "L-asparaginsyra": {
+     "enhet": "g",
+     "värde": "6,09"
+    },
+    "L-glutamine": {
+     "enhet": "g",
+     "värde": "0,69"
+    },
+    "L-glutaminsyra": {
+     "enhet": "g",
+     "värde": "8,81"
+    },
+    "Glycin": {
+     "enhet": "g",
+     "värde": "6,55"
+    },
+    "L-histidin": {
+     "enhet": "g",
+     "värde": "4,17"
+    },
+    "L-isoleucin": {
+     "enhet": "g",
+     "värde": "6,55"
+    },
+    "L-leucin": {
+     "enhet": "g",
+     "värde": "11,2"
+    },
+    "L-metionin": {
+     "enhet": "g",
+     "värde": "1,74"
+    },
+    "L-prolin": {
+     "enhet": "g",
+     "värde": "7,91"
+    },
+    "L-serin": {
+     "enhet": "g",
+     "värde": "4,88"
+    },
+    "L-treonin": {
+     "enhet": "g",
+     "värde": "5,48"
+    },
+    "L-tyrosin": {
+     "enhet": "g",
+     "värde": "4,94"
+    },
+    "L-valin": {
+     "enhet": "g",
+     "värde": "7,12"
+    },
+    "Salt": {
+     "enhet": "g",
+     "värde": "0"
+    },
+    "Kalcium": {
+     "enhet": "mg",
+     "värde": "126"
+    },
+    "Karnitin": {
+     "enhet": "mg",
+     "värde": "0,06"
+    },
+    "Taurin": {
+     "enhet": "mg",
+     "värde": "0,12"
+    }
+   },
+   "text": {
+    "ingredienser": "Näringsvärde Per 100 g L-leucin, L-glutaminsyra, L-prolin, L-arginin, L-valin, L-isoleucin, glycin, Lasparaginsyra, L-treonin, L-tyrosin, L-fenylalanin, L-serin, torkad glukossirap, Lalanin, L-histidin, L-cystin, L-metionin, L-glutamin, trikalciumfosfat, taurin, Lkarnitin. Kolhydrat (5 E%) LYS TRY Glutaridon innehåller per 100 g pulver Fiber (0 E%) 332 kcal 0 g fett 4 g kolhydrat från glukossirap 79 g proteinekvivalenter L-arginin L-asparaginsyra illredning L-cystine ekommenderad spädning är 1:20, exempelvis 1 g pulver plus 20 ml vatten. Bipackad kopa innehåller 50 ml (31,5 g). Blanda rekommenderad mängd pulver med lite vatten ch blanda där efter gradvis ner resterande mängd vatten tills pulvret är helt upplöst. L-histidin osering oseringen är individuell och görs i samråd med dietist eller läkare. L-lysin L-metionin ållbarhet och förvaring L-fenylalanin öppnad burk förvaras torrt, ej över normal rumstemperatur. Öppnad burk används nom 1 månad. Tillredd näring kan förvaras i kylskåp upp t ill ett dygn. Bäst-före-datum nges som dag-mån-år. L-tryptofan nvändning LYS TRY Glutaridon är ett livsmedel för speciella medicinska ändamål och används nder inrådan av dietist eller läkare. Intaget bör spridas över dagen och intas i samband ed måltid och extra vätska. Ej lämplig som enda näringskälla. Natrium eställning årdenheter kan beställa direkt från vår webshop: www.nutriciastore.se eller ia vår e-mail order.se@danone.com. Karnitin Produkt"
+   },
+   "ofullständig": true
+  },
+  {
+   "id": 259,
    "name": "MSUD Aid III",
    "product": "MSUD Aid III",
    "flavour": null,
@@ -51167,7 +51920,7 @@
    }
   },
   {
-   "id": 255,
+   "id": 260,
    "name": "Phlexy 10 Drink Mix",
    "product": "Phlexy 10 Drink Mix",
    "flavour": null,
@@ -51283,7 +52036,92 @@
    }
   },
   {
-   "id": 256,
+   "id": 261,
+   "name": "Lorenzos oil",
+   "product": "Lorenzos oil",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "ml",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-GTO-Oil-Lorenzos-Oil_k2.pdf",
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "3319"
+    },
+    "Fett (100 E%)": {
+     "enhet": "g",
+     "värde": "89,7"
+    },
+    "mättat": {
+     "enhet": "g",
+     "värde": "3,2"
+    },
+    "enkelomättat": {
+     "enhet": "g",
+     "värde": "83,5"
+    },
+    "fleromättat": {
+     "enhet": "g",
+     "värde": "3,1"
+    },
+    "C16:0/ Palmitinsyra": {
+     "enhet": "mg",
+     "värde": "686"
+    },
+    "C17:0/ Margarinsyra": {
+     "enhet": "mg",
+     "värde": "137"
+    },
+    "C17:1/ Heptadecensyra": {
+     "enhet": "mg",
+     "värde": "137"
+    },
+    "C18:0/ Stearinsyra": {
+     "enhet": "mg",
+     "värde": "2059"
+    },
+    "C18:1/ Oljesyra": {
+     "enhet": "mg",
+     "värde": "62634"
+    },
+    "C18:2/ Linolsyra": {
+     "enhet": "mg",
+     "värde": "2831"
+    },
+    "C18:3/ a-linolensyra": {
+     "enhet": "mg",
+     "värde": "137"
+    },
+    "C20:1/ Gadoleinsyra": {
+     "enhet": "mg",
+     "värde": "412"
+    },
+    "C22:0/ Behensyra": {
+     "enhet": "mg",
+     "värde": "17,2"
+    },
+    "C22:1/ Erukasyra": {
+     "enhet": "mg",
+     "värde": "16388"
+    },
+    "C24:1/ Nervonsyra": {
+     "enhet": "mg",
+     "värde": "309"
+    },
+    "Andra": {
+     "enhet": "mg",
+     "värde": "120"
+    }
+   },
+   "text": {
+    "ingredienser": "Lorenzo’s Oil Bestnr: 75 89 38 Förpackning: 1 flaska à 500 ml Glycerol trioleate-olja, glycerol trierucate-olja. GTO Oil"
+   },
+   "egenskaper": [],
+   "ofullständig": true
+  },
+  {
+   "id": 262,
    "name": "Locasol",
    "product": "Locasol",
    "flavour": null,
@@ -51433,7 +52271,7 @@
    "egenskaper": []
   },
   {
-   "id": 257,
+   "id": 263,
    "name": "Energivit",
    "product": "Energivit",
    "flavour": null,
@@ -51604,7 +52442,90 @@
    }
   },
   {
-   "id": 258,
+   "id": 264,
+   "name": "Stimulance",
+   "product": "Stimulance",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-Stimulance-2026.pdf",
+   "egenskaper": [
+    "glutenfri"
+   ],
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "925"
+    },
+    "Energi": {
+     "enhet": "kcal",
+     "värde": "220"
+    },
+    "Fett (1 E%)": {
+     "enhet": "g",
+     "värde": "0,3"
+    },
+    "mättat fett": {
+     "enhet": "g",
+     "värde": "0,05"
+    },
+    "enkelomättat fett": {
+     "enhet": "g",
+     "värde": "0,1"
+    },
+    "fleromättat fett": {
+     "enhet": "g",
+     "värde": "0,2"
+    },
+    "Kolhydrat (24 E%)": {
+     "enhet": "g",
+     "värde": "13,1"
+    },
+    "varav sockerarter": {
+     "enhet": "g",
+     "värde": "3,5"
+    },
+    "Fiber": {
+     "enhet": "g",
+     "värde": "0"
+    },
+    "varav": {
+     "enhet": "g",
+     "värde": "8,33"
+    },
+    "lösliga": {
+     "enhet": "g",
+     "värde": "46"
+    },
+    "olösliga": {
+     "enhet": "g",
+     "värde": "30"
+    },
+    "Protein (6 E%)": {
+     "enhet": "g",
+     "värde": "3,4"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "410"
+    },
+    "Kalcium": {
+     "enhet": "mg",
+     "värde": "300"
+    },
+    "Fosfor": {
+     "enhet": "mg",
+     "värde": "80"
+    }
+   },
+   "text": {
+    "ingredienser": "Näringsvärde Per 100 g Per skopa, 6,3 g Glutenfri kostfiberblandning (sojafiber, inulin, resistent stärkelse, gummi arabicum, oligofruktos, cellulosa. kcal Fett (1 E%) timulance innehåller mättat fett"
+   },
+   "ofullständig": true
+  },
+  {
+   "id": 265,
    "name": "Paediatric Seravit",
    "product": "Paediatric Seravit",
    "flavour": null,
@@ -51764,7 +52685,7 @@
    "egenskaper": []
   },
   {
-   "id": 259,
+   "id": 266,
    "name": "MCT-oil",
    "product": "MCT-oil",
    "flavour": null,
@@ -51823,7 +52744,57 @@
    }
   },
   {
-   "id": 260,
+   "id": 267,
+   "name": "D-mannose",
+   "product": "D-mannose",
+   "flavour": null,
+   "manufacturer": "Nutricia",
+   "category": "Kosttillägg",
+   "basis": "g",
+   "url": "https://vardgivare.nutricia.se/wp-content/uploads/2018/01/Produktblad-D-Mannose-1.pdf",
+   "osmolalitet": 621,
+   "näringsdeklaration": {
+    "Energi (kJ)": {
+     "enhet": "kJ",
+     "värde": "1692"
+    },
+    "Kolhydrat (100 E%)": {
+     "enhet": "g",
+     "värde": "99,5"
+    },
+    "Salt": {
+     "enhet": "g",
+     "värde": "<0,0025"
+    },
+    "Natrium": {
+     "enhet": "mg",
+     "värde": "<1"
+    },
+    "Kalium": {
+     "enhet": "mg",
+     "värde": "<2"
+    },
+    "Klorid": {
+     "enhet": "mg",
+     "värde": "<10"
+    },
+    "Kalcium": {
+     "enhet": "mg",
+     "värde": "<1"
+    },
+    "Magnesium": {
+     "enhet": "mg",
+     "värde": "<1"
+    }
+   },
+   "text": {
+    "ingredienser": "D-Mannose Bestnr: 76 55 50 Förpackning: 1 burk à 250 g D-Mannose."
+   },
+   "egenskaper": [],
+   "ofullständig": true
+  },
+  {
+   "id": 268,
    "name": "Heparon Junior",
    "product": "Heparon Junior",
    "flavour": null,
@@ -52030,7 +53001,7 @@
    }
   },
   {
-   "id": 261,
+   "id": 269,
    "name": "Protifar",
    "product": "Protifar",
    "flavour": null,
@@ -52105,7 +53076,7 @@
    }
   },
   {
-   "id": 262,
+   "id": 270,
    "name": "Branched Chain Amino Acid Module",
    "product": "Branched Chain Amino Acid Module",
    "flavour": null,
@@ -52216,7 +53187,7 @@
    }
   },
   {
-   "id": 263,
+   "id": 271,
    "name": "Kindergen",
    "product": "Kindergen",
    "flavour": null,
@@ -52414,7 +53385,7 @@
    }
   },
   {
-   "id": 264,
+   "id": 272,
    "name": "Monogen",
    "product": "Monogen",
    "flavour": null,
@@ -52629,7 +53600,7 @@
    }
   },
   {
-   "id": 265,
+   "id": 273,
    "name": "Basic F",
    "product": "Basic F",
    "flavour": null,
@@ -52822,7 +53793,7 @@
    }
   },
   {
-   "id": 266,
+   "id": 274,
    "name": "Nutrical",
    "product": "Nutrical",
    "flavour": null,
@@ -52896,7 +53867,7 @@
    }
   },
   {
-   "id": 267,
+   "id": 275,
    "name": "Duocal",
    "product": "Duocal",
    "flavour": null,
@@ -52985,7 +53956,7 @@
    }
   },
   {
-   "id": 268,
+   "id": 276,
    "name": "Galactomin 19",
    "product": "Galactomin 19",
    "flavour": null,
@@ -53169,7 +54140,7 @@
    }
   },
   {
-   "id": 269,
+   "id": 277,
    "name": "Fantomalt",
    "product": "Fantomalt",
    "flavour": null,
@@ -53213,7 +54184,7 @@
    }
   },
   {
-   "id": 270,
+   "id": 278,
    "name": "Liquigen",
    "product": "Liquigen",
    "flavour": null,
