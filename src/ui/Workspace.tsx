@@ -97,14 +97,22 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
     setDay(calc.days + 1)
     setMeal(mealName(1))
   }
+  /** Tar bort den markerade dagen; senare dagar flyttas upp ett steg (Dag 3 blir Dag 2 osv). */
   function removeDay() {
-    const d = calc.days
+    const d = currentDay
     const count = entries.filter(e => e.day === d).length
     if (count && armed !== `day:${d}`) { setArmed(`day:${d}`); return }
     setArmed(null)
     const nd = removeDayDates(dd, d - 1)
-    onPatchCalc({ days: d - 1, entries: entries.filter(e => e.day !== d), mealCounts: allCounts().slice(0, d - 1), dayDates: nd.dates, dayDatesManual: nd.manual })
-    if (day >= d) setDay(d - 1)
+    const counts = allCounts()
+    counts.splice(d - 1, 1)
+    onPatchCalc({
+      days: calc.days - 1,
+      entries: entries.filter(e => e.day !== d).map(e => (e.day > d ? { ...e, day: e.day - 1 } : e)),
+      mealCounts: counts, dayDates: nd.dates, dayDatesManual: nd.manual,
+    })
+    setDay(Math.max(1, Math.min(d, calc.days - 1)))
+    setMeal(mealName(1))
   }
   /** Kopierar alla livsmedel i en måltid till en annan (befintlig eller ny) måltid. */
   function copyMeal(fromDay: number, fromMeal: Meal, toDay: number, toMeal: Meal | 'ny') {
@@ -162,13 +170,13 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
             )
           })}
           {calc.days < 14 && <button type="button" className="ws-add" onClick={addDay}>+ Lägg till dag</button>}
-          <label className="ws-date">Datum dag {currentDay}
+          <label className="ws-date">Datum
             <input type="date" lang="sv-SE" value={dd.dates[currentDay - 1] ?? ''} onChange={e => e.target.value && pickDate(e.target.value)} />
           </label>
           {dateError && <span className="ws-dateerr" role="alert">{dateError}</span>}
           {calc.days > 1 && (
-            <button type="button" className={`ws-remove ${armed === `day:${calc.days}` ? 'armed' : ''}`} onClick={removeDay}>
-              {armed === `day:${calc.days}` ? `Ta bort dag ${calc.days} med ${entries.filter(e => e.day === calc.days).length} livsmedel? Klicka igen` : `Ta bort dag ${calc.days}`}
+            <button type="button" className={`ws-remove ${armed === `day:${currentDay}` ? 'armed' : ''}`} onClick={removeDay}>
+              {armed === `day:${currentDay}` ? `Ta bort dagen med ${entries.filter(e => e.day === currentDay).length} livsmedel? Klicka igen` : 'Ta bort dag'}
             </button>
           )}
         </div>
