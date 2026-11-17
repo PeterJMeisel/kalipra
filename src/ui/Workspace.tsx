@@ -170,15 +170,15 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
             )
           })}
           {calc.days < 14 && <button type="button" className="ws-add" onClick={addDay}>+ Lägg till dag</button>}
+          {calc.days > 1 && (
+            <button type="button" className={`ws-remove ${armed === `day:${currentDay}` ? 'armed' : ''}`} onClick={removeDay}>
+              {armed === `day:${currentDay}` ? `Ta bort Dag ${currentDay}, Klicka igen` : 'Ta bort dag'}
+            </button>
+          )}
           <label className="ws-date">Datum
             <input type="date" lang="sv-SE" value={dd.dates[currentDay - 1] ?? ''} onChange={e => e.target.value && pickDate(e.target.value)} />
           </label>
           {dateError && <span className="ws-dateerr" role="alert">{dateError}</span>}
-          {calc.days > 1 && (
-            <button type="button" className={`ws-remove ${armed === `day:${currentDay}` ? 'armed' : ''}`} onClick={removeDay}>
-              {armed === `day:${currentDay}` ? `Ta bort dagen med ${entries.filter(e => e.day === currentDay).length} livsmedel? Klicka igen` : 'Ta bort dag'}
-            </button>
-          )}
         </div>
         <div className="ws-mealtabs" role="tablist" aria-label="Måltid">
           {meals.map(m => {
@@ -192,7 +192,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
           {meals.length > 1 && (
             <button type="button" className={`ws-remove ${armed === `meal:${currentDay}:${meal}` ? 'armed' : ''}`} onClick={() => removeMeal(meal)}>
-              {armed === `meal:${currentDay}:${meal}` ? `Ta bort måltiden med ${mealEntries.length} livsmedel? Klicka igen` : 'Ta bort måltid'}
+              {armed === `meal:${currentDay}:${meal}` ? `Ta bort ${meal}, Klicka igen` : 'Ta bort måltid'}
             </button>
           )}
         </div>
