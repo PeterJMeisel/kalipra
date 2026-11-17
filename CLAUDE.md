@@ -30,3 +30,10 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 ## Tokenkostnad
 - Om en uppgift i förväg ser ut att kosta mycket tokens (t.ex. många filer genom chatten, stora omtag, lång felsökning i webbläsaren): fråga Peter först och föreslå ett billigare sätt (ny konversation, mindre modell, annat arbetssätt).
 - Claude kan inte byta modell själv; föreslå modell när det är relevant (Opus för data/bedömningar/planering, Sonnet för små UI-ändringar).
+
+## Agentupplägg
+- Stora, avgränsade jobb med mycket mellanarbete (tolka många produktblad, gå igenom många filer, massändringar, längre webbsökningar): starta en agent med billigare modell (Sonnet/Haiku) och granska resultatet innan det implementeras.
+- Små ändringar (text, knappar, färger) görs direkt – en agent startar från noll och blir dyrare där.
+
+## Nutritionsprodukter – urval
+- Bara produkter som finns i Sverige ska vara med (källor: tillverkarnas svenska sajter och svenska produktblad).
