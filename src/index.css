@@ -678,11 +678,12 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 /* Ta bort dag och Ta bort måltid lika stora */
 .ws-daytabs .ws-remove, .ws-mealtabs .ws-remove { font-size: 13px; min-height: 32px }
 .ws-chometer .seg { position: absolute; top: 0; bottom: 0; background: var(--brand) }
-.ws-chometer .seg.sugar { border-radius: 99px 0 0 99px }
-.ws-chometer .seg.rest { border-radius: 0 99px 99px 0; border-left: 2px solid var(--panel) }
+.ws-chometer .seg.gap { border-left: 2px solid var(--panel) }
 .ws-chometer .seg.low, .ws-cholegend .sw.low { background: var(--amber) } .ws-chometer .seg.high, .ws-cholegend .sw.high { background: var(--red) }
 .ws-chometer .seg.neutral, .ws-cholegend .sw.neutral { background: var(--muted) }
-.ws-chometer .seg.sugar, .ws-cholegend .sw.sugar { filter: brightness(.6) }
-.ws-cholegend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink) }
+.ws-chometer .seg.free, .ws-cholegend .sw.free { filter: brightness(.5) }
+.ws-chometer .seg.osugar, .ws-cholegend .sw.osugar { filter: brightness(.75) }
+.ws-cholegend { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--ink) }
 .ws-cholegend span { display: inline-flex; align-items: center; gap: 6px }
 .ws-cholegend .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; background: var(--brand) }
+.ws-nofree { color: var(--amber-ink, #8a5a00) }

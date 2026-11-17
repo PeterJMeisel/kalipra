@@ -11,6 +11,16 @@ import { SourceTag } from './DiaryEditor'
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'SUGAR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
+/** Livsmedel som innehåller socker men saknar värde för fritt socker (Fineli, USDA, nutritionsprodukter). */
+function noFreeSugar(db: FoodDatabase, list: DiaryEntry[]): string[] {
+  const names = new Set<string>()
+  for (const e of list) {
+    const f = db.get(e.foodNumber, e.source)
+    if (f && f.per100g.SUGFR === undefined && (f.per100g.SUGAR ?? 0) > 0) names.add(f.name)
+  }
+  return [...names]
+}
+
 type Props = {
   db: FoodDatabase
   /** null = kostregistrering utan klient: intag visas utan behov och RDI */
@@ -141,18 +151,18 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   }, [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
   // Läget Dag visar bara den dag som är markerad i kostregistreringen (inte snitt över dagarna)
   const daySummary = useMemo(() => summarizeDiary(db, entries.filter(e => e.day === currentDay), 1, SUMMARY_KEYS), [db, entries, currentDay])
-  const scoped = useMemo(() => ({ totals: daySummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag ${currentDay}` }), [daySummary, need, currentDay])
+  const scoped = useMemo(() => ({ totals: daySummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag ${currentDay}`, noFreeSugar: noFreeSugar(db, entries.filter(e => e.day === currentDay)) }), [daySummary, need, currentDay, db, entries])
   // Läget Dagar: genomsnitt över de dagar som har registreringar (tomma dagar räknas inte)
   const filledDays = new Set(entries.map(e => e.day)).size
   const avgSummary = useMemo(() => summarizeDiary(db, entries, Math.max(1, filledDays), SUMMARY_KEYS), [db, entries, filledDays])
-  const avgScoped = useMemo(() => ({ totals: avgSummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `snitt över ${filledDays} ${filledDays === 1 ? 'dag' : 'dagar'}` }), [avgSummary, need, filledDays])
+  const avgScoped = useMemo(() => ({ totals: avgSummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `snitt över ${filledDays} ${filledDays === 1 ? 'dag' : 'dagar'}`, noFreeSugar: noFreeSugar(db, entries) }), [avgSummary, need, filledDays, db, entries])
   // Fliken Måltid: bara den måltid som är vald, jämförd med en lika stor andel av dagsbehovet
   const mealShare = 1 / Math.max(1, meals.length)
   const mealScoped = useMemo(() => ({
     totals: daySummary.perMeal[meal] ?? {}, needKcal: (need?.teeKcal ?? 0) * mealShare, needMJ: (need?.teeMJ ?? 0) * mealShare,
-    label: `${meal.toLowerCase()}, dag ${currentDay}`, share: mealShare, dayKcal: daySummary.perDay['ENERC|kcal'] ?? 0,
+    label: `${meal.toLowerCase()}, dag ${currentDay}`, share: mealShare, noFreeSugar: noFreeSugar(db, entries.filter(e => e.day === currentDay && e.meal === meal)), dayKcal: daySummary.perDay['ENERC|kcal'] ?? 0,
     note: `${meal}, dag ${currentDay}. Jämförs med ${formatNumber(mealShare * 100, 0)} % av dagsbehovet och RDI (jämnt fördelat på ${meals.length} ${meals.length === 1 ? 'måltid' : 'måltider'}).`,
-  }), [daySummary, meal, need, mealShare, currentDay, meals.length])
+  }), [daySummary, meal, need, mealShare, currentDay, meals.length, db, entries])
   const view = scope === 'dagar' ? avgScoped : bottomTab === 'maltid' ? mealScoped : scoped
 
   const kcalOf = (list: DiaryEntry[]) => list.reduce((s, e) => s + ((db.get(e.foodNumber, e.source)?.per100g['ENERC|kcal'] ?? 0) * e.grams) / 100, 0)
@@ -391,7 +401,7 @@ function FoodPicker({ db, meal, onAdd }: { db: FoodDatabase; meal: Meal; onAdd: 
 /* ---------- Nertill: näring mot behov ---------- */
 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
-type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number }
+type Scoped = { totals: NutrientTotals; needKcal: number; needMJ: number; label: string; share?: number; note?: string; dayKcal?: number; noFreeSugar?: string[] }
 
 /** Fliken Måltid: neutral ruta – mängd och stapel för andel av dagens rekommendation, ingen bedömning. */
 function ShareBox({ label, value, unit, dayRef, refText }: { label: string; value: number; unit: string; dayRef: number; refText: string }) {
@@ -573,25 +583,36 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
           // Kolhydrater: stapeln visar E% av intaget (0–100 %), den mörka delen är sockerarter
           const ed = energyDistribution(scoped.totals)
           const cho = v('CHO')
-          const sugarE = ed.totalKj > 0 ? (v('SUGAR') * 17 / ed.totalKj) * 100 : 0
+          // Tre delar: fritt socker (NNR-gräns) + övriga sockerarter (laktos, frukt m.m.) + övriga kolhydrater
+          const E = (g: number) => (ed.totalKj > 0 ? (g * 17 / ed.totalKj) * 100 : 0)
+          const choE = Math.min(ed.carbohydrate, 100)
+          const sugarE = Math.min(E(v('SUGAR')), choE)
+          const freeE = Math.min(E(v('SUGFR')), choE)
+          const otherSugarE = Math.max(0, sugarE - freeE)
+          const restE = Math.max(0, choE - freeE - otherSugarE)
           const ref = macro.carbohydrate
           const lo = ref.min ?? 0, hi = ref.max ?? 100
           const st = isMeal || ed.totalKj === 0 ? '' : ed.carbohydrate < lo ? 'low' : ed.carbohydrate > hi ? 'high' : ''
+          const freeMax = macro.freeSugar.max ?? 10
+          const freeSt = isMeal ? 'neutral' : freeE > freeMax ? 'high' : st
+          const c = isMeal ? 'neutral' : st
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Kolhydrater</span>
               <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
               <div className="meter ws-chometer" aria-hidden="true">
-                {/* Två delar efter varandra: sockerarter (mörkare) + övriga kolhydrater, med smal glipa emellan */}
-                <div className={`seg sugar ${isMeal ? 'neutral' : st}`} style={{ width: `${Math.min(sugarE, ed.carbohydrate, 100)}%` }} />
-                <div className={`seg rest ${isMeal ? 'neutral' : st}`} style={{ left: `${Math.min(sugarE, ed.carbohydrate, 100)}%`, width: `${Math.max(0, Math.min(ed.carbohydrate, 100) - Math.min(sugarE, ed.carbohydrate))}%` }} />
+                {freeE > 0.2 && <div className={`seg free ${freeSt}`} style={{ left: 0, width: `${freeE}%` }} />}
+                {otherSugarE > 0.2 && <div className={`seg osugar ${c} ${freeE > 0.2 ? 'gap' : ''}`} style={{ left: `${freeE}%`, width: `${otherSugarE}%` }} />}
+                {restE > 0.2 && <div className={`seg rest ${c} ${freeE + otherSugarE > 0.2 ? 'gap' : ''}`} style={{ left: `${freeE + otherSugarE}%`, width: `${restE}%` }} />}
                 {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
               </div>
               <span className="ws-cholegend">
-                <span><i className={`sw sugar ${isMeal ? 'neutral' : st}`} />Sockerarter {formatNumber(sugarE, 0)} E%</span>
-                <span><i className={`sw rest ${isMeal ? 'neutral' : st}`} />Övriga {formatNumber(Math.max(0, ed.carbohydrate - sugarE), 0)} E%</span>
+                <span><i className={`sw free ${freeSt}`} />Fritt socker {formatNumber(freeE, 0)} E%{isMeal ? '' : freeMax === 0 ? ' · bör undvikas' : ` · rekommendation under ${formatNumber(freeMax, 0)} E%`}</span>
+                <span><i className={`sw osugar ${c}`} />Övriga sockerarter {formatNumber(otherSugarE, 0)} E%</span>
+                <span><i className={`sw rest ${c}`} />Övriga kolhydrater {formatNumber(restE, 0)} E%</span>
               </span>
-              {!isMeal && <span className="sub">Rekommendation {formatNumber(lo, 0)}–{formatNumber(hi, 0)} E%</span>}
+              {(scoped.noFreeSugar?.length ?? 0) > 0 && <span className="sub ws-nofree" title={scoped.noFreeSugar!.join(', ')}>Fritt socker saknas för {scoped.noFreeSugar!.length} livsmedel (t.ex. {scoped.noFreeSugar![0]}) – deras socker räknas som övriga sockerarter.</span>}
+              {!isMeal && <span className="sub">Rekommendation kolhydrater {formatNumber(lo, 0)}–{formatNumber(hi, 0)} E%</span>}
             </div>
           )
         })()}
