@@ -486,7 +486,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''} · <span className={`pill ${proteinPerKg >= protRef ? 'ok' : 'low'}`}>{proteinPerKg >= protRef ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''}</span>
             </>
           ) : (
             <>
@@ -539,7 +539,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className={`fill ${ok ? '' : 'low'}`} style={{ width: `${Math.min((g / refG) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation {fr.text} · <span className={`pill ${ok ? 'ok' : 'low'}`}>{ok ? 'Inom' : 'Under'}</span></span>
+              <span className="sub">Rekommendation {fr.text}</span>
             </div>
           )
         })()}
@@ -560,7 +560,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 {minG !== undefined && <div className="mark" style={{ left: `${(minG / maxG) * 100 / 1.5}%` }} />}
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `högst ${f2(maxG)} g`} · <span className={`pill ${st === 'high' ? 'high' : st === 'low' ? 'low' : 'ok'}`}>{st === 'high' ? 'Över' : st === 'low' ? 'Under' : 'Inom'}</span></span>
+              <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `högst ${f2(maxG)} g`}</span>
             </div>
           )
         })()}
