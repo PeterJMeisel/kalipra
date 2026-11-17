@@ -8,7 +8,7 @@ import { newId } from '../core/storage'
 import { addDayDates, ensureDayDates, removeDayDates, setDayDate, shortDate, todayISO } from '../core/dates'
 import { SourceTag } from './DiaryEditor'
 
-const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'ALC',
+const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'SUGAR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
 
 type Props = {
@@ -563,6 +563,30 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
               <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `högst ${f2(maxG)} g`}</span>
+            </div>
+          )
+        })()}
+      </div>
+
+      <div className="ws-kcalrow ws-kcalrow2">
+        {(() => {
+          // Kolhydrater: stapeln visar E% av intaget (0–100 %), den mörka delen är sockerarter
+          const ed = energyDistribution(scoped.totals)
+          const cho = v('CHO')
+          const sugarE = ed.totalKj > 0 ? (v('SUGAR') * 17 / ed.totalKj) * 100 : 0
+          const ref = macro.carbohydrate
+          const lo = ref.min ?? 0, hi = ref.max ?? 100
+          const st = isMeal || ed.totalKj === 0 ? '' : ed.carbohydrate < lo ? 'low' : ed.carbohydrate > hi ? 'high' : ''
+          return (
+            <div className="ws-kcalbox">
+              <span className="lbl">Kolhydrater</span>
+              <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
+              <div className="meter ws-chometer" aria-hidden="true">
+                <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: `${Math.min(ed.carbohydrate, 100)}%` }} />
+                <div className="fill sugar" style={{ width: `${Math.min(sugarE, ed.carbohydrate, 100)}%` }} />
+                {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
+              </div>
+              <span className="sub">varav sockerarter {formatNumber(sugarE, 0)} E% ({formatNumber(v('SUGAR'), 0)} g){isMeal ? '' : ` · rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
             </div>
           )
         })()}

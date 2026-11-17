@@ -673,3 +673,9 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ws-date { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); margin-left: auto; white-space: nowrap }
 .ws-date input { min-height: 34px; padding: 3px 8px; font-size: 13px }
 .ws-dateerr { color: var(--red); font-size: 13px; flex-basis: 100%; text-align: right }
+/* Kolhydrater: E% av intaget med andelen sockerarter markerad */
+.ws-chometer { position: relative }
+.ws-chometer .fill { position: absolute; left: 0; top: 0; bottom: 0 }
+.ws-chometer .fill.sugar { background: repeating-linear-gradient(45deg, rgba(0,0,0,.45) 0 3px, rgba(0,0,0,.2) 3px 6px) }
+/* Ta bort dag och Ta bort måltid lika stora */
+.ws-daytabs .ws-remove, .ws-mealtabs .ws-remove { font-size: 13px; min-height: 32px }
