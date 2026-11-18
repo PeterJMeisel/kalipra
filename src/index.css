@@ -754,8 +754,11 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li:hover > button:first-child:not(.on) { background: var(--tint) }
 .ws-hits .ws-hitsheet { bottom: 7px; right: 12px }
 
-/* Energibehov per dag i måltidsrutans fot – alltid synligt under registreringen */
-.ws-need { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 14px; border: 1.5px solid var(--brand); border-radius: 8px; background: var(--tint); color: var(--ink); white-space: nowrap; cursor: help }
+/* Energibehov per dag i måltidsrutans fot – alltid synligt under registreringen, med andel BMR */
+.ws-need { display: flex; flex-direction: column; gap: 4px; padding: 6px 14px 7px; border: 1.5px solid var(--brand); border-radius: 8px; background: var(--tint); color: var(--ink); min-width: 260px }
+.ws-needtop { display: flex; align-items: baseline; gap: 8px; white-space: nowrap }
 .ws-need .lbl { font-size: 13px; color: var(--muted) }
 .ws-need strong { font-size: 18px; color: var(--brand) }
 .ws-need small { font-size: 13px; color: var(--muted) }
+.ws-need .splitbar { height: 8px; border-radius: 4px }
+.ws-needsub { font-size: 12px; color: var(--muted) }

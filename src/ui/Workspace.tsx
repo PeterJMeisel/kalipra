@@ -238,11 +238,21 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <span>
             Måltid: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
           </span>
-          {need && (
-            <span className="ws-need" title={`BMR ${formatNumber(need.bmrKcal, 0)} kcal · aktivitet ${formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal${need.extraKcal ? ` · ${need.extraLabel} +${formatNumber(need.extraKcal, 0)} kcal` : ''}`}>
-              <span className="lbl">Energibehov per dag</span> <strong>{formatNumber(need.teeKcal, 0)}</strong> <small>kcal</small>
-            </span>
-          )}
+          {need && (() => {
+            const act = need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0)
+            const bmrPct = (need.bmrKcal / need.teeKcal) * 100
+            return (
+              <div className="ws-need">
+                <div className="ws-needtop"><span className="lbl">Energibehov per dag</span> <strong>{formatNumber(need.teeKcal, 0)}</strong> <small>kcal</small></div>
+                <div className="splitbar" aria-hidden="true">
+                  <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
+                  <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
+                </div>
+                <span className="ws-needsub">BMR {formatNumber(need.bmrKcal, 0)} kcal ({formatNumber(bmrPct, 0)} %) · aktivitet {formatNumber(act, 0)} kcal
+                  {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : null}</span>
+              </div>
+            )
+          })()}
           <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
             aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
             title={mealEntries.length === 0 ? 'Måltiden är tom' : `Kopiera ${meal.toLowerCase()} till en annan måltid`}>
