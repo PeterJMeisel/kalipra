@@ -329,7 +329,6 @@ function AmountCell({ entry, food, onChange }: { entry: DiaryEntry; food: Food |
             const n = all.find(x => x.id === id)!
             onChange({ measure: n.id, qty: entry.grams / n.factor })
           }} />
-        {food && food.unit === 'g' && m.id !== 'g' && <small className="muted unit-g"> (≈ {formatNumber(entry.grams, 0)} g)</small>}
       </td>
     </>
   )
