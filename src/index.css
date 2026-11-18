@@ -485,7 +485,6 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .ws-pgrid input, .ws-pgrid select { font-size: 15px; width: 100%; box-sizing: border-box }
 .ws-pgrid output { font-size: 18px; font-weight: 700; color: var(--ink); padding: 6px 0 }
 .ws-kcalrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px }
-@media (min-width: 901px) { .ws-kcalrow:not(.ws-kcalrow2):has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
 .ws-kcalbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px }
 .ws-kcalbox .lbl { font-size: 13px; color: var(--muted) }
 .ws-kcalbox .val { font-size: 26px; font-weight: 700 }
@@ -753,12 +752,3 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li > button:first-child small { font-size: 12px; opacity: .65 }
 .ws-hits li:hover > button:first-child:not(.on) { background: var(--tint) }
 .ws-hits .ws-hitsheet { bottom: 7px; right: 12px }
-
-/* Energibehov per dag i måltidsrutans fot – alltid synligt under registreringen, med andel BMR */
-.ws-need { display: flex; flex-direction: column; gap: 4px; padding: 6px 14px 7px; border: 1.5px solid var(--brand); border-radius: 8px; background: var(--tint); color: var(--ink); min-width: 260px }
-.ws-needtop { display: flex; align-items: baseline; gap: 8px; white-space: nowrap }
-.ws-need .lbl { font-size: 13px; color: var(--muted) }
-.ws-need strong { font-size: 18px; color: var(--brand) }
-.ws-need small { font-size: 13px; color: var(--muted) }
-.ws-need .splitbar { height: 8px; border-radius: 4px }
-.ws-needsub { font-size: 12px; color: var(--muted) }

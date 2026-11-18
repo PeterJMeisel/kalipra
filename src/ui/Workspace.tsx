@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, type Range, type Repro } from '../core/references'
+import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
@@ -238,21 +238,6 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <span>
             Måltid: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
           </span>
-          {need && (() => {
-            const act = need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0)
-            const bmrPct = (need.bmrKcal / need.teeKcal) * 100
-            return (
-              <div className="ws-need">
-                <div className="ws-needtop"><span className="lbl">Energibehov per dag</span> <strong>{formatNumber(need.teeKcal, 0)}</strong> <small>kcal</small></div>
-                <div className="splitbar" aria-hidden="true">
-                  <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
-                  <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
-                </div>
-                <span className="ws-needsub">BMR {formatNumber(need.bmrKcal, 0)} kcal ({formatNumber(bmrPct, 0)} %) · aktivitet {formatNumber(act, 0)} kcal
-                  {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : null}</span>
-              </div>
-            )
-          })()}
           <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
             aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
             title={mealEntries.length === 0 ? 'Måltiden är tom' : `Kopiera ${meal.toLowerCase()} till en annan måltid`}>
@@ -451,7 +436,7 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
   )
 }
 
-/** Energibehov per dag för en beräkning (BMR × PAL, plus tillägg vid graviditet/amning). Visas även i klientraden högst upp. */
+/** Energibehov per dag för en beräkning (BMR × PAL, plus tillägg vid graviditet/amning). */
 export function needFor(person: Person, calc: Calculation): EnergyNeed {
   const repro = reproFrom(person.health, person.sex)
   const n = energyNeed(person.sex, person.age, calc.weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
@@ -490,6 +475,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
   const kcal = v('ENERC|kcal')
   const pct = scoped.needKcal > 0 ? (kcal / scoped.needKcal) * 100 : 0
   const macro = macroReferences(person.age, person.sex, repro, weightKg)
+  const bmrPct = (need.bmrKcal / need.teeKcal) * 100
   const proteinPerKg = v('PROT') / weightKg
   const protRef = macro.proteinGPerKg * sh
   const micro = microReferences(person.age, person.sex, need.teeMJ, repro)
@@ -514,7 +500,18 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
               <span className="sub">{formatNumber(kcal, 0)} av dagsbehovet {formatNumber(dk, 0)} kcal</span>
             </div>
           )
-        })() : null}
+        })() : (
+          <div className="ws-kcalbox">
+          <span className="lbl">Energibehov per dag{repro ? ` (${REPRO_LABEL(repro)})` : ''}</span>
+          <span className="val">{formatNumber(need.teeKcal, 0)} <small>kcal</small></span>
+          <div className="splitbar" aria-hidden="true">
+            <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
+            <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
+          </div>
+          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
+            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
+        </div>
+        )}
         <div className="ws-kcalbox">
           <span className="lbl">Energi, {scoped.label}</span>
           {isMeal ? (() => {
