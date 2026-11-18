@@ -243,6 +243,22 @@ export default function App() {
       ? `kalipra-${ps[0].code.replace(/[^\wåäöÅÄÖ-]+/g, '_')}-${now().slice(0, 10)}`
       : `kalipra-${ps.length}-klienter-${now().slice(0, 10)}`
     const json = JSON.stringify(subsetPersons(state, personIds), null, 2)
+    const what = plural(ps.length, 'klient', 'klienter')
+    const ed = ps.length === 1 ? '' : 'e'
+    // I claude.ai-artefakten är vanliga nedladdningar blockerade; där används plattformens downloads-funktion.
+    const claudeRt = (window as unknown as { claude?: { use?: (n: string) => Promise<any> } }).claude
+    if (claudeRt?.use) {
+      const dl = await claudeRt.use('downloads').catch(() => null)
+      if (dl) {
+        try {
+          await dl.save({ filename: `${name}.json`, data: json })
+          setMessage(`${what} exporterad${ed} till fil.`)
+        } catch (e: any) {
+          setMessage(e?.code === 'declined' ? 'Exporten avbröts.' : 'Det gick inte att spara filen här.')
+        }
+        return
+      }
+    }
     try {
       const a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
