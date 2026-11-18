@@ -193,14 +193,9 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           {dateError && <span className="ws-dateerr" role="alert">{dateError}</span>}
         </div>
         <div className="ws-mealtabs" role="tablist" aria-label="Måltid">
-          {meals.map(m => {
-            const n = dayEntries.filter(e => e.meal === m).length
-            return (
-              <button key={m} role="tab" aria-selected={meal === m} className={meal === m ? 'on' : ''} onClick={() => setMeal(m)}>
-                {m}{n > 0 && <span className="count">{n}</span>}
-              </button>
-            )
-          })}
+          {meals.map(m => (
+            <button key={m} role="tab" aria-selected={meal === m} className={meal === m ? 'on' : ''} onClick={() => setMeal(m)}>{m}</button>
+          ))}
           <button type="button" className="ws-add" onClick={addMeal}>+ Lägg till måltid</button>
           {meals.length > 1 && (
             <button type="button" className={`ws-remove ${armed === `meal:${currentDay}:${meal}` ? 'armed' : ''}`} onClick={() => removeMeal(meal)}>
