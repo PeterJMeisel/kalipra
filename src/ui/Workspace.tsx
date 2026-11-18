@@ -175,10 +175,9 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
       <section className="ws-meals panelbox" aria-label="Registrerade livsmedel per måltid">
         <div className="ws-daytabs" role="tablist" aria-label="Dag">
           {Array.from({ length: calc.days }, (_, i) => i + 1).map(d => {
-            const n = entries.filter(e => e.day === d).length
             return (
               <button key={d} role="tab" aria-selected={currentDay === d} className={currentDay === d ? 'on' : ''} onClick={() => { setDay(d); setDateError(null) }}>
-                Dag {d}{n > 0 && <span className="count">{n}</span>}
+                Dag {d}
               </button>
             )
           })}
