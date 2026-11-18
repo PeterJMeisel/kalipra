@@ -238,6 +238,11 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           <span>
             Måltid: <strong>{formatNumber(kcalOf(mealEntries), 0)} kcal</strong>
           </span>
+          {need && (
+            <span className="ws-need" title={`BMR ${formatNumber(need.bmrKcal, 0)} kcal · aktivitet ${formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal${need.extraKcal ? ` · ${need.extraLabel} +${formatNumber(need.extraKcal, 0)} kcal` : ''}`}>
+              <span className="lbl">Energibehov per dag</span> <strong>{formatNumber(need.teeKcal, 0)}</strong> <small>kcal</small>
+            </span>
+          )}
           <button type="button" className={`ws-copybtn ${copyOpen ? 'on' : ''}`} onClick={() => setCopyOpen(o => !o)}
             aria-expanded={copyOpen} disabled={mealEntries.length === 0 && !copyOpen}
             title={mealEntries.length === 0 ? 'Måltiden är tom' : `Kopiera ${meal.toLowerCase()} till en annan måltid`}>

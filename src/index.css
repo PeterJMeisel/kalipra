@@ -744,10 +744,6 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-addrow .unit-select { border-color: var(--line); color: var(--ink); font-size: 14px; padding: 4px 6px }
 .ws-entries .unitcell { white-space: nowrap }
 
-/* Energibehov per dag i klientraden – syns i alla vyer */
-.pb-need { display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 10px; border-radius: 6px; background: color-mix(in srgb, var(--top-ink) 12%, transparent); color: var(--top-ink); font-size: 13px; white-space: nowrap }
-.pb-need strong { font-size: 15px }
-
 /* Söklistan: varje livsmedel som en tydlig rad – namn överst, energi under, skiljelinje mellan raderna */
 .ws-hits li { border-bottom: 1px solid var(--line) }
 .ws-hits li:last-child { border-bottom: 0 }
@@ -757,3 +753,9 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li > button:first-child small { font-size: 12px; opacity: .65 }
 .ws-hits li:hover > button:first-child:not(.on) { background: var(--tint) }
 .ws-hits .ws-hitsheet { bottom: 7px; right: 12px }
+
+/* Energibehov per dag i måltidsrutans fot – alltid synligt under registreringen */
+.ws-need { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 14px; border: 1.5px solid var(--brand); border-radius: 8px; background: var(--tint); color: var(--ink); white-space: nowrap; cursor: help }
+.ws-need .lbl { font-size: 13px; color: var(--muted) }
+.ws-need strong { font-size: 18px; color: var(--brand) }
+.ws-need small { font-size: 13px; color: var(--muted) }
