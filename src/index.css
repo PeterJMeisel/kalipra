@@ -752,3 +752,8 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li > button:first-child small { font-size: 12px; opacity: .65 }
 .ws-hits li:hover > button:first-child:not(.on) { background: var(--tint) }
 .ws-hits .ws-hitsheet { bottom: 7px; right: 12px }
+
+/* Måltidsrutan växer inte: fler livsmedel än som får plats → listan scrollas (rubrikraden ligger kvar) */
+.ws-meals { max-height: 560px }
+.ws-tablewrap { min-height: 0; overflow-y: auto; overflow-x: hidden }
+.ws-entries thead th { position: sticky; top: 0; background: var(--panel, var(--bg)); z-index: 1 }
