@@ -18,7 +18,12 @@ const GRAM: Measure = { id: 'g', label: 'g', factor: 1 }
  * Densitet (g/ml) per livsmedel, nyckel `${source}:${number}`. Bara värden med källa.
  * Utan värde kan livsmedel i gram bara anges i gram.
  */
-export const DENSITY: Record<string, number> = {}
+export const DENSITY: Record<string, number> = {
+  // Rapsolja 0,915 g/ml (20 °C): produktspecifikationer Organic Makers (rel. densitet 0,910–0,923, kallpressad)
+  // och Sels (0,912–0,918 g/ml). Källor i CLAUDE.md under Mått och densitet.
+  'lmv:2189': 0.915, // Rapsolja
+  'lmv:4661': 0.915, // Rapsolja kallpressad
+}
 
 export const foodKey = (f: Pick<Food, 'source' | 'number'>) => `${f.source}:${f.number}`
 
