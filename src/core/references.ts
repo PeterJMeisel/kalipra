@@ -195,7 +195,7 @@ export function microReferences(age: number, sex: Sex, energyMJ: number, repro: 
     { key: 'ID', kind: 'AI', value: r[14], ar: a[14], arProvisional: p, ul: ul(600) },
     { key: 'SE', kind: 'AI', value: r[15], ar: a[15], arProvisional: p, ul: ul(255) },
     // Salt: NNR 2023 AI för natrium 1,5 g/dag för vuxna = 3,75 g salt; max 2,3 g natrium = 5,75 g salt (tabell 11)
-    { key: 'NACL', kind: 'max', value: r[16], min: adult ? 3.75 : undefined, note: adult ? 'Tillräckligt intag 3,75 g, högst 5,75 g.' : 'Rekommenderat högsta intag.' },
+    { key: 'NACL', kind: 'max', value: r[16], min: adult ? 3.75 : undefined, note: adult ? 'Tillräckligt intag 3,75 g, rekommendation ≤ 5,75 g.' : 'Rekommenderat högsta intag.' },
   ]
 }
 
@@ -281,7 +281,7 @@ export function fiberReference(age: number, sex: Sex, teeMJ: number): { minG: nu
   if (age < 2) return { minG: 0, text: 'ingen rekommendation under 2 år' }
   if (age >= 18) {
     const g = sex === 'man' ? 35 : 25
-    return { minG: g, text: `minst ${g} g/dag` }
+    return { minG: g, text: `≥ ${g} g/dag` }
   }
   const lo = Math.round(2 * teeMJ), hi = Math.round(3 * teeMJ)
   return { minG: lo, maxG: hi, text: `${lo}–${hi} g/dag (2–3 g/MJ)` }

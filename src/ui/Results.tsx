@@ -23,10 +23,10 @@ function rangeStatus(v: number, r: Range): Status {
 function rangeText(r: Range, unit = ''): string {
   const f = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 1)
   if (r.min !== undefined && r.max !== undefined) return `${f(r.min)}–${f(r.max)}${unit}`
-  if (r.min !== undefined) return `minst ${f(r.min)}${unit}`
+  if (r.min !== undefined) return `≥ ${f(r.min)}${unit}`
   if (r.max === undefined) return 'ingen rekommendation'
   if (r.max === 0) return 'bör undvikas'
-  return `högst ${f(r.max)}${unit}`
+  return `≤ ${f(r.max)}${unit}`
 }
 
 export function Results({ client, summary, need, plan, hasEntries }: Props) {
@@ -106,7 +106,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
               <td data-l="Näringsämne">Protein per kg kroppsvikt</td>
               <td data-l="Gram" className="num">{formatNumber(proteinPerKg, 2)}</td>
               <td data-l="E%" className="num"></td>
-              <td data-l="Rekommendation">minst {formatNumber(macro.proteinGPerKg, 2)} g/kg</td>
+              <td data-l="Rekommendation">≥ {formatNumber(macro.proteinGPerKg, 2)} g/kg</td>
               <td data-l="Läge"><span className={`pill ${proteinPerKg >= macro.proteinGPerKg ? 'ok' : 'low'}`}>{proteinPerKg >= macro.proteinGPerKg ? 'Inom' : 'Under'}</span></td>
             </tr>
             <tr>
@@ -140,7 +140,7 @@ export function Results({ client, summary, need, plan, hasEntries }: Props) {
                   <div style={{ width: `${Math.min(pct, 100)}%` }} />
                 </div>
                 <div className="mfoot">
-                  <span>{m.kind === 'max' ? 'Högst' : m.kind} {formatNumber(m.value, Number.isInteger(m.value * 10 ** d.decimals) ? d.decimals : 2)} {d.unit}</span>
+                  <span>{m.kind === 'max' ? '≤' : m.kind} {formatNumber(m.value, Number.isInteger(m.value * 10 ** d.decimals) ? d.decimals : 2)} {d.unit}</span>
                   <span className={`pct ${st}`}>{formatNumber(pct, 0)} %</span>
                 </div>
                 {m.note && <small className="mnote">{m.note}</small>}

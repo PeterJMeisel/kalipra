@@ -502,8 +502,8 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
             <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
             <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
           </div>
-          <span className="sub">PAL {formatNumber(pal, 2)} · BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
-            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
+          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
+            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null} · PAL {formatNumber(pal, 2)}</span>
         </div>
         )}
         <div className="ws-kcalbox">
@@ -537,7 +537,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
                 <div className={`fill ${proteinPerKg >= protRef ? '' : 'low'}`} style={{ width: `${Math.min((proteinPerKg / protRef) * 100, 150) / 1.5}%` }} />
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation minst {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''}</span>
+              <span className="sub">Rekommendation ≥ {formatNumber(protRef, 2)} g/kg{macro.proteinAddG ? ` (inkl. +${formatNumber(macro.proteinAddG, 0)} g/dag)` : ''}</span>
             </>
           ) : (
             <>
@@ -601,7 +601,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
           const minG = sr?.min
           const st = sr ? microStatus(sr, g) : 'ok'
           const f2 = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 2)
-          if (isMeal) return <ShareBox label="Salt" value={g} unit="g" dayRef={maxG / sh} refText={`högsta mängd (${f2(maxG / sh)} g)`} />
+          if (isMeal) return <ShareBox label="Salt" value={g} unit="g" dayRef={maxG / sh} refText={`rekommendation (≤ ${f2(maxG / sh)} g)`} />
           return (
             <div className="ws-kcalbox">
               <span className="lbl">Salt</span>
@@ -611,7 +611,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
                 {minG !== undefined && <div className="mark" style={{ left: `${(minG / maxG) * 100 / 1.5}%` }} />}
                 <div className="mark" style={{ left: `${100 / 1.5}%` }} />
               </div>
-              <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `högst ${f2(maxG)} g`}</span>
+              <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `≤ ${f2(maxG)} g`}</span>
             </div>
           )
         })()}
@@ -681,7 +681,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
             )
           }
           return (
-            <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? 'högst ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
+            <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? '≤ ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
               <span className="mn">{d.label}</span>
               <div className={`bar ${st}`} aria-hidden="true">
                 <div style={{ width: `${Math.min(p, 100)}%` }} />
@@ -690,7 +690,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
               {detailed && (
                 <span className="md">
                   {formatNumber(val, d.decimals)} {d.unit}{' '}
-                  <span className="ref">({m.kind === 'max' ? 'högst ' : m.kind === 'AI' ? 'AI ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.kind === 'RI' && m.ar !== undefined && <>, AR {formatNumber(m.ar, d.decimals)} {d.unit}</>}{m.ul !== undefined && <>, UL {formatNumber(m.ul, d.decimals)} {d.unit}</>})</span>
+                  <span className="ref">({m.kind === 'max' ? '≤ ' : m.kind === 'AI' ? 'AI ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.kind === 'RI' && m.ar !== undefined && <>, AR {formatNumber(m.ar, d.decimals)} {d.unit}</>}{m.ul !== undefined && <>, UL {formatNumber(m.ul, d.decimals)} {d.unit}</>})</span>
                 </span>
               )}
             </div>
@@ -974,10 +974,10 @@ function IntakeView({ scoped }: { scoped: Scoped }) {
 const rangeText = (r: Range): string => {
   const f = (n: number) => formatNumber(n, Number.isInteger(n) ? 0 : 1)
   if (r.min !== undefined && r.max !== undefined) return `${f(r.min)}–${f(r.max)} E%`
-  if (r.min !== undefined) return `minst ${f(r.min)} E%`
+  if (r.min !== undefined) return `≥ ${f(r.min)} E%`
   if (r.max === undefined) return 'ingen rekommendation'
   if (r.max === 0) return 'bör undvikas'
-  return `högst ${f(r.max)} E%`
+  return `≤ ${f(r.max)} E%`
 }
 
 /** Cirkeldiagram (ring) över energifördelningen mellan makronutrienterna. Fast färgordning. */
@@ -1053,7 +1053,7 @@ function MacroView({ person, totals, teeMJ }: { person: Person | null; totals: N
               <td>{r.label}</td>
               <td className="num">{formatNumber(r.grams, 1)}</td>
               <td className="num">{isFiber ? '' : <strong>{formatNumber(r.pct, 1)}</strong>}</td>
-              <td>{isFiber ? (person && teeMJ ? fiberReference(person.age, person.sex, teeMJ).text : 'minst 25–35 g/dag') : r.label === 'Alkohol' ? 'Ingen säker nivå' : rangeText(r.ref)}</td>
+              <td>{isFiber ? (person && teeMJ ? fiberReference(person.age, person.sex, teeMJ).text : '≥ 25–35 g/dag') : r.label === 'Alkohol' ? 'Ingen säker nivå' : rangeText(r.ref)}</td>
             </tr>
           )
         })}
