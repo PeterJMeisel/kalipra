@@ -236,18 +236,21 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         ) : (
           <>
             {weights.length >= 2 && (
-              <div className={showGraph ? 'wchangerow' : undefined}>
-                {showGraph && <WeightChart weights={weights} />}
               <div className="wchanges">
-                {periods.map(p => (
-                  <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}`}>
-                    <span className="wl">{p.label}</span>
-                    <strong>{signed(p.c.deltaPct, 1)} %</strong>
-                    <span className="ws">{signed(p.c.deltaKg, 1)} kg</span>
-                    <span className="ws">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
-                  </div>
-                ))}
-              </div>
+                {periods.map(p => {
+                  const graph = showGraph && p.c === total
+                  return (
+                    <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}${graph ? ' withgraph' : ''}`}>
+                      <div className="wctext">
+                        <span className="wl">{p.label}</span>
+                        <strong>{signed(p.c.deltaPct, 1)} %</strong>
+                        <span className="ws">{signed(p.c.deltaKg, 1)} kg</span>
+                        <span className="ws">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
+                      </div>
+                      {graph && <WeightChart weights={weights} />}
+                    </div>
+                  )
+                })}
               </div>
             )}
             <table className="ref stack wtable">
