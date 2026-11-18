@@ -772,9 +772,17 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wl-cell:hover, .wl-cell:focus-visible { background: var(--tint) }
 .wl-input { font: inherit; font-size: 15px; padding: 3px 6px; width: 6em; text-align: right; border: 1px solid var(--brand); border-radius: 4px }
 .wl-input.date { width: 10em; text-align: left }
-/* Bedöm undernäring: viktförändringar och graf i samma ruta */
-.wsummary { display: grid; grid-template-columns: minmax(200px, auto) minmax(0, 1fr); gap: 16px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; background: var(--panel); margin: 14px 0 }
-.wperiods { display: grid; gap: 12px }
-.wperiods .wchange { border: 0; padding: 0; background: none }
+/* Vikthistorik / Lägg till vikt: formuläret som en lugn rad i kortet, viktförändring i en ruta (graf till höger när den visas) */
+.wlog .weightadd { grid-template-columns: minmax(0, 210px) minmax(0, 140px) auto; justify-content: start; padding: 14px; border: 0; background: var(--tint); max-width: none }
+.wlog .weightadd.missing { border: 2px dashed var(--red) }
+.wlog .weightadd button { min-width: 110px }
+.wlog > .error { margin: -6px 0 0 }
+.wlog .wtable { margin: 0 }
+.wsummary { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+.wsummary.withgraph { grid-template-columns: minmax(200px, auto) minmax(0, 1fr) }
+.wperiods { display: flex; flex-wrap: wrap; gap: 12px 40px }
+.wsummary.withgraph .wperiods { flex-direction: column; gap: 14px }
+.wperiods .wchange { border: 0; padding: 0; background: none; gap: 1px }
+.wperiods .wchange strong { font-size: 24px; line-height: 1.15 }
 .wsummary .wchart { margin: 0 auto; width: 100%; max-width: 460px }
-@media (max-width: 760px) { .wsummary { grid-template-columns: minmax(0, 1fr) } }
+@media (max-width: 760px) { .wsummary.withgraph { grid-template-columns: minmax(0, 1fr) } .wlog .weightadd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .wlog .weightadd button { grid-column: 1 / -1 } }

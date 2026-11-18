@@ -167,11 +167,11 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
           </label>
         </div>
       </section>
-      <WeightLog title="Lägg till vikt" graphButton={false} weights={weights} heightCm={heightCm}
+      <WeightLog title="Lägg till vikt" weights={weights} heightCm={heightCm}
         onChange={ws => onChange({ weights: ws })} kgId="w-kg"
         formClass={flag(glimMissing.weight || weights.length < 2)}
-        summary={weights.length >= 2 && (
-          <div className="wsummary">
+        summary={graph => weights.length >= 2 && (
+          <div className={`wsummary${graph ? ' withgraph' : ''}`}>
             <div className="wperiods">
               {periods.map(p => (
                 <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}`}>
@@ -181,7 +181,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                 </div>
               ))}
             </div>
-            <WeightChart weights={weights} />
+            {graph && <WeightChart weights={weights} />}
           </div>
         )}
         footer={latest && calcWeightKg !== undefined && onUseLatestWeight && Math.abs(latest.kg - calcWeightKg) >= 0.05 && (

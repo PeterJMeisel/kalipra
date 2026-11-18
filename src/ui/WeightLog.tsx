@@ -11,15 +11,13 @@ const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv
 const signed = (n: number, d: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${formatNumber(Math.abs(n), d)}`
 
 /** Vikthistorik i Klientdata: samma vägningar som i undernäringsbedömningen. */
-export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik', graphButton = true, summary, footer, formClass = '', kgId }: {
+export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik', summary, footer, formClass = '', kgId }: {
   weights: WeightEntry[] | undefined
   heightCm: number | undefined
   onChange: (w: WeightEntry[]) => void
   title?: string
-  /** Knappen Se graf (Klientdata). I Bedöm undernäring visas grafen i summary i stället. */
-  graphButton?: boolean
-  /** Visas mellan formuläret och tabellen (t.ex. viktförändring med graf) */
-  summary?: React.ReactNode
+  /** Visas mellan formuläret och tabellen (viktförändring). Får veta om grafen ska visas; då ritar summary grafen själv. */
+  summary?: (showGraph: boolean) => React.ReactNode
   footer?: React.ReactNode
   formClass?: string
   kgId?: string
@@ -60,7 +58,7 @@ export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik',
     <section className="pd-card wlog">
       <div className="wlog-head">
         <h2>{title}</h2>
-        {graphButton && <button type="button" className={`small ${showGraph && sorted.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && sorted.length >= 2} disabled={sorted.length < 2} title={sorted.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && sorted.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>}
+        {<button type="button" className={`small ${showGraph && sorted.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && sorted.length >= 2} disabled={sorted.length < 2} title={sorted.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && sorted.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>}
       </div>
       <form className={`weightadd${formClass}`} onSubmit={add} noValidate>
         <div className="field">
@@ -74,7 +72,7 @@ export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik',
         <button type="submit" className="primary">Lägg till</button>
       </form>
       {error && <p className="error" role="alert">{error}</p>}
-      {summary}
+      {summary?.(showGraph && sorted.length >= 2)}
       {sorted.length === 0 ? <p className="empty">Inga vikter ännu.</p> : (
         <table className="ref stack wtable">
           <thead><tr><th>Datum</th><th className="num">Vikt</th><th className="num">BMI</th><th className="num">Sedan föregående</th><th></th></tr></thead>
@@ -96,7 +94,7 @@ export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik',
           </tbody>
         </table>
       )}
-      {graphButton && showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
+      {!summary && showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
       {footer}
     </section>
   )
