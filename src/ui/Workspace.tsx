@@ -223,7 +223,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
                   const f = db.get(e.foodNumber, e.source)
                   return (
                     <tr key={e.id}>
-                      <td className="name">{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
+                      <td className="name">{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}{f?.source === 'nutrition' && <button type="button" className="ws-sheetlink" onClick={() => setSheetFor(f.number)}>Produktblad</button>}</td>
                       <AmountCell entry={e} food={f} onChange={patch => setEntries(entries.map(x => (x.id === e.id ? { ...x, ...patch } : x)))} />
                       <td className="del"><button type="button" aria-label={`Ta bort ${f?.name}`} onClick={() => setEntries(entries.filter(x => x.id !== e.id))}>×</button></td>
                     </tr>

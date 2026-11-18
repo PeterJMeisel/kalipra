@@ -728,7 +728,7 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 .ps-foot { margin-top: 20px; font-size: 13px }
 .ws-sheetlink { border: 0 !important; background: none !important; padding: 0 0 0 8px !important; min-height: 0 !important; color: var(--brand); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; white-space: nowrap }
 .ws-sheetlink:hover { color: var(--ink) }
-td.name .ws-sheetlink { opacity: .6; transition: opacity .12s }
+td.name .ws-sheetlink { opacity: 0; transition: opacity .12s }
 tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1 }
 .ws-hits li { position: relative }
 .ws-hits .ws-hitsheet { position: absolute; right: 10px; bottom: 3px; width: auto !important; background: none !important; font-size: 12px; opacity: 0; pointer-events: none }
