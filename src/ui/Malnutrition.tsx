@@ -138,20 +138,22 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
 
 
 
-  // Visa bara perioder som har en jämförelse, och hoppa över dem som ger samma jämförelse som en längre period
+  // Viktförändring: alla tre perioder visas alltid. Röd bara när GLIM-kriteriet för viktförlust uppfylls
+  // (> 5 % inom 6 månader, > 10 % över längre tid än 6 månader).
   const total = totalChange(weights)
-  const periods = ([
-    { label: 'Senaste 3 månaderna', c: changeWithin(weights, 3) },
-    { label: 'Senaste 6 månaderna', c: changeWithin(weights, 6) },
-    { label: total ? `Hela perioden (${periodText(total.fromDate, total.toDate)})` : 'Hela perioden', c: total },
-  ].filter(p => p.c) as { label: string; c: WeightChange }[])
-    .filter((p, i, all) => {
-      const isTotal = i === all.length - 1 && p.c === total
-      if (isTotal) return true
-      // Samma startvikt som hela perioden eller som en kortare period: visas redan
-      if (total && p.c.fromDate === total.fromDate) return false
-      return !all.slice(0, i).some(q => q.c.fromDate === p.c.fromDate)
-    })
+  const totalOver6 = total ? changeWithin(weights, 6)?.fromDate !== total.fromDate : false
+  const periods: { label: string; c: WeightChange | null; glim: boolean }[] = [
+    { label: 'Senaste 3 månaderna', c: changeWithin(weights, 3), glim: false },
+    { label: 'Senaste 6 månaderna', c: changeWithin(weights, 6), glim: false },
+    { label: total ? `Hela perioden (${periodText(total.fromDate, total.toDate)})` : 'Hela perioden', c: total, glim: false },
+  ]
+  for (const p of periods) {
+    if (!p.c) continue
+    const loss = -p.c.deltaPct
+    const longer = p.c === total && totalOver6
+    p.glim = longer ? loss > 10 : loss > 5
+  }
+  const [showGraph, setShowGraph] = useState(false)
 
   return (
     <div className="assess">
@@ -167,29 +169,35 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
           </label>
         </div>
       </section>
-      <WeightLog title="Lägg till vikt" weights={weights} heightCm={heightCm}
+      <WeightLog title="Lägg till vikt" graphButton={false} weights={weights} heightCm={heightCm}
         onChange={ws => onChange({ weights: ws })} kgId="w-kg"
         formClass={flag(glimMissing.weight || weights.length < 2)}
-        summary={graph => weights.length >= 2 && (
-          <div className={`wsummary${graph ? ' withgraph' : ''}`}>
-            <div className="wperiods">
-              {periods.map(p => (
-                <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}`}>
-                  <span className="wl">{p.label}</span>
-                  <strong>{signed(p.c.deltaPct, 1)} %</strong>
-                  <span className="ws">{signed(p.c.deltaKg, 1)} kg · {dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
-                </div>
-              ))}
-            </div>
-            {graph && <WeightChart weights={weights} />}
-          </div>
-        )}
         footer={latest && calcWeightKg !== undefined && onUseLatestWeight && Math.abs(latest.kg - calcWeightKg) >= 0.05 && (
           <p className="msg">
             Senaste vägningen ({formatNumber(latest.kg, 1)} kg, {dateText(latest.date)}) skiljer sig från vikten i senaste beräkningen ({formatNumber(calcWeightKg, 1)} kg).{' '}
             <button type="button" className="small" onClick={() => onUseLatestWeight(latest.kg)}>Använd {formatNumber(latest.kg, 1)} kg i beräkningen</button>
           </p>
         )} />
+
+      <section className="pd-card wsummarycard">
+        <div className="wlog-head">
+          <h2>Viktförändring</h2>
+          <button type="button" className={`small ${showGraph && weights.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && weights.length >= 2} disabled={weights.length < 2}
+            title={weights.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && weights.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>
+        </div>
+        <div className={`wsummary${showGraph && weights.length >= 2 ? ' withgraph' : ''}`}>
+          <div className="wperiods">
+            {periods.map(p => (
+              <div key={p.label} className={`wchange${p.glim ? ' down' : ''}${p.c ? '' : ' none'}`}>
+                <span className="wl">{p.label}</span>
+                <strong>{p.c ? `${signed(p.c.deltaPct, 1)} %` : '–'}</strong>
+                <span className="ws">{p.c ? `${signed(p.c.deltaKg, 1)} kg · ${dateText(p.c.fromDate)} → ${dateText(p.c.toDate)}` : 'Ingen jämförelse'}</span>
+              </div>
+            ))}
+          </div>
+          {showGraph && weights.length >= 2 && <WeightChart weights={weights} />}
+        </div>
+      </section>
 
       <section className="assesshealth">
         <HealthSection health={health} onChange={h => onChange({ health: h })} open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />

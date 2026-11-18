@@ -11,11 +11,13 @@ const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv
 const signed = (n: number, d: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${formatNumber(Math.abs(n), d)}`
 
 /** Vikthistorik i Klientdata: samma vägningar som i undernäringsbedömningen. */
-export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik', summary, footer, formClass = '', kgId }: {
+export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik', graphButton = true, summary, footer, formClass = '', kgId }: {
   weights: WeightEntry[] | undefined
   heightCm: number | undefined
   onChange: (w: WeightEntry[]) => void
   title?: string
+  /** Knappen Se graf (av i Bedöm undernäring, där grafen finns i modulen Viktförändring) */
+  graphButton?: boolean
   /** Visas mellan formuläret och tabellen (viktförändring). Får veta om grafen ska visas; då ritar summary grafen själv. */
   summary?: (showGraph: boolean) => React.ReactNode
   footer?: React.ReactNode
@@ -58,7 +60,7 @@ export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik',
     <section className="pd-card wlog">
       <div className="wlog-head">
         <h2>{title}</h2>
-        {<button type="button" className={`small ${showGraph && sorted.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && sorted.length >= 2} disabled={sorted.length < 2} title={sorted.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && sorted.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>}
+        {graphButton && <button type="button" className={`small ${showGraph && sorted.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && sorted.length >= 2} disabled={sorted.length < 2} title={sorted.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && sorted.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>}
       </div>
       <form className={`weightadd${formClass}`} onSubmit={add} noValidate>
         <div className="field">

@@ -786,3 +786,7 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wperiods .wchange strong { font-size: 24px; line-height: 1.15 }
 .wsummary .wchart { margin: 0 auto; width: 100%; max-width: 460px }
 @media (max-width: 760px) { .wsummary.withgraph { grid-template-columns: minmax(0, 1fr) } .wlog .weightadd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .wlog .weightadd button { grid-column: 1 / -1 } }
+
+/* Bedöm undernäring: modulen Viktförändring (egen ruta ovanför Hälsotillstånd) */
+.wsummarycard .wsummary { border: 0; padding: 0 }
+.wperiods .wchange.none strong { color: var(--muted) }
