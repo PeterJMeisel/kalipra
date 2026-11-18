@@ -257,7 +257,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           </span>
         </nav>
         {(bottomTab === 'rdi' || (bottomTab === 'maltid' && scope === 'dag')) && (person && need
-          ? <RdiView person={person} repro={repro} weightKg={weightKg} need={need} scoped={view} />
+          ? <RdiView person={person} repro={repro} weightKg={weightKg} pal={calc.pal} need={need} scoped={view} />
           : <IntakeView scoped={view} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} teeMJ={need?.teeMJ} />}
         {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
@@ -455,8 +455,8 @@ function ShareBox({ label, value, unit, dayRef, refText }: { label: string; valu
   )
 }
 
-function RdiView({ person, repro, weightKg, need, scoped }: {
-  person: Person; repro: Repro | null; weightKg: number
+function RdiView({ person, repro, weightKg, pal, need, scoped }: {
+  person: Person; repro: Repro | null; weightKg: number; pal: number
   need: EnergyNeed
   scoped: Scoped
 }) {
@@ -502,7 +502,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
             <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
             <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
           </div>
-          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
+          <span className="sub">PAL {formatNumber(pal, 2)} · BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
             {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
         </div>
         )}
