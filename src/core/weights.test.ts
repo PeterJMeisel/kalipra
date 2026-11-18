@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { changeWithin, daysBetween, sortWeights, totalChange } from './weights'
+import { changeWithin, daysBetween, sortWeights, totalChange, weightOn } from './weights'
 
 const w = (date: string, kg: number) => ({ id: date, date, kg })
 
@@ -69,5 +69,25 @@ describe('periodText', () => {
     expect(periodText('2026-10-01', '2026-10-15')).toBe('2 veckor')
     expect(periodText('2026-10-01', '2026-10-04')).toBe('3 dagar')
     expect(periodText('2026-01-31', '2026-03-01')).toBe('1 månad')
+  })
+})
+
+describe('weightOn – vikt för kostregistreringens datum', () => {
+  const ws = [
+    { id: 'a', date: '2026-10-01', kg: 70 },
+    { id: 'b', date: '2026-11-01', kg: 68 },
+    { id: 'c', date: '2026-11-15', kg: 66 },
+  ]
+  it('senaste vägningen på eller före datumet', () => {
+    expect(weightOn(ws, '2026-11-10')?.kg).toBe(68)
+    expect(weightOn(ws, '2026-11-15')?.kg).toBe(66)
+    expect(weightOn(ws, '2026-12-01')?.kg).toBe(66)
+  })
+  it('före första vägningen: första vägningen', () => {
+    expect(weightOn(ws, '2026-09-01')?.kg).toBe(70)
+  })
+  it('utan vägningar: undefined', () => {
+    expect(weightOn([], '2026-11-10')).toBeUndefined()
+    expect(weightOn(undefined, '2026-11-10')).toBeUndefined()
   })
 })

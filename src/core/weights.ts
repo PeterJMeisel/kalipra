@@ -105,3 +105,15 @@ export function periodText(from: string, to: string): string {
   }
   return parts.join(', ')
 }
+
+/**
+ * Vikten som gäller ett visst datum: senaste vägningen på eller före datumet.
+ * Finns ingen vägning före datumet används den första vägningen efter. Utan vägningar: undefined.
+ */
+export function weightOn(weights: WeightEntry[] | undefined, date: string): WeightEntry | undefined {
+  const s = sortWeights(weights ?? [])
+  if (!s.length) return undefined
+  let hit: WeightEntry | undefined
+  for (const w of s) if (w.date <= date) hit = w
+  return hit ?? s[0]
+}

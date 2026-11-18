@@ -3,6 +3,7 @@ import { bmi, BMR_FORMULAS, normalizeFormula, PAL_OPTIONS } from '../core/energy
 import { formatNumber } from '../core/nutrients'
 import { emptyHealth, LIMITS, type Calculation, type Health, type Person } from '../core/types'
 import { HealthSection } from './HealthSection'
+import { WeightLog } from './WeightLog'
 
 type Props = {
   person: Person
@@ -63,6 +64,7 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
           </div>
         )}
       </section>
+      <WeightLog weights={person.weights} heightCm={person.heightCm} onChange={w => onPatchPerson({ weights: w })} />
       <HealthSection health={person.health ?? emptyHealth()} onChange={(h: Health) => onPatchPerson({ health: h })}
         open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
       <div className="actions">

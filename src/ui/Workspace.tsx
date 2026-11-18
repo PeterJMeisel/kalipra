@@ -1,3 +1,4 @@
+import { weightOn } from '../core/weights'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
@@ -147,9 +148,16 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   }
   const [copyOpen, setCopyOpen] = useState(false)
 
-  const weightKg = calc.weightKg
+  // Vikt för behoven: finns vägningar används vikten som gäller kostregistreringens datum (läget Dag: markerad dag;
+  // läget Dagar: medel av vikterna för de dagar som har registreringar). Utan vägningar: vikten i beräkningen.
+  const hasWeights = (person?.weights?.length ?? 0) > 0
+  const weightForDay = (d: number) => weightOn(person?.weights, dd.dates[d - 1] ?? today)?.kg ?? calc.weightKg
+  const regDays = [...new Set(entries.map(e => e.day))]
+  const weightKg = !hasWeights ? calc.weightKg
+    : scope === 'dagar' && regDays.length > 0 ? Math.round(regDays.reduce((a, d) => a + weightForDay(d), 0) / regDays.length * 10) / 10
+    : weightForDay(currentDay)
   const repro = person ? reproFrom(person.health, person.sex) : null
-  const need = useMemo(() => person ? needFor(person, calc) : null,
+  const need = useMemo(() => person ? needFor(person, { ...calc, weightKg }) : null,
     [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
   // Läget Dag visar bara den dag som är markerad i kostregistreringen (inte snitt över dagarna)
   const daySummary = useMemo(() => summarizeDiary(db, entries.filter(e => e.day === currentDay), 1, SUMMARY_KEYS), [db, entries, currentDay])
@@ -257,7 +265,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
           </span>
         </nav>
         {(bottomTab === 'rdi' || (bottomTab === 'maltid' && scope === 'dag')) && (person && need
-          ? <RdiView person={person} repro={repro} weightKg={weightKg} pal={calc.pal} need={need} scoped={view} />
+          ? <RdiView person={person} repro={repro} weightKg={weightKg} weightFromLog={hasWeights} pal={calc.pal} need={need} scoped={view} />
           : <IntakeView scoped={view} />)}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} teeMJ={need?.teeMJ} />}
         {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
@@ -454,8 +462,8 @@ function ShareBox({ label, value, unit, dayRef, refText }: { label: string; valu
   )
 }
 
-function RdiView({ person, repro, weightKg, pal, need, scoped }: {
-  person: Person; repro: Repro | null; weightKg: number; pal: number
+function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: {
+  person: Person; repro: Repro | null; weightKg: number; weightFromLog: boolean; pal: number
   need: EnergyNeed
   scoped: Scoped
 }) {
@@ -502,7 +510,7 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
             <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
           </div>
           <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
-            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null} · PAL {formatNumber(pal, 2)}</span>
+            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null} · vikt {formatNumber(weightKg, 1)} kg{weightFromLog ? ' (vikthistorik)' : ''} · PAL {formatNumber(pal, 2)}</span>
         </div>
         )}
         <div className="ws-kcalbox">
