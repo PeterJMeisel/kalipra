@@ -774,6 +774,6 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wl-input.date { width: 10em; text-align: left }
 /* Bedöm undernäring: grafen till höger i rutan för hela perioden */
 .wchange .wctext { display: grid; gap: 2px; align-content: start }
-.wchange.withgraph { grid-column: 1 / -1; grid-template-columns: minmax(180px, auto) minmax(0, 460px); justify-content: start; gap: 16px; align-items: center }
-.wchange.withgraph .wchart { margin: 0 }
+.wchange.withgraph { grid-column: 1 / -1; grid-template-columns: minmax(180px, auto) minmax(0, 1fr); gap: 16px; align-items: center }
+.wchange.withgraph .wchart { margin: 0 auto; width: 100%; max-width: 460px }
 @media (max-width: 760px) { .wchange.withgraph { grid-template-columns: minmax(0, 1fr) } }
