@@ -11,10 +11,18 @@ const dateText = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('sv
 const signed = (n: number, d: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${formatNumber(Math.abs(n), d)}`
 
 /** Vikthistorik i Klientdata: samma vägningar som i undernäringsbedömningen. */
-export function WeightLog({ weights, heightCm, onChange }: {
+export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik', graphButton = true, summary, footer, formClass = '', kgId }: {
   weights: WeightEntry[] | undefined
-  heightCm: number
+  heightCm: number | undefined
   onChange: (w: WeightEntry[]) => void
+  title?: string
+  /** Knappen Se graf (Klientdata). I Bedöm undernäring visas grafen i summary i stället. */
+  graphButton?: boolean
+  /** Visas mellan formuläret och tabellen (t.ex. viktförändring med graf) */
+  summary?: React.ReactNode
+  footer?: React.ReactNode
+  formClass?: string
+  kgId?: string
 }) {
   const sorted = sortWeights(weights ?? [])
   const newestFirst = [...sorted].reverse()
@@ -51,21 +59,22 @@ export function WeightLog({ weights, heightCm, onChange }: {
   return (
     <section className="pd-card wlog">
       <div className="wlog-head">
-        <h2>Vikthistorik</h2>
-        {sorted.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
+        <h2>{title}</h2>
+        {graphButton && sorted.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
       </div>
-      <form className="weightadd" onSubmit={add} noValidate>
+      <form className={`weightadd${formClass}`} onSubmit={add} noValidate>
         <div className="field">
           <span>Datum</span>
           <DatePicker id="wl-date" value={date} onChange={setDate} max={today()} />
         </div>
         <label className="field">
           <span>Vikt (kg)</span>
-          <input inputMode="decimal" value={kgText} onChange={e => setKgText(e.target.value)} placeholder="t.ex. 72,4" />
+          <input id={kgId} inputMode="decimal" value={kgText} onChange={e => setKgText(e.target.value)} placeholder="t.ex. 72,4" />
         </label>
         <button type="submit" className="primary">Lägg till</button>
       </form>
       {error && <p className="error" role="alert">{error}</p>}
+      {summary}
       {sorted.length === 0 ? <p className="empty">Inga vikter ännu.</p> : (
         <table className="ref stack wtable">
           <thead><tr><th>Datum</th><th className="num">Vikt</th><th className="num">BMI</th><th className="num">Sedan föregående</th><th></th></tr></thead>
@@ -87,7 +96,8 @@ export function WeightLog({ weights, heightCm, onChange }: {
           </tbody>
         </table>
       )}
-      {showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
+      {graphButton && showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
+      {footer}
     </section>
   )
 }
