@@ -236,6 +236,8 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         ) : (
           <>
             {weights.length >= 2 && (
+              <div className={showGraph ? 'wchangerow' : undefined}>
+                {showGraph && <WeightChart weights={weights} />}
               <div className="wchanges">
                 {periods.map(p => (
                   <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}`}>
@@ -245,6 +247,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                     <span className="ws">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>
                   </div>
                 ))}
+              </div>
               </div>
             )}
             <table className="ref stack wtable">
@@ -266,7 +269,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                 })}
               </tbody>
             </table>
-            {showGraph && weights.length >= 2 && <WeightChart weights={weights} />}
             {latest && calcWeightKg !== undefined && onUseLatestWeight && Math.abs(latest.kg - calcWeightKg) >= 0.05 && (
               <p className="msg">
                 Senaste vägningen ({formatNumber(latest.kg, 1)} kg, {dateText(latest.date)}) skiljer sig från vikten i senaste beräkningen ({formatNumber(calcWeightKg, 1)} kg).{' '}

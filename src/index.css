@@ -309,7 +309,7 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; paddi
 .wchange .wl { font-size: 14px; color: var(--muted) }
 .wchange strong { font-size: 26px; font-variant-numeric: tabular-nums }
 .wchange.down strong { color: var(--red) }
-.wchange .ws { font-size: 13px; color: var(--muted) }
+.wchange .ws { display: block; font-size: 13px; color: var(--muted) }
 .wtable .del { text-align: right }
 .msg .small { margin-left: 6px; min-height: 36px }
 @media (max-width: 760px) { .wchanges { grid-template-columns: minmax(0, 1fr) } }
@@ -772,3 +772,9 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wl-cell:hover, .wl-cell:focus-visible { background: var(--tint) }
 .wl-input { font: inherit; font-size: 15px; padding: 3px 6px; width: 6em; text-align: right; border: 1px solid var(--brand); border-radius: 4px }
 .wl-input.date { width: 10em; text-align: left }
+/* Bedöm undernäring: grafen till vänster om viktförändringen */
+.wchangerow { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; align-items: start; margin-bottom: 12px }
+.wchangerow .wchart { margin: 0 }
+.wchangerow .wchanges { margin: 0; grid-template-columns: minmax(0, 1fr) }
+.wchangerow .wchange { grid-template-columns: minmax(0, 1fr) }
+@media (max-width: 760px) { .wchangerow { grid-template-columns: minmax(0, 1fr) } }
