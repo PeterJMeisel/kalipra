@@ -6,6 +6,7 @@ import { emptyHealth, KNOWN_CONDITIONS, LIMITS, type Health, type Person, type S
 import { autoField, change, changeWithin, periodText, solveBody, sortWeights, totalChange, type BodyField, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { DatePicker } from './DatePicker'
+import { EditCell, WeightChart } from './WeightLog'
 import { assessGlim, bmiLimits, glimJournal, suggestEtiology, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
@@ -100,6 +101,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   const [recent, setRecent] = useState<BodyField[]>(heightCm ? ['h'] : [])
   const [error, setError] = useState('')
   const [healthOpen, setHealthOpen] = useState(false)
+  const [showGraph, setShowGraph] = useState(false)
   const hasHeight = weights.some(w => w.heightCm) || !!data.heightCm
   const glimMissing = {
     age: data.age === undefined,
@@ -147,6 +149,18 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     }
     setRecent(order)
     setVals(next)
+  }
+
+  /** Ändrar en vägning (klick i tabellen). Ogiltiga värden ignoreras med felmeddelande. */
+  function update(w: WeightEntry, p: { date?: string; kg?: number }) {
+    const d = p.date ?? w.date
+    const kg = 'kg' in p ? p.kg : w.kg
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return setError('Ange datum.')
+    if (d > today()) return setError('Datumet kan inte vara i framtiden.')
+    if (weights.some(x => x.id !== w.id && x.date === d)) return setError('Det finns redan en vikt för det datumet.')
+    if (kg === undefined || !(kg >= 8 && kg <= LIMITS.maxWeightKg)) return setError(`Vikten ska vara 8–${LIMITS.maxWeightKg} kg.`)
+    setError('')
+    onChange({ weights: sortWeights(weights.map(x => (x.id === w.id ? { ...x, date: d, kg: Math.round(kg * 10) / 10 } : x))) })
   }
 
   function add(e: React.FormEvent) {
@@ -201,7 +215,10 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
             <input id="a-age" inputMode="numeric" value={ageText} onChange={e => setAge(e.target.value)} aria-required="true" aria-invalid={age === undefined && ageText.trim() !== ''} placeholder="t.ex. 72" />
           </label>
         </div>
-        <h3>Vikter</h3>
+        <div className="wlog-head">
+          <h3>Vikter</h3>
+          {weights.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
+        </div>
         <form className={`weightadd${flag(glimMissing.weight || glimMissing.height || weights.length < 2)}`} onSubmit={add} noValidate>
           <div className="field">
             <span id="w-date-label">Datum</span>
@@ -238,10 +255,10 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                   const c = prev ? change(prev, w) : null
                   return (
                     <tr key={w.id}>
-                      <td data-l="Datum">{dateText(w.date)}</td>
+                      <td data-l="Datum"><EditCell text={dateText(w.date)} value={w.date} type="date" label={`Datum för vikten ${dateText(w.date)}`} onSave={v => update(w, { date: v })} /></td>
                       <td data-l="Längd" className="num">{w.heightCm ? `${formatNumber(w.heightCm, 1)} cm` : '–'}</td>
-                      <td data-l="Vikt" className="num"><strong>{formatNumber(w.kg, 1)} kg</strong></td>
-                      <td data-l="BMI" className="num">{(w.heightCm ?? heightCm) ? formatNumber(bmi(w.kg, (w.heightCm ?? heightCm)!), 1) : '–'}</td>
+                      <td data-l="Vikt" className="num"><EditCell text={`${formatNumber(w.kg, 1)} kg`} value={formatNumber(w.kg, 1)} strong label={`Vikt ${dateText(w.date)}`} onSave={v => update(w, { kg: parse(v) })} /></td>
+                      <td data-l="BMI" className="num">{(w.heightCm ?? heightCm) ? <EditCell text={formatNumber(bmi(w.kg, (w.heightCm ?? heightCm)!), 1)} value={formatNumber(bmi(w.kg, (w.heightCm ?? heightCm)!), 1)} label={`BMI ${dateText(w.date)}`} onSave={v => { const b = parse(v); if (b !== undefined) update(w, { kg: b * ((w.heightCm ?? heightCm)! / 100) ** 2 }) }} /> : '–'}</td>
                       <td data-l="Sedan föregående" className="num">{c ? `${signed(c.deltaKg, 1)} kg (${signed(c.deltaPct, 1)} %)` : '–'}</td>
                       <td className="del"><button type="button" className="linkbtn" aria-label={`Ta bort vikten ${dateText(w.date)}`} onClick={() => onChange({ weights: weights.filter(x => x.id !== w.id) })}>Ta bort</button></td>
                     </tr>
@@ -249,6 +266,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
                 })}
               </tbody>
             </table>
+            {showGraph && weights.length >= 2 && <WeightChart weights={weights} />}
             {latest && calcWeightKg !== undefined && onUseLatestWeight && Math.abs(latest.kg - calcWeightKg) >= 0.05 && (
               <p className="msg">
                 Senaste vägningen ({formatNumber(latest.kg, 1)} kg, {dateText(latest.date)}) skiljer sig från vikten i senaste beräkningen ({formatNumber(calcWeightKg, 1)} kg).{' '}

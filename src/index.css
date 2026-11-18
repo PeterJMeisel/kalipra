@@ -760,7 +760,7 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 
 /* Vikthistorik: rubrik med knapp, graf */
 .wlog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px }
-.wlog-head h2 { margin: 0 }
+.wlog-head h2, .wlog-head h3 { margin: 0 }
 .wchart { position: relative; margin: 12px 0 4px; overflow: hidden }
 .wchart svg { display: block }
 .wc-grid { stroke: var(--line); stroke-width: 1 }

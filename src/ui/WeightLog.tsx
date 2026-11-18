@@ -54,7 +54,6 @@ export function WeightLog({ weights, heightCm, onChange }: {
         <h2>Vikthistorik</h2>
         {sorted.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
       </div>
-      {showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
       <form className="weightadd" onSubmit={add} noValidate>
         <div className="field">
           <span>Datum</span>
@@ -88,12 +87,13 @@ export function WeightLog({ weights, heightCm, onChange }: {
           </tbody>
         </table>
       )}
+      {showGraph && sorted.length >= 2 && <WeightChart weights={sorted} />}
     </section>
   )
 }
 
 /** Linjediagram över vikten. Tidsaxeln är proportionell mot datum. */
-function WeightChart({ weights }: { weights: WeightEntry[] }) {
+export function WeightChart({ weights }: { weights: WeightEntry[] }) {
   const ref = useRef<HTMLDivElement>(null)
   const [W, setW] = useState(600)
   const [hover, setHover] = useState<number | null>(null)
@@ -150,7 +150,7 @@ function WeightChart({ weights }: { weights: WeightEntry[] }) {
 }
 
 /** Värde som visas som text och blir ett fält när man klickar på det. Sparas vid Enter eller när fältet lämnas. */
-function EditCell({ text, value, type = 'text', strong, label, onSave }: {
+export function EditCell({ text, value, type = 'text', strong, label, onSave }: {
   text: string; value: string; type?: 'text' | 'date'; strong?: boolean; label: string; onSave: (v: string) => void
 }) {
   const [editing, setEditing] = useState(false)
