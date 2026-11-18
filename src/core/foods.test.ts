@@ -206,3 +206,20 @@ describe('graviditet och amning', () => {
     expect(reproFrom(h(['Gravid']), 'man')).toEqual({ kind: 'gravid', trimester: 1 })
   })
 })
+
+describe('sökning: nutritionsprodukter först, fiber = fibre', () => {
+  const both = new DB2([data as unknown as FD2, nutrition as unknown as FD2])
+  it('nutritionsprodukter före vanliga livsmedel', () => {
+    const hits = both.search('fiber', 40)
+    const firstOther = hits.findIndex(f => f.source !== 'nutrition')
+    expect(hits[0].source).toBe('nutrition')
+    expect(hits.slice(firstOther).every(f => f.source !== 'nutrition')).toBe(true)
+  })
+  it('fiber och fibre ger samma träffar', () => {
+    const a = both.search('fiber', 500).map(f => f.name)
+    const b = both.search('fibre', 500).map(f => f.name)
+    expect(a).toEqual(b)
+    expect(a.some(n => /fibre/i.test(n))).toBe(true)
+    expect(a.some(n => /fiber/i.test(n))).toBe(true)
+  })
+})

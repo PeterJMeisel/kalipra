@@ -86,7 +86,7 @@ export class FoodDatabase {
         const food: Food = { source, group, number, name, analysed: analysed === 1, per100g, unit: prod?.basis === 'ml' ? 'ml' : 'g', ...(prod?.manufacturer ? { manufacturer: prod.manufacturer } : {}) }
         this.foods.push(food)
         this.byKey.set(`${source}:${number}`, food)
-        this.searchKeys.push(normalize([name, prod?.manufacturer, prod?.category].filter(Boolean).join(' ')))
+        this.searchKeys.push(searchKey([name, prod?.manufacturer, prod?.category].filter(Boolean).join(' ')))
       })
       if (source === 'nutrition') {
         for (const g of ['sond', 'kost'] as const) {
@@ -108,10 +108,11 @@ export class FoodDatabase {
 
   /**
    * Sök på alla ord i frågan, i de valda källorna (alla om inget anges).
-   * Träffar där namnet börjar med första ordet rankas högst.
+   * Nutritionsprodukter (sondnäring och kosttillägg) kommer alltid före vanliga livsmedel;
+   * inom varje grupp rankas träffar där namnet börjar med första ordet högst.
    */
   search(query: string, limit = 40, sources?: SourceId[]): Food[] {
-    const words = normalize(query).split(' ').filter(Boolean)
+    const words = searchKey(query).split(' ').filter(Boolean)
     if (words.length === 0) return []
     const allowed = sources ? new Set(sources) : null
     const hits: { food: Food; score: number }[] = []
@@ -124,11 +125,21 @@ export class FoodDatabase {
       if (key === first || key.startsWith(first + ' ')) score -= 20 // hela ordet först: "lax" → "Lax odlad"
       else if (key.startsWith(first)) score -= 10
       else if (key.includes(' ' + first)) score -= 5
+      if (food.source === 'nutrition') score -= 1000
       hits.push({ food, score })
     })
     hits.sort((a, b) => a.score - b.score)
     return hits.slice(0, limit).map(h => h.food)
   }
+}
+
+/** Ord som stavas olika i olika produkter men betyder samma sak vid sökning (sökord → gemensam form). */
+const SEARCH_SYNONYMS: [RegExp, string][] = [[/fibre/g, 'fiber']]
+
+function searchKey(s: string): string {
+  let k = normalize(s)
+  for (const [re, to] of SEARCH_SYNONYMS) k = k.replace(re, to)
+  return k
 }
 
 // Accenter tas bort (créme → creme, ü → u) men å, ä och ö behålls som egna bokstäver
