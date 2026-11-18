@@ -18,11 +18,25 @@ const GRAM: Measure = { id: 'g', label: 'g', factor: 1 }
  * Densitet (g/ml) per livsmedel, nyckel `${source}:${number}`. Bara värden med källa.
  * Utan värde kan livsmedel i gram bara anges i gram.
  */
+// Flytande vegetabiliska oljor: 0,915 g/ml (20 °C) enligt rapsoljans produktspecifikationer
+// (Organic Makers rel. densitet 0,910–0,923; Sels 0,912–0,918 g/ml). Andra flytande oljor ligger
+// inom några procent och får samma värde. Inte palmolja (fast) eller matfettsblandningar (innehåller vatten).
+const OIL = 0.915
 export const DENSITY: Record<string, number> = {
-  // Rapsolja 0,915 g/ml (20 °C): produktspecifikationer Organic Makers (rel. densitet 0,910–0,923, kallpressad)
-  // och Sels (0,912–0,918 g/ml). Källor i CLAUDE.md under Mått och densitet.
-  'lmv:2189': 0.915, // Rapsolja
-  'lmv:4661': 0.915, // Rapsolja kallpressad
+  'lmv:33': OIL, // Druvkärnolja
+  'lmv:34': OIL, // Majsolja
+  'lmv:35': OIL, // Olivolja
+  'lmv:37': OIL, // Tistelolja
+  'lmv:38': OIL, // Sesamolja
+  'lmv:39': OIL, // Sojaolja
+  'lmv:40': OIL, // Solrosolja
+  'lmv:41': OIL, // Vetegroddsolja
+  'lmv:2189': OIL, // Rapsolja
+  'lmv:3418': OIL, // Matolja
+  'lmv:3433': OIL, // Linfröolja
+  'lmv:4074': OIL, // Hampafröolja
+  'lmv:4659': OIL, // Olivolja extra jungfruolja
+  'lmv:4661': OIL, // Rapsolja kallpressad
 }
 
 export const foodKey = (f: Pick<Food, 'source' | 'number'>) => `${f.source}:${f.number}`

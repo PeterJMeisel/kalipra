@@ -43,7 +43,7 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 ## Mått och densitet
 - Mängd kan anges i olika mått (meny vid enheten). Allt räknas i gram (eller ml för ml-produkter) i bakgrunden; `src/core/measures.ts`.
 - Livsmedel i gram får volymmått bara när det finns en densitet med källa (`DENSITY`). Utan värde: bara gram.
-- Används: rapsolja (Livsmedelsverket 2189, 4661) 0,915 g/ml enligt de två produktspecifikationerna nedan.
+- Används: flytande vegetabiliska oljor (raps, oliv, solros, majs m.fl., se `DENSITY`) 0,915 g/ml enligt rapsoljans två produktspecifikationer nedan; Peter bedömer att oljor inte väger signifikant olika. Inte palmolja eller matfettsblandningar.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
@@ -52,4 +52,4 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   - Använd inte: Nyckel till Portionsguide (2009) utan tillstånd från Livsmedelsverket (mångfaldigande förbjudet).
 
 ## Öppna punkter
-- Lokala kopior saknas av rapsoljans två produktspecifikationer (Organic Makers, Sels) – ska in i källdokumentmappen och index.csv.
+(Inga just nu.)
