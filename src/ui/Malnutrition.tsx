@@ -101,7 +101,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
   const [recent, setRecent] = useState<BodyField[]>(heightCm ? ['h'] : [])
   const [error, setError] = useState('')
   const [healthOpen, setHealthOpen] = useState(false)
-  const [showGraph, setShowGraph] = useState(false)
   const hasHeight = weights.some(w => w.heightCm) || !!data.heightCm
   const glimMissing = {
     age: data.age === undefined,
@@ -217,7 +216,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         </div>
         <div className="wlog-head">
           <h3>Vikter</h3>
-          {weights.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
         </div>
         <form className={`weightadd${flag(glimMissing.weight || glimMissing.height || weights.length < 2)}`} onSubmit={add} noValidate>
           <div className="field">
@@ -238,7 +236,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
             {weights.length >= 2 && (
               <div className="wchanges">
                 {periods.map(p => {
-                  const graph = showGraph && p.c === total
+                  const graph = p.c === total
                   return (
                     <div key={p.label} className={`wchange${p.c.deltaKg < 0 ? ' down' : ''}${graph ? ' withgraph' : ''}`}>
                       <div className="wctext">
