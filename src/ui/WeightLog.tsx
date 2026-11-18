@@ -60,7 +60,7 @@ export function WeightLog({ weights, heightCm, onChange, title = 'Vikthistorik',
     <section className="pd-card wlog">
       <div className="wlog-head">
         <h2>{title}</h2>
-        {graphButton && sorted.length >= 2 && <button type="button" className={`small ${showGraph ? 'on' : ''}`} aria-pressed={showGraph} onClick={() => setShowGraph(g => !g)}>{showGraph ? 'Dölj graf' : 'Se graf'}</button>}
+        {graphButton && <button type="button" className={`small ${showGraph && sorted.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && sorted.length >= 2} disabled={sorted.length < 2} title={sorted.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && sorted.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>}
       </div>
       <form className={`weightadd${formClass}`} onSubmit={add} noValidate>
         <div className="field">
