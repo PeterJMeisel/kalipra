@@ -185,18 +185,17 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
           <button type="button" className={`small ${showGraph && weights.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && weights.length >= 2} disabled={weights.length < 2}
             title={weights.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && weights.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>
         </div>
-        <div className={`wsummary${showGraph && weights.length >= 2 ? ' withgraph' : ''}`}>
-          <div className="wperiods">
-            {periods.map(p => (
-              <div key={p.label} className={`wchange${p.glim ? ' down' : ''}${p.c ? '' : ' none'}`}>
-                <span className="wl">{p.label}</span>
-                <strong>{p.c ? `${signed(p.c.deltaPct, 1)} %` : '–'}</strong>
-                <span className="ws">{p.c ? `${signed(p.c.deltaKg, 1)} kg · ${dateText(p.c.fromDate)} → ${dateText(p.c.toDate)}` : 'Ingen jämförelse'}</span>
-              </div>
-            ))}
-          </div>
-          {showGraph && weights.length >= 2 && <WeightChart weights={weights} />}
+        <div className="wtiles">
+          {periods.map(p => (
+            <div key={p.label} className={`wtile${p.glim ? ' wt-glim' : ''}${p.c ? '' : ' none'}`}>
+              <span className="wt-label">{p.label}</span>
+              <strong className="wt-pct">{p.c ? `${signed(p.c.deltaPct, 1)} %` : '–'}</strong>
+              <span className="wt-kg">{p.c ? `${signed(p.c.deltaKg, 1)} kg` : 'Ingen jämförelse'}</span>
+              {p.c && <span className="wt-dates">{dateText(p.c.fromDate)} → {dateText(p.c.toDate)}</span>}
+            </div>
+          ))}
         </div>
+        {showGraph && weights.length >= 2 && <div className="wgraph"><WeightChart weights={weights} /></div>}
       </section>
 
       <section className="assesshealth">
