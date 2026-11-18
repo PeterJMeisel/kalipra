@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { bmi, BMR_FORMULAS, normalizeFormula, PAL_OPTIONS } from '../core/energy'
 import { formatNumber } from '../core/nutrients'
-import { emptyHealth, LIMITS, type Calculation, type Health, type Person } from '../core/types'
+import { emptyHealth, LIMITS, type Calculation, type Health, type Person, type WeightEntry } from '../core/types'
+import { newId } from '../core/storage'
+import { sortWeights } from '../core/weights'
 import { HealthSection } from './HealthSection'
 import { WeightLog } from './WeightLog'
 
@@ -25,6 +27,23 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
     <input inputMode="decimal" key={`${label}-${value}`} defaultValue={value !== undefined ? formatNumber(value, decimals) : ''} aria-label={label}
       onBlur={e => { const n = Number(e.target.value.replace(',', '.').replace(/\s/g, '')); if ((allowMin ? n >= min : n > min) && n <= max && e.target.value.trim() !== '') onSet(n); else if (value !== undefined) e.target.value = formatNumber(value, decimals) }} />
   )
+  // Nuvarande vikt finns alltid i vikthistoriken. Saknas historik läggs beräkningens vikt in (datum då beräkningen skapades).
+  const localDate = (iso?: string) => (iso ? new Date(iso) : new Date()).toLocaleDateString('sv-SE')
+  useEffect(() => {
+    if (calc && weight && !(person.weights?.length)) onPatchPerson({ weights: [{ id: newId(), date: localDate(calc.createdAt), kg: weight }] })
+  }, [person.id, calc?.id])
+  /** Ändrad vikt i fältet = dagens vägning (ersätter en vägning med dagens datum). */
+  function setCurrentWeight(kg: number) {
+    onPatchCalc({ weightKg: kg })
+    const d = localDate()
+    onPatchPerson({ weights: sortWeights([...(person.weights ?? []).filter(w => w.date !== d), { id: newId(), date: d, kg }]) })
+  }
+  /** Ändrad vikthistorik: senaste vägningen blir nuvarande vikt. */
+  function setWeights(ws: WeightEntry[]) {
+    onPatchPerson({ weights: ws })
+    const newest = sortWeights(ws).at(-1)
+    if (newest && calc && Math.abs(newest.kg - calc.weightKg) >= 0.05) onPatchCalc({ weightKg: newest.kg })
+  }
   const pal = calc?.pal ?? 1.2
   const palKnown = PAL_OPTIONS.some(o => Math.abs(o.value - pal) < 0.001)
   return (
@@ -45,7 +64,7 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
             </select>
           </label>
           <label>Längd (cm){num(person.heightCm, n => onPatchPerson({ heightCm: n }), 'Längd i cm', 0, LIMITS.maxHeightCm)}</label>
-          <label>Vikt (kg){calc ? num(weight, n => onPatchCalc({ weightKg: n }), 'Vikt i kg', 1, LIMITS.maxWeightKg) : <span className="muted">Ingen beräkning</span>}</label>
+          <label>Vikt (kg){calc ? num(weight, setCurrentWeight, 'Vikt i kg', 1, LIMITS.maxWeightKg) : <span className="muted">Ingen beräkning</span>}</label>
           <label>BMI<output>{b !== null ? formatNumber(b, 1) : '–'}</output></label>
         </div>
         {calc && (
@@ -64,7 +83,7 @@ export function KlientData({ person, calc, onPatchPerson, onPatchCalc, onDone, i
           </div>
         )}
       </section>
-      <WeightLog weights={person.weights} heightCm={person.heightCm} onChange={w => onPatchPerson({ weights: w })} />
+      <WeightLog weights={person.weights} heightCm={person.heightCm} onChange={setWeights} />
       <HealthSection health={person.health ?? emptyHealth()} onChange={(h: Health) => onPatchPerson({ health: h })}
         open={healthOpen} onToggle={() => setHealthOpen(o => !o)} />
       <div className="actions">

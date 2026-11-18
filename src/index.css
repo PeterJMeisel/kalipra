@@ -757,3 +757,18 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-meals { max-height: 560px }
 .ws-tablewrap { min-height: 0; overflow-y: auto; overflow-x: hidden }
 .ws-entries thead th { position: sticky; top: 0; background: var(--panel, var(--bg)); z-index: 1 }
+
+/* Vikthistorik: rubrik med knapp, graf */
+.wlog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+.wlog-head h2 { margin: 0 }
+.wchart { position: relative; margin: 12px 0 4px; overflow: hidden }
+.wchart svg { display: block }
+.wc-grid { stroke: var(--line); stroke-width: 1 }
+.wc-tick { font-size: 12px; fill: var(--muted) }
+.wc-line { fill: none; stroke: var(--brand); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round }
+.wc-dot { fill: var(--brand); stroke: var(--panel, #fff); stroke-width: 2 }
+.wc-tip { position: absolute; transform: translate(-50%, -100%); background: var(--ink); color: var(--bg); font-size: 13px; padding: 4px 8px; border-radius: 6px; pointer-events: none; white-space: nowrap }
+.wl-cell { background: none; border: 0; padding: 4px 6px; margin: -4px -6px; font: inherit; color: inherit; cursor: pointer; border-radius: 4px; text-align: inherit; text-decoration: underline dotted color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 3px }
+.wl-cell:hover, .wl-cell:focus-visible { background: var(--tint) }
+.wl-input { font: inherit; font-size: 15px; padding: 3px 6px; width: 6em; text-align: right; border: 1px solid var(--brand); border-radius: 4px }
+.wl-input.date { width: 10em; text-align: left }
