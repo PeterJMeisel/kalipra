@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
+import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, type Range, type Repro } from '../core/references'
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
@@ -149,11 +149,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
 
   const weightKg = calc.weightKg
   const repro = person ? reproFrom(person.health, person.sex) : null
-  const need = useMemo(() => {
-    if (!person) return null
-    const n = energyNeed(person.sex, person.age, weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
-    return repro ? withExtraEnergy(n, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : n
-  }, [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
+  const need = useMemo(() => person ? needFor(person, calc) : null,
+    [person, weightKg, calc.pal, calc.bmrFormula, repro?.kind, repro && 'trimester' in repro ? repro.trimester : repro && 'period' in repro ? repro.period : null])
   // Läget Dag visar bara den dag som är markerad i kostregistreringen (inte snitt över dagarna)
   const daySummary = useMemo(() => summarizeDiary(db, entries.filter(e => e.day === currentDay), 1, SUMMARY_KEYS), [db, entries, currentDay])
   const scoped = useMemo(() => ({ totals: daySummary.perDay, needKcal: need?.teeKcal ?? 0, needMJ: need?.teeMJ ?? 0, label: `dag ${currentDay}`, noFreeSugar: noFreeSugar(db, entries.filter(e => e.day === currentDay)) }), [daySummary, need, currentDay, db, entries])
@@ -181,7 +178,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
             const n = entries.filter(e => e.day === d).length
             return (
               <button key={d} role="tab" aria-selected={currentDay === d} className={currentDay === d ? 'on' : ''} onClick={() => { setDay(d); setDateError(null) }}>
-                Dag {d} <span className="ws-tabdate">{dd.dates[d - 1] ? shortDate(dd.dates[d - 1]) : ''}</span>{n > 0 && <span className="count">{n}</span>}
+                Dag {d}{n > 0 && <span className="count">{n}</span>}
               </button>
             )
           })}
@@ -439,6 +436,13 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
   )
 }
 
+/** Energibehov per dag för en beräkning (BMR × PAL, plus tillägg vid graviditet/amning). Visas även i klientraden högst upp. */
+export function needFor(person: Person, calc: Calculation): EnergyNeed {
+  const repro = reproFrom(person.health, person.sex)
+  const n = energyNeed(person.sex, person.age, calc.weightKg, person.heightCm, calc.pal, normalizeFormula(calc.bmrFormula))
+  return repro ? withExtraEnergy(n, reproEnergyMJ(repro), repro.kind === 'gravid' ? `graviditet (trimester ${repro.trimester})` : 'amning') : n
+}
+
 /* ---------- Nertill: näring mot behov ---------- */
 
 /** share = andel av dagsbehovet/RDI som intaget jämförs med (1 för en dag, t.ex. 1/3 för en av tre måltider) */
@@ -470,7 +474,6 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
   useEffect(() => { try { localStorage.setItem('kalipra.microDetail', detailed ? '1' : '0') } catch { /* ignorera */ } }, [detailed])
   const kcal = v('ENERC|kcal')
   const pct = scoped.needKcal > 0 ? (kcal / scoped.needKcal) * 100 : 0
-  const bmrPct = (need.bmrKcal / need.teeKcal) * 100
   const macro = macroReferences(person.age, person.sex, repro, weightKg)
   const proteinPerKg = v('PROT') / weightKg
   const protRef = macro.proteinGPerKg * sh
@@ -496,18 +499,7 @@ function RdiView({ person, repro, weightKg, need, scoped }: {
               <span className="sub">{formatNumber(kcal, 0)} av dagsbehovet {formatNumber(dk, 0)} kcal</span>
             </div>
           )
-        })() : (
-          <div className="ws-kcalbox">
-          <span className="lbl">Energibehov per dag{repro ? ` (${REPRO_LABEL(repro)})` : ''}</span>
-          <span className="val">{formatNumber(need.teeKcal, 0)} <small>kcal</small></span>
-          <div className="splitbar" aria-hidden="true">
-            <div className="sb-bmr" style={{ width: `${bmrPct}%` }} />
-            <div className="sb-act" style={{ width: `${100 - bmrPct}%` }} />
-          </div>
-          <span className="sub">BMR {formatNumber(need.bmrKcal, 0)} kcal · aktivitet {formatNumber(need.teeKcal - need.bmrKcal - (need.extraKcal ?? 0), 0)} kcal
-            {need.extraKcal ? <> · {need.extraLabel} +{formatNumber(need.extraKcal, 0)} kcal</> : repro?.kind === 'ammande' ? <> · amning efter 6 mån: inget fast tillägg</> : null}</span>
-        </div>
-        )}
+        })() : null}
         <div className="ws-kcalbox">
           <span className="lbl">Energi, {scoped.label}</span>
           {isMeal ? (() => {

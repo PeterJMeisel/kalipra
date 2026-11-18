@@ -15,7 +15,7 @@ import { ClientForm } from './ui/ClientForm'
 import { DiaryEditor } from './ui/DiaryEditor'
 import { Results } from './ui/Results'
 import { Assessment, PersonPicker } from './ui/Malnutrition'
-import { Workspace } from './ui/Workspace'
+import { needFor, Workspace } from './ui/Workspace'
 import { KlientData } from './ui/KlientData'
 
 const db = new FoodDatabase([data as unknown as FoodData, fineli as unknown as FoodData, usda as unknown as FoodData, nutrition as unknown as FoodData])
@@ -332,6 +332,9 @@ export default function App() {
     : undefined
 
   const activeWeight = activePerson ? (currentWeight(state, activePerson.id)?.kg ?? calculationsFor(state, activePerson.id)[0]?.weightKg) : undefined
+  // Energibehov för beräkningen som är öppen (visas i klientraden)
+  const headNeed = anonMode ? needFor(refPerson, { ...anon, ...refCalc })
+    : calculation && calcPerson && (!activePerson || calcPerson.id === activePerson.id) ? needFor(calcPerson, calculation) : null
   const activeBmi = activePerson && activeWeight && activePerson.heightCm ? bmi(activeWeight, activePerson.heightCm) : null
   const sortedPersons = [...state.persons].sort((a, b) =>
     (b.lastOpenedAt ?? b.updatedAt ?? b.createdAt).localeCompare(a.lastOpenedAt ?? a.updatedAt ?? a.createdAt))
@@ -359,6 +362,11 @@ export default function App() {
               <span className="pb-code">{refPerson.code}</span>
               <span className="pb-facts">{refPerson.sex === 'kvinna' ? 'Kvinna' : 'Man'} · {refPerson.age} år · BMI {formatNumber(bmi(refCalc.weightKg, refPerson.heightCm), 1)}</span>
             </button>
+          )}
+          {headNeed && (
+            <span className="pb-need" title={`BMR ${formatNumber(headNeed.bmrKcal, 0)} kcal · aktivitet ${formatNumber(headNeed.teeKcal - headNeed.bmrKcal - (headNeed.extraKcal ?? 0), 0)} kcal${headNeed.extraKcal ? ` · ${headNeed.extraLabel} +${formatNumber(headNeed.extraKcal, 0)} kcal` : ''}`}>
+              Energibehov <strong>{formatNumber(headNeed.teeKcal, 0)}</strong> kcal/dag
+            </span>
           )}
           <button type="button" className={`pb-btn pb-data ${view === 'patienter' ? 'on' : ''}`} onClick={() => togglePanel('patienter')}>
             Välj klient
