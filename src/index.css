@@ -739,3 +739,5 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .unit-select { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 1px 2px; cursor: pointer; width: auto }
 .unit-select:hover, .unit-select:focus { border-color: var(--line); color: var(--ink) }
 .unit-g { font-size: 12px; white-space: nowrap }
+.ws-addrow .unit-select { border-color: var(--line); color: var(--ink); font-size: 14px; padding: 4px 6px }
+.ws-entries .unitcell { white-space: nowrap }
