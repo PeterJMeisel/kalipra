@@ -40,5 +40,15 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Bara produkter som finns i Sverige ska vara med (källor: tillverkarnas svenska sajter och svenska produktblad).
 - Stimulance, D-mannose, Lorenzos oil och XLYS TRY Glutaridon rättades 2026-11-17 med värden ur de svenska bladen (`NUT_FIX` i build_nutrition.py). Loprofin Frukostflingor har energi och protein från Nutricia UK (`NUT_OTHER_SOURCE`, visas med hänvisning i produktbladet). GTO Oil är tillagd ur andra kolumnen i Lorenzos oil-bladet (`NUT_SECOND_COLUMN`).
 
+## Mått och densitet
+- Mängd kan anges i olika mått (meny vid enheten). Allt räknas i gram (eller ml för ml-produkter) i bakgrunden; `src/core/measures.ts`.
+- Livsmedel i gram får volymmått bara när det finns en densitet med källa (`DENSITY`). Utan värde: bara gram.
+- Referenser (sparade 2026-11-18, ännu inte använda i programmet – lokal kopia när de börjar användas):
+  - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
+  - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
+  - Rapsolja, densitet 20 °C 0,912–0,918 g/ml (Sels produktspecifikation): https://www.sels.de/download/Produktspezifikation.Rohes.Rapsoel.pdf
+  - Alkohol/sprit: OIV-tabeller över densitet för etanol–vattenblandningar vid 20 °C (OIV-MA-AS312-02): https://www.oiv.int/public/medias/2491/oiv-ma-as312-02.pdf
+  - Använd inte: Nyckel till Portionsguide (2009) utan tillstånd från Livsmedelsverket (mångfaldigande förbjudet).
+
 ## Öppna punkter
 (Inga just nu.)

@@ -9,6 +9,7 @@ import { addDayDates, ensureDayDates, removeDayDates, setDayDate, shortDate, tod
 import { SourceTag } from './DiaryEditor'
 import { ProductSheet } from './ProductSheet'
 import { nutritionRank } from '../core/nutritionOrder'
+import { measureFor, measuresFor, type Measure } from '../core/measures'
 
 const SUMMARY_KEYS: NutrientKey[] = ['ENERC|kcal', 'ENERC|kJ', 'PROT', 'FAT', 'CHO', 'FIBT', 'WATER', 'FASAT', 'FAMS', 'FAPU', 'SUGFR', 'SUGAR', 'ALC',
   'VITA', 'VITD', 'VITE', 'THIACLHCL', 'RIBF', 'NIAEQ', 'VITB6', 'FOL', 'VITB12', 'VITC', 'CA', 'P', 'K', 'MG', 'FE', 'ZN', 'ID', 'SE', 'NACL']
@@ -59,8 +60,9 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   function setEntries(next: DiaryEntry[]) {
     onPatchCalc({ entries: next })
   }
-  function addEntry(food: Food, grams: number) {
-    setEntries([...entries, { id: newId(), day: currentDay, meal, foodNumber: food.number, ...(food.source !== 'lmv' ? { source: food.source } : {}), grams }])
+  function addEntry(food: Food, qty: number, m: Measure) {
+    setEntries([...entries, { id: newId(), day: currentDay, meal, foodNumber: food.number, ...(food.source !== 'lmv' ? { source: food.source } : {}),
+      grams: qty * m.factor, ...(m.factor !== 1 || m.id !== food.unit ? { measure: m.id, qty } : {}) }])
   }
   function addMeal(): Meal {
     const counts = allCounts()
@@ -224,12 +226,7 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
                     <tr key={e.id}>
                       <td className="name">{f?.name ?? `Okänt livsmedel (${e.foodNumber})`}</td>
                       <td className="num">
-                        <input aria-label={`Mängd i ${f?.unit === 'ml' ? 'ml' : 'gram'} för ${f?.name}`} inputMode="decimal" defaultValue={String(e.grams).replace('.', ',')}
-                          onBlur={ev => {
-                            const g = Number(ev.target.value.replace(',', '.'))
-                            if (g > 0) setEntries(entries.map(x => (x.id === e.id ? { ...x, grams: g } : x)))
-                            else ev.target.value = String(e.grams).replace('.', ',')
-                          }} /> <span className="unit">{f?.unit ?? 'g'}</span>
+                        <AmountCell entry={e} food={f} onChange={patch => setEntries(entries.map(x => (x.id === e.id ? { ...x, ...patch } : x)))} />
                       </td>
                       <td className="num kcal">{formatNumber(kcal, 0)}</td>
                       <td className="del"><button type="button" aria-label={`Ta bort ${f?.name}`} onClick={() => setEntries(entries.filter(x => x.id !== e.id))}>×</button></td>
@@ -322,7 +319,42 @@ function CopyMealPanel({ days, mealsFor, entries, fromDay: d0, fromMeal: m0, onC
 
 /* ---------- Höger: livsmedelssök ---------- */
 
-function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: Meal; onAdd: (f: Food, grams: number) => void; onShowSheet: (n: number) => void }) {
+/** Mängd i en registrerad rad: tal + mått (meny när livsmedlet har flera mått). */
+function AmountCell({ entry, food, onChange }: { entry: DiaryEntry; food: Food | undefined; onChange: (p: Partial<DiaryEntry>) => void }) {
+  const m = food ? measureFor(food, entry.measure) : { id: 'g', label: 'g', factor: 1 }
+  const qty = entry.qty ?? entry.grams / m.factor
+  const all = food ? measuresFor(food) : [m]
+  const fmt = (n: number) => String(Math.round(n * 100) / 100).replace('.', ',')
+  return (
+    <>
+      <input key={`${m.id}:${qty}`} aria-label={`Mängd i ${m.label} för ${food?.name}`} inputMode="decimal" defaultValue={fmt(qty)}
+        onBlur={ev => {
+          const q = Number(ev.target.value.replace(',', '.'))
+          if (q > 0) onChange({ grams: q * m.factor, ...(entry.measure ? { qty: q } : {}) })
+          else ev.target.value = fmt(qty)
+        }} />{' '}
+      <MeasureSelect measures={all} value={m.id} label={food?.name ?? ''}
+        onChange={id => {
+          // Byte av mått behåller mängden i gram: 200 ml → 2 dl
+          const n = all.find(x => x.id === id)!
+          onChange({ measure: n.id, qty: entry.grams / n.factor })
+        }} />
+      {food && food.unit === 'g' && m.id !== 'g' && <small className="muted unit-g"> (≈ {formatNumber(entry.grams, 0)} g)</small>}
+    </>
+  )
+}
+
+/** Måttet som text, eller en diskret meny när det finns flera. */
+function MeasureSelect({ measures, value, label, onChange }: { measures: Measure[]; value: string; label: string; onChange: (id: string) => void }) {
+  if (measures.length < 2) return <span className="unit">{measures[0]?.label ?? 'g'}</span>
+  return (
+    <select className="unit-select" value={value} aria-label={`Mått för ${label}`} onChange={e => onChange(e.target.value)}>
+      {measures.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
+    </select>
+  )
+}
+
+function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: Meal; onAdd: (f: Food, qty: number, m: Measure) => void; onShowSheet: (n: number) => void }) {
   const available = useMemo(() => db.sources.map(s => s.id), [db])
   const [sources, setSources] = useState<SourceId[]>(() => loadSources(available))
   const [query, setQuery] = useState('')
@@ -350,10 +382,12 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
     setSources(next)
     saveSources(next)
   }
+  const [measureId, setMeasureId] = useState<string>('')
+  const pickedMeasures = picked ? measuresFor(picked) : []
   function add() {
-    const g = Number(grams.replace(',', '.'))
-    if (!picked || !(g > 0)) return
-    onAdd(picked, g)
+    const q = Number(grams.replace(',', '.'))
+    if (!picked || !(q > 0)) return
+    onAdd(picked, q, measureFor(picked, measureId))
     setPicked(null)
   }
 
@@ -365,7 +399,7 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
         {hits.map(f => (
           <li key={`${f.source}:${f.number}`} role="option" aria-selected={picked === f}>
             <button type="button" className={picked === f ? 'on' : ''}
-              onClick={() => { setPicked(f); setTimeout(() => gramsRef.current?.select(), 0) }}>
+              onClick={() => { setPicked(f); setMeasureId(''); setTimeout(() => gramsRef.current?.select(), 0) }}>
               <span>{multi && <SourceTag source={f.group} />}{f.name}</span>
               <small>{formatNumber(f.per100g['ENERC|kcal'] ?? 0, 0)} kcal/100 {f.unit}</small>
             </button>
@@ -377,10 +411,12 @@ function FoodPicker({ db, meal, onAdd, onShowSheet }: { db: FoodDatabase; meal: 
       <div className="ws-addrow">
         <span className="pickedname">{picked ? picked.name : 'Välj ett livsmedel i listan'}
         </span>
-        <label className="inline">{picked?.unit === 'ml' ? 'Ml' : 'Gram'}{' '}
+        <label className="inline">Mängd{' '}
           <input ref={gramsRef} inputMode="decimal" value={grams} onChange={e => setGrams(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') add() }} aria-label="Mängd" />
         </label>
+        <MeasureSelect measures={picked ? pickedMeasures : [{ id: 'g', label: 'g', factor: 1 }]} value={picked ? measureFor(picked, measureId).id : 'g'}
+          label={picked?.name ?? ''} onChange={setMeasureId} />
         <button type="button" className="primary" disabled={!picked} onClick={add} title={`Lägg till i ${meal.toLowerCase()}`}>Lägg till</button>
       </div>
       {multi && (

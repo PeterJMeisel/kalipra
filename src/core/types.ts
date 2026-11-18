@@ -83,7 +83,12 @@ export type DiaryEntry = {
   foodNumber: number
   /** Livsmedelsdatabas; saknas = Livsmedelsverket. */
   source?: SourceId
+  /** Mängd i basenhet (g, eller ml för ml-produkter). Det är den som räknas. */
   grams: number
+  /** Måttet mängden angavs i (t.ex. 'dl'); saknas = basenheten. */
+  measure?: string
+  /** Mängden i det måttet. */
+  qty?: number
 }
 
 export type Diary = {
