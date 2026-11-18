@@ -619,40 +619,49 @@ function RdiView({ person, repro, weightKg, pal, need, scoped }: {
 
       <div className="ws-kcalrow ws-kcalrow2">
         {(() => {
-          // Kolhydrater: stapeln visar E% av intaget (0–100 %), den mörka delen är sockerarter
+          // Kolhydrater, varav fritt socker och övriga sockerarter – var sin ruta
           const ed = energyDistribution(scoped.totals)
           const cho = v('CHO')
-          // Tre delar: fritt socker (NNR-gräns) + övriga sockerarter (laktos, frukt m.m.) + övriga kolhydrater
           const E = (g: number) => (ed.totalKj > 0 ? (g * 17 / ed.totalKj) * 100 : 0)
-          const choE = Math.min(ed.carbohydrate, 100)
-          const sugarE = Math.min(E(v('SUGAR')), choE)
-          const freeE = Math.min(E(v('SUGFR')), choE)
-          const otherSugarE = Math.max(0, sugarE - freeE)
-          const restE = Math.max(0, choE - freeE - otherSugarE)
+          const freeG = Math.min(v('SUGFR'), cho)
+          const otherG = Math.max(0, Math.min(v('SUGAR'), cho) - freeG)
+          const freeE = E(freeG)
+          const otherE = E(otherG)
           const ref = macro.carbohydrate
           const lo = ref.min ?? 0, hi = ref.max ?? 100
           const st = isMeal || ed.totalKj === 0 ? '' : ed.carbohydrate < lo ? 'low' : ed.carbohydrate > hi ? 'high' : ''
           const freeMax = macro.freeSugar.max ?? 10
-          const freeSt = isMeal ? 'neutral' : freeE > freeMax ? 'high' : st
-          const c = isMeal ? 'neutral' : st
+          const freeSt = isMeal ? 'neutral' : freeE > freeMax ? 'high' : ''
+          const pctW = (e: number) => `${Math.min(Math.max(e, 0), 100)}%`
           return (
-            <div className="ws-kcalbox">
-              <span className="lbl">Kolhydrater</span>
-              <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
-              <div className="meter ws-chometer" aria-hidden="true">
-                {freeE > 0.2 && <div className={`seg free ${freeSt}`} style={{ left: 0, width: `${freeE}%` }} />}
-                {otherSugarE > 0.2 && <div className={`seg osugar ${c} ${freeE > 0.2 ? 'gap' : ''}`} style={{ left: `${freeE}%`, width: `${otherSugarE}%` }} />}
-                {restE > 0.2 && <div className={`seg rest ${c} ${freeE + otherSugarE > 0.2 ? 'gap' : ''}`} style={{ left: `${freeE + otherSugarE}%`, width: `${restE}%` }} />}
-                {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
+            <>
+              <div className="ws-kcalbox">
+                <span className="lbl">Kolhydrater</span>
+                <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
+                <div className="meter" aria-hidden="true">
+                  <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: pctW(ed.carbohydrate) }} />
+                  {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
+                </div>
+                <span className="sub">{isMeal ? 'Andel av måltidens energi' : `Rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
               </div>
-              <span className="ws-cholegend">
-                <span><i className={`sw free ${freeSt}`} />Fritt socker {formatNumber(freeE, 0)} E%{isMeal ? '' : freeMax === 0 ? ' · bör undvikas' : ` · rekommendation under ${formatNumber(freeMax, 0)} E%`}</span>
-                <span><i className={`sw osugar ${c}`} />Övriga sockerarter {formatNumber(otherSugarE, 0)} E%</span>
-                <span><i className={`sw rest ${c}`} />Övriga kolhydrater {formatNumber(restE, 0)} E%</span>
-              </span>
-              {(scoped.noFreeSugar?.length ?? 0) > 0 && <span className="sub ws-nofree" title={scoped.noFreeSugar!.join(', ')}>Fritt socker saknas för {scoped.noFreeSugar!.length} livsmedel (t.ex. {scoped.noFreeSugar![0]}) – deras socker räknas som övriga sockerarter.</span>}
-              {!isMeal && <span className="sub">Rekommendation kolhydrater {formatNumber(lo, 0)}–{formatNumber(hi, 0)} E%</span>}
-            </div>
+              <div className="ws-kcalbox">
+                <span className="lbl">Varav fritt socker</span>
+                <span className="val">{formatNumber(freeE, 0)} <small>E% · {formatNumber(freeG, 0)} g</small></span>
+                <div className="meter" aria-hidden="true">
+                  {isMeal || freeMax === 0
+                    ? <div className={`fill ${isMeal ? 'neutral' : freeE > 0 ? 'high' : ''}`} style={{ width: pctW(freeE) }} />
+                    : <><div className={`fill ${freeSt}`} style={{ width: `${Math.min(freeE / freeMax, 1.5) / 1.5 * 100}%` }} /><div className="mark" style={{ left: `${100 / 1.5}%` }} /></>}
+                </div>
+                {!isMeal && <span className="sub">{freeMax === 0 ? 'Bör undvikas' : `Rekommendation < ${formatNumber(freeMax, 0)} E%`}</span>}
+                {(scoped.noFreeSugar?.length ?? 0) > 0 && <span className="sub ws-nofree" title={scoped.noFreeSugar!.join(', ')}>Fritt socker saknas för {scoped.noFreeSugar!.length} livsmedel (t.ex. {scoped.noFreeSugar![0]}) – deras socker räknas som övriga sockerarter.</span>}
+              </div>
+              <div className="ws-kcalbox">
+                <span className="lbl">Övriga sockerarter</span>
+                <span className="val">{formatNumber(otherE, 0)} <small>E% · {formatNumber(otherG, 0)} g</small></span>
+                <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: pctW(otherE) }} /></div>
+                <span className="sub">Ingen rekommendation</span>
+              </div>
+            </>
           )
         })()}
       </div>
