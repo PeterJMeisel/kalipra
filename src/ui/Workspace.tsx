@@ -249,8 +249,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
         <nav className="ws-tabs" role="tablist">
           <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>Överblick</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
-          <button role="tab" aria-selected={bottomTab === 'jamfor'} className={bottomTab === 'jamfor' ? 'on' : ''} onClick={() => setBottomTab('jamfor')}>{scope === 'dag' ? 'Måltider' : 'Per dag'}</button>
           {scope === 'dag' && <button role="tab" aria-selected={bottomTab === 'maltid'} className={bottomTab === 'maltid' ? 'on' : ''} onClick={() => setBottomTab('maltid')}>Måltid</button>}
+          <button role="tab" aria-selected={bottomTab === 'jamfor'} className={bottomTab === 'jamfor' ? 'on' : ''} onClick={() => setBottomTab('jamfor')}>{scope === 'dag' ? 'Måltider' : 'Per dag'}</button>
           <span className="ws-scope" role="radiogroup" aria-label="Visa för">
             <button role="radio" aria-checked={scope === 'dag'} className={scope === 'dag' ? 'on' : ''} onClick={() => setScope('dag')}>Dag</button>
             <button role="radio" aria-checked={scope === 'dagar'} className={scope === 'dagar' ? 'on' : ''} onClick={() => { setScope('dagar'); if (bottomTab === 'maltid') setBottomTab('rdi') }}>Dagar</button>
