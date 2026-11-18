@@ -3,7 +3,7 @@ import { formatNumber } from '../core/nutrients'
 import { emptyHealth, KNOWN_CONDITIONS, LIMITS, type Health, type Person, type Sex, type WeightEntry } from '../core/types'
 import { changeWithin, periodText, sortWeights, totalChange, type WeightChange } from '../core/weights'
 import { HealthSection } from './HealthSection'
-import { WeightChart, WeightLog } from './WeightLog'
+import { WeightLog } from './WeightLog'
 import { assessGlim, bmiLimits, glimJournal, suggestEtiology, type GlimAnswers, type MuscleLoss, type Stage } from '../core/glim'
 
 const today = () => new Date().toLocaleDateString('sv-SE')
@@ -153,7 +153,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
     const longer = p.c === total && totalOver6
     p.glim = longer ? loss > 10 : loss > 5
   }
-  const [showGraph, setShowGraph] = useState(false)
 
   return (
     <div className="assess">
@@ -180,11 +179,7 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
         )} />
 
       <section className="pd-card wsummarycard">
-        <div className="wlog-head">
-          <h2>Viktförändring</h2>
-          <button type="button" className={`small ${showGraph && weights.length >= 2 ? 'on' : ''}`} aria-pressed={showGraph && weights.length >= 2} disabled={weights.length < 2}
-            title={weights.length < 2 ? 'Grafen kräver minst två vikter' : undefined} onClick={() => setShowGraph(g => !g)}>{showGraph && weights.length >= 2 ? 'Dölj graf' : 'Se graf'}</button>
-        </div>
+        <h2>Viktförändring</h2>
         <div className="wtiles">
           {periods.map(p => (
             <div key={p.label} className={`wtile${p.glim ? ' wt-glim' : ''}${p.c ? '' : ' none'}`}>
@@ -195,7 +190,6 @@ export function Assessment({ data, onChange, calcWeightKg, onUseLatestWeight }: 
             </div>
           ))}
         </div>
-        {showGraph && weights.length >= 2 && <div className="wgraph"><WeightChart weights={weights} /></div>}
       </section>
 
       <section className="assesshealth">

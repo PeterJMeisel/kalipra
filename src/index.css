@@ -778,16 +778,9 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wlog .weightadd button { min-width: 110px }
 .wlog > .error { margin: -6px 0 0 }
 .wlog .wtable { margin: 0 }
-.wsummary { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
-.wsummary.withgraph { grid-template-columns: minmax(200px, auto) minmax(0, 1fr) }
-.wperiods { display: flex; flex-wrap: wrap; gap: 12px 40px }
-.wsummary.withgraph .wperiods { flex-direction: column; gap: 14px }
-.wperiods .wchange { border: 0; padding: 0; background: none; gap: 1px }
-.wperiods .wchange strong { font-size: 24px; line-height: 1.15 }
-.wsummary .wchart { margin: 0 auto; width: 100%; max-width: 460px }
-@media (max-width: 760px) { .wsummary.withgraph { grid-template-columns: minmax(0, 1fr) } .wlog .weightadd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .wlog .weightadd button { grid-column: 1 / -1 } }
+@media (max-width: 760px) { .wlog .weightadd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .wlog .weightadd button { grid-column: 1 / -1 } }
 
-/* Bedöm undernäring: modulen Viktförändring – tre lika rutor, grafen under i full bredd */
+/* Bedöm undernäring: modulen Viktförändring – tre lika rutor */
 .wtiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px }
 .wtile { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg) }
 .wt-label { font-size: 13px; color: var(--muted) }
@@ -797,6 +790,4 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .wtile.wt-glim { border-color: color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 7%, var(--panel)) }
 .wtile.wt-glim .wt-pct { color: var(--red) }
 .wtile.none .wt-pct, .wtile.none .wt-kg { color: var(--muted) }
-.wgraph { border-top: 1px solid var(--line); padding-top: 12px }
-.wgraph .wchart { margin: 0 auto; max-width: 720px }
 @media (max-width: 640px) { .wtiles { grid-template-columns: minmax(0, 1fr) } }
