@@ -2,7 +2,7 @@ import { weightOn } from '../core/weights'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadSources, saveSources, SOURCES, summarizeDiary, type Food, type FoodDatabase, type SourceId } from '../core/foods'
 import { energyDistribution, formatNumber, NUTRIENTS, type NutrientKey, type NutrientTotals } from '../core/nutrients'
-import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type Range, type Repro } from '../core/references'
+import { fiberReference, fluidReference, macroReferences, microReferences, microStatus, reproEnergyMJ, reproFrom, REPRO_LABEL, type MacroReference, type Range, type Repro } from '../core/references'
 import { energyNeed, normalizeFormula, withExtraEnergy, type EnergyNeed } from '../core/energy'
 import { mealName, sortMeals, type Calculation, type DiaryEntry, type Meal, type Person } from '../core/types'
 import { newId } from '../core/storage'
@@ -40,7 +40,7 @@ type Props = {
 export function Workspace({ db, person, calc, onPatchCalc }: Props) {
   const [day, setDay] = useState(1)
   const [mealSel, setMeal] = useState<Meal>(mealName(1))
-  const [bottomTab, setBottomTab] = useState<'rdi' | 'efordelning' | 'jamfor' | 'maltid'>('rdi')
+  const [bottomTab, setBottomTab] = useState<'rdi' | 'fett' | 'kolhydrater' | 'efordelning' | 'jamfor' | 'maltid'>('rdi')
   const [scope, setScope] = useState<'dag' | 'dagar'>('dag')
 
   const currentDay = Math.min(day, calc.days)
@@ -256,6 +256,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
       <section className="ws-bottom panelbox" aria-label="Näring i förhållande till rekommendationer">
         <nav className="ws-tabs" role="tablist">
           <button role="tab" aria-selected={bottomTab === 'rdi'} className={bottomTab === 'rdi' ? 'on' : ''} onClick={() => setBottomTab('rdi')}>Överblick</button>
+          <button role="tab" aria-selected={bottomTab === 'fett'} className={bottomTab === 'fett' ? 'on' : ''} onClick={() => setBottomTab('fett')}>Fett</button>
+          <button role="tab" aria-selected={bottomTab === 'kolhydrater'} className={bottomTab === 'kolhydrater' ? 'on' : ''} onClick={() => setBottomTab('kolhydrater')}>Kolhydrater</button>
           <button role="tab" aria-selected={bottomTab === 'efordelning'} className={bottomTab === 'efordelning' ? 'on' : ''} onClick={() => setBottomTab('efordelning')}>Energifördelning</button>
           {scope === 'dag' && <button role="tab" aria-selected={bottomTab === 'maltid'} className={bottomTab === 'maltid' ? 'on' : ''} onClick={() => setBottomTab('maltid')}>Måltid</button>}
           <button role="tab" aria-selected={bottomTab === 'jamfor'} className={bottomTab === 'jamfor' ? 'on' : ''} onClick={() => setBottomTab('jamfor')}>{scope === 'dag' ? 'Måltider' : 'Per dag'}</button>
@@ -267,6 +269,8 @@ export function Workspace({ db, person, calc, onPatchCalc }: Props) {
         {(bottomTab === 'rdi' || (bottomTab === 'maltid' && scope === 'dag')) && (person && need
           ? <RdiView person={person} repro={repro} weightKg={weightKg} weightFromLog={hasWeights} pal={calc.pal} need={need} scoped={view} />
           : <IntakeView scoped={view} />)}
+        {bottomTab === 'fett' && <FatView scoped={view} macro={macroReferences(person?.age ?? 40, person?.sex ?? 'kvinna', repro, weightKg)} isMeal={false} />}
+        {bottomTab === 'kolhydrater' && <CarbView scoped={view} macro={macroReferences(person?.age ?? 40, person?.sex ?? 'kvinna', repro, weightKg)} isMeal={false} />}
         {bottomTab === 'efordelning' && <MacroView person={person} totals={view.totals} teeMJ={need?.teeMJ} />}
         {bottomTab === 'jamfor' && scope === 'dag' && <MealsCompareView meals={meals} summary={daySummary} entries={dayEntries} day={currentDay} person={person} repro={repro} weightKg={weightKg} need={need} />}
         {bottomTab === 'jamfor' && scope === 'dagar' && <DaysView db={db} entries={entries} days={calc.days} dates={dd.dates} person={person} repro={repro} weightKg={weightKg} need={need} />}
@@ -647,7 +651,57 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
         })()}
       </div>
 
-      <div className="ws-kcalrow ws-kcalrow2 ws-kcalrow4">
+      <div className="ws-h4row">
+        <h4 className="ws-h4">{isMeal ? <>Vitaminer och mineraler <span className="muted">· mängd och andel av dagens RDI (NNR 2023)</span></> : `Vitaminer och mineraler i förhållande till RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
+        {!isMeal && <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
+          {detailed ? 'Enkel vy' : 'Detaljerad vy'}
+        </button>}
+      </div>
+      <div className={`ws-micros ${detailed && !isMeal ? 'detailed' : ''}`}>
+        {micro.filter(m => m.key !== 'NACL').map(m => { // salt visas i egen ruta ovanför
+          const d = NUTRIENTS[m.key]
+          const val = v(m.key)
+          const p = m.value > 0 ? (val / m.value) * 100 : 0
+          const st = microStatus(m, val)
+          if (isMeal) {
+            // Fliken Måltid: exakt mängd och neutral andel av dagens RDI (ingen stapel, ingen färg)
+            const dayRef = m.value / sh
+            return (
+              <div className="ws-micro ws-mealmicro" key={m.key}>
+                <span className="mn">{d.label}</span>
+                <span className="mv">{formatNumber(val, d.decimals)} {d.unit}</span>
+                <span className="mp">{formatNumber(dayRef > 0 ? (val / dayRef) * 100 : 0, 0)} %</span>
+              </div>
+            )
+          }
+          return (
+            <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? '≤ ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
+              <span className="mn">{d.label}</span>
+              <div className={`bar ${st}`} aria-hidden="true">
+                <div style={{ width: `${Math.min(p, 100)}%` }} />
+              </div>
+              <span className={`mp ${st}`}>{formatNumber(p, 0)} %</span>
+              {detailed && (
+                <span className="md">
+                  {formatNumber(val, d.decimals)} {d.unit}{' '}
+                  <span className="ref">({m.kind === 'max' ? '≤ ' : m.kind === 'AI' ? 'AI ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.kind === 'RI' && m.ar !== undefined && <>, AR {formatNumber(m.ar, d.decimals)} {d.unit}</>}{m.ul !== undefined && <>, UL {formatNumber(m.ul, d.decimals)} {d.unit}</>})</span>
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/** Fliken Fett: fett och fettkvalitet (E% och gram, NNR 2023). */
+function FatView({ scoped, macro, isMeal }: { scoped: Scoped; macro: MacroReference; isMeal: boolean }) {
+  const v = (k: NutrientKey) => scoped.totals[k] ?? 0
+  return (
+    <div className="ws-rdi">
+      {scoped.note && <p className="muted ws-intakenote">{scoped.note}</p>}
+      <div className="ws-kcalrow ws-kcalrow4">
         {(() => {
           // Fett och fettkvalitet (E%), NNR 2023
           const ed = energyDistribution(scoped.totals)
@@ -660,8 +714,17 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
           return rows.map(r => <FatBox key={r.label} {...r} isMeal={isMeal} empty={ed.totalKj === 0} />)
         })()}
       </div>
+    </div>
+  )
+}
 
-      <div className="ws-kcalrow ws-kcalrow2">
+/** Fliken Kolhydrater: kolhydrater, fritt socker och övriga sockerarter. */
+function CarbView({ scoped, macro, isMeal }: { scoped: Scoped; macro: MacroReference; isMeal: boolean }) {
+  const v = (k: NutrientKey) => scoped.totals[k] ?? 0
+  return (
+    <div className="ws-rdi">
+      {scoped.note && <p className="muted ws-intakenote">{scoped.note}</p>}
+      <div className="ws-kcalrow">
         {(() => {
           // Kolhydrater, varav fritt socker och övriga sockerarter – var sin ruta
           const ed = energyDistribution(scoped.totals)
@@ -708,47 +771,6 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
             </>
           )
         })()}
-      </div>
-
-      <div className="ws-h4row">
-        <h4 className="ws-h4">{isMeal ? <>Vitaminer och mineraler <span className="muted">· mängd och andel av dagens RDI (NNR 2023)</span></> : `Vitaminer och mineraler i förhållande till RDI (NNR 2023${repro ? `, ${repro.kind}` : ''})`}</h4>
-        {!isMeal && <button type="button" className={`small ws-detailbtn ${detailed ? 'on' : ''}`} aria-pressed={detailed} onClick={() => setDetailed(x => !x)}>
-          {detailed ? 'Enkel vy' : 'Detaljerad vy'}
-        </button>}
-      </div>
-      <div className={`ws-micros ${detailed && !isMeal ? 'detailed' : ''}`}>
-        {micro.filter(m => m.key !== 'NACL').map(m => { // salt visas i egen ruta ovanför
-          const d = NUTRIENTS[m.key]
-          const val = v(m.key)
-          const p = m.value > 0 ? (val / m.value) * 100 : 0
-          const st = microStatus(m, val)
-          if (isMeal) {
-            // Fliken Måltid: exakt mängd och neutral andel av dagens RDI (ingen stapel, ingen färg)
-            const dayRef = m.value / sh
-            return (
-              <div className="ws-micro ws-mealmicro" key={m.key}>
-                <span className="mn">{d.label}</span>
-                <span className="mv">{formatNumber(val, d.decimals)} {d.unit}</span>
-                <span className="mp">{formatNumber(dayRef > 0 ? (val / dayRef) * 100 : 0, 0)} %</span>
-              </div>
-            )
-          }
-          return (
-            <div className="ws-micro" key={m.key} title={`${d.label}: ${formatNumber(val, d.decimals)} ${d.unit} av ${m.kind === 'max' ? '≤ ' : ''}${formatNumber(m.value, d.decimals)} ${d.unit}`}>
-              <span className="mn">{d.label}</span>
-              <div className={`bar ${st}`} aria-hidden="true">
-                <div style={{ width: `${Math.min(p, 100)}%` }} />
-              </div>
-              <span className={`mp ${st}`}>{formatNumber(p, 0)} %</span>
-              {detailed && (
-                <span className="md">
-                  {formatNumber(val, d.decimals)} {d.unit}{' '}
-                  <span className="ref">({m.kind === 'max' ? '≤ ' : m.kind === 'AI' ? 'AI ' : 'RDI '}{formatNumber(m.value, d.decimals)} {d.unit}{m.kind === 'RI' && m.ar !== undefined && <>, AR {formatNumber(m.ar, d.decimals)} {d.unit}</>}{m.ul !== undefined && <>, UL {formatNumber(m.ul, d.decimals)} {d.unit}</>})</span>
-                </span>
-              )}
-            </div>
-          )
-        })}
       </div>
     </div>
   )
