@@ -44,6 +44,15 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Mängd kan anges i olika mått (meny vid enheten). Allt räknas i gram (eller ml för ml-produkter) i bakgrunden; `src/core/measures.ts`.
 - Livsmedel i gram får volymmått bara när det finns en densitet med källa (`DENSITY`). Utan värde: bara gram.
 - Används: flytande vegetabiliska oljor (raps, oliv, solros, majs m.fl., se `DENSITY`) 0,915 g/ml enligt rapsoljans två produktspecifikationer nedan; Peter bedömer att oljor inte väger signifikant olika. Inte palmolja eller matfettsblandningar.
+- Hushållsmått per livsmedel (`SPECS` i measures.ts, godkända av Peter 2026-11-20): potatis i styck liten/mellan/stor
+  (skalad 35/60/115 g, med skal/färskpotatis 40/70/135 g, bakpotatis 175/200/300 g – DTU), ris okokt/kokt 80 g/dl,
+  pasta okokt 50 / kokt 65 g/dl, socker 90 g/dl (msk 13, tsk 5), havregryn 39 g/dl, vetemjöl 56 g/dl, mjölk 99 g/dl,
+  filmjölk 110 g/dl, växtdrycker 97–99 g/dl, övriga drycker 100 g/dl, sprit 40 % 0,948 g/ml (OIV).
+  Glas/kopp: glas 25 cl (grundregel), kaffe 15 cl, te 20 cl, espresso 3 cl, öl/cider 33 och 50 cl, vin 12 och 6 cl,
+  starkvin 8 cl, sprit/likör 4 cl. Prioritet: Livsmedelsverket först, annars där två nordiska källor stämmer.
+  Källor: Livsmedelsverket PM 2024; Fineli Rel20 foodaddunit.csv (THL, CC BY 4.0); Mattilsynet, Mål, vekt og
+  porsjonsstørrelser for matvarer (2015, ODS); DTU, Mål, vægt og portionsstørrelser på fødevarer (Ygil 2013);
+  Statistikcentralen (FI), Anvisning för beräkning av alkoholportioner (2022). Inte använda: Kalmar, Jönköping, Systembolaget.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf

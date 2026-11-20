@@ -24,3 +24,22 @@ describe('mått', () => {
     delete DENSITY['lmv:424242']
   })
 })
+
+describe('hushållsmått med källa', () => {
+  const f = (source: string, number: number) => ({ source, number, unit: 'g' }) as unknown as Food
+  it('potatis i styck', () => {
+    expect(measureFor(f('lmv', 4458), 'st-m').factor).toBe(60)
+    expect(measureFor(f('lmv', 236), 'st-l').factor).toBe(135)
+  })
+  it('socker med egna msk/tsk', () => {
+    const ids = measuresFor(f('lmv', 1892)).map(m => [m.id, m.factor])
+    expect(ids).toEqual([['g', 1], ['dl', 90], ['msk', 13], ['tsk', 5]])
+  })
+  it('getmjölk får volymmått och glas', () => {
+    expect(measureFor(f('fineli', 604), 'dl').factor).toBeCloseTo(99)
+    expect(measureFor(f('fineli', 604), 'glas250').factor).toBeCloseTo(247.5)
+  })
+  it('sprit räknas med densitet 0,948', () => {
+    expect(measureFor(f('lmv', 1926), 'glas40').factor).toBeCloseTo(37.92)
+  })
+})
