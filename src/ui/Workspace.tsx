@@ -462,6 +462,29 @@ function ShareBox({ label, value, unit, dayRef, refText }: { label: string; valu
   )
 }
 
+/** Ruta för fett eller en fettkvalitet: E% och gram, stapel mot NNR:s intervall (E%). */
+function FatBox({ label, e, g, range, isMeal, empty }: { label: string; e: number; g: number; range: Range; isMeal: boolean; empty: boolean }) {
+  const lo = range.min, hi = range.max
+  const st = isMeal || empty ? '' : lo !== undefined && e < lo ? 'low' : hi !== undefined && e > hi ? 'high' : ''
+  // Skala: övre gränsen hamnar vid 2/3 av stapeln (som övriga rutor), annars 0–100 E%
+  const scale = hi !== undefined ? hi * 1.5 : 100
+  const pos = (x: number) => `${Math.min(Math.max(x / scale, 0), 1) * 100}%`
+  const refText = lo !== undefined && hi !== undefined ? `${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`
+    : hi !== undefined ? `< ${formatNumber(hi, 0)} E%` : lo !== undefined ? `≥ ${formatNumber(lo, 0)} E%` : ''
+  return (
+    <div className="ws-kcalbox">
+      <span className="lbl">{label}</span>
+      <span className="val">{formatNumber(e, 0)} <small>E% · {formatNumber(g, 0)} g</small></span>
+      <div className="meter" aria-hidden="true">
+        <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: pos(e) }} />
+        {!isMeal && lo !== undefined && <div className="mark" style={{ left: pos(lo) }} />}
+        {!isMeal && hi !== undefined && <div className="mark" style={{ left: pos(hi) }} />}
+      </div>
+      <span className="sub">{isMeal ? 'Andel av måltidens energi' : refText ? `Rekommendation ${refText}` : 'Ingen rekommendation'}</span>
+    </div>
+  )
+}
+
 function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: {
   person: Person; repro: Repro | null; weightKg: number; weightFromLog: boolean; pal: number
   need: EnergyNeed
@@ -621,6 +644,20 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
               <span className="sub">Rekommendation {minG !== undefined ? `${f2(minG)}–${f2(maxG)} g` : `≤ ${f2(maxG)} g`}</span>
             </div>
           )
+        })()}
+      </div>
+
+      <div className="ws-kcalrow ws-kcalrow2 ws-kcalrow4">
+        {(() => {
+          // Fett och fettkvalitet (E%), NNR 2023
+          const ed = energyDistribution(scoped.totals)
+          const rows: { label: string; e: number; g: number; range: Range }[] = [
+            { label: 'Fett', e: ed.fat, g: v('FAT'), range: macro.fat },
+            { label: 'Varav mättat', e: ed.saturated, g: v('FASAT'), range: macro.saturated },
+            { label: 'Varav enkelomättat', e: ed.monounsaturated, g: v('FAMS'), range: macro.monounsaturated },
+            { label: 'Varav fleromättat', e: ed.polyunsaturated, g: v('FAPU'), range: macro.polyunsaturated },
+          ]
+          return rows.map(r => <FatBox key={r.label} {...r} isMeal={isMeal} empty={ed.totalKj === 0} />)
         })()}
       </div>
 
