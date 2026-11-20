@@ -102,7 +102,7 @@ add([...lmv(1901, 1902, 1903, 1906, 2305), ...fin(902, 903, 909, 911, 913, 939, 
 // Vin och mousserande: 100 g/dl (Fineli); glas 12 cl och halvt glas 6 cl.
 add([...lmv(1904, 1905, 1907, 1908, 1909), ...fin(904, 11069)], drink(100, glas(120), glas(60, 'halvt glas')))
 add([...lmv(1914, 1915, 1916), ...fin(905)], drink(100, glas(80)))
-// Starka drycker 38–40 %: 0,948 g/ml (etanol–vatten 20 °C; källa ska bytas, OIV-tabellen täcker bara 0–31 %). Likör: 100 g/dl (Fineli).
+// Starka drycker 38–40 %: 0,948 g/ml (etanol–vatten 20 °C; ingen tabellkälla – Peter beslutade 2026-11-20 att behålla värdet). Likör: 100 g/dl (Fineli).
 add([...lmv(1918, 1920, 1921, 1923, 1924, 1925, 1926), ...fin(906, 907)], drink(94.8, glas(40)))
 add([...lmv(1919, 1927), ...fin(908, 942)], drink(100, glas(40)))
 
