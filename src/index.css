@@ -647,7 +647,8 @@ button.pb-infobtn:hover:not(:disabled) .pb-code, button.pb-infobtn:hover:not(:di
 @media (max-width: 900px) { .ws-kcalrow4 { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
 .ws-kcalbox .meter .fill.high { background: var(--red) }
 /* Fliken Måltid: exakt mängd och neutral andel av dagens RDI */
-.ws-mealmicro { grid-template-columns: 1fr auto 44px }
+.ws-mealmicro { grid-template-columns: 96px 1fr auto 44px }
+.bar.meal div { background: var(--brand) }
 .ws-mealmicro .mv { font-weight: 600; text-align: right }
 .ws-mealmicro .mp { color: var(--muted); font-weight: 400 }
 /* Källor: diskret knapp längst ner i livsmedelssöket */

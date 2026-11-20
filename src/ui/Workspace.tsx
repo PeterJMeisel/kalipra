@@ -460,7 +460,7 @@ function ShareBox({ label, value, unit, dayRef, refText }: { label: string; valu
     <div className="ws-kcalbox">
       <span className="lbl">{label}</span>
       <span className="val">{formatNumber(value, unit === 'ml' ? 0 : 1)} <small>{unit}</small></span>
-      <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min(pct, 100)}%` }} /></div>
+      <div className="meter" aria-hidden="true"><div className="fill" style={{ width: `${Math.min(pct, 100)}%` }} /></div>
       <span className="sub"><strong>{formatNumber(pct, 0)} %</strong> av dagens {refText}</span>
     </div>
   )
@@ -480,7 +480,7 @@ function FatBox({ label, e, g, range, isMeal, empty }: { label: string; e: numbe
       <span className="lbl">{label}</span>
       <span className="val">{formatNumber(e, 0)} <small>E% · {formatNumber(g, 0)} g</small></span>
       <div className="meter" aria-hidden="true">
-        <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: pos(e) }} />
+        <div className={`fill ${isMeal ? '' : st}`} style={{ width: pos(e) }} />
         {!isMeal && lo !== undefined && <div className="mark" style={{ left: pos(lo) }} />}
         {!isMeal && hi !== undefined && <div className="mark" style={{ left: pos(hi) }} />}
       </div>
@@ -547,7 +547,7 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
             return (
               <>
                 <span className="val">{formatNumber(kcal, 0)} <small>kcal</small></span>
-                <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min(pd, 100)}%` }} /></div>
+                <div className="meter" aria-hidden="true"><div className="fill" style={{ width: `${Math.min(pd, 100)}%` }} /></div>
                 <span className="sub"><strong>{formatNumber(pd, 0)} %</strong> av dagligt energibehov ({formatNumber(need.teeKcal, 0)} kcal)</span>
               </>
             )
@@ -576,7 +576,7 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
           ) : (
             <>
               <span className="val">{formatNumber(v('PROT'), 1)} <small>g</small></span>
-              <div className="meter" aria-hidden="true"><div className="fill neutral" style={{ width: `${Math.min((v('PROT') / (macro.proteinGPerKg * weightKg)) * 100, 100)}%` }} /></div>
+              <div className="meter" aria-hidden="true"><div className="fill" style={{ width: `${Math.min((v('PROT') / (macro.proteinGPerKg * weightKg)) * 100, 100)}%` }} /></div>
               <span className="sub"><strong>{formatNumber((v('PROT') / (macro.proteinGPerKg * weightKg)) * 100, 0)} %</strong> av dagens proteinbehov ({formatNumber(macro.proteinGPerKg * weightKg, 0)} g)</span>
             </>
           )}
@@ -664,11 +664,12 @@ function RdiView({ person, repro, weightKg, weightFromLog, pal, need, scoped }: 
           const p = m.value > 0 ? (val / m.value) * 100 : 0
           const st = microStatus(m, val)
           if (isMeal) {
-            // Fliken Måltid: exakt mängd och neutral andel av dagens RDI (ingen stapel, ingen färg)
+            // Fliken Måltid: mängd och andel av dagens RDI, stapel i samma färg som energin (ingen bedömning)
             const dayRef = m.value / sh
             return (
               <div className="ws-micro ws-mealmicro" key={m.key}>
                 <span className="mn">{d.label}</span>
+                <div className="bar meal" aria-hidden="true"><div style={{ width: `${Math.min(dayRef > 0 ? (val / dayRef) * 100 : 0, 100)}%` }} /></div>
                 <span className="mv">{formatNumber(val, d.decimals)} {d.unit}</span>
                 <span className="mp">{formatNumber(dayRef > 0 ? (val / dayRef) * 100 : 0, 0)} %</span>
               </div>
@@ -738,7 +739,7 @@ function CarbView({ scoped, macro, isMeal }: { scoped: Scoped; macro: MacroRefer
           const lo = ref.min ?? 0, hi = ref.max ?? 100
           const st = isMeal || ed.totalKj === 0 ? '' : ed.carbohydrate < lo ? 'low' : ed.carbohydrate > hi ? 'high' : ''
           const freeMax = macro.freeSugar.max ?? 10
-          const freeSt = isMeal ? 'neutral' : freeE > freeMax ? 'high' : ''
+          const freeSt = isMeal ? '' : freeE > freeMax ? 'high' : ''
           const pctW = (e: number) => `${Math.min(Math.max(e, 0), 100)}%`
           return (
             <>
@@ -746,7 +747,7 @@ function CarbView({ scoped, macro, isMeal }: { scoped: Scoped; macro: MacroRefer
                 <span className="lbl">Kolhydrater</span>
                 <span className="val">{formatNumber(ed.carbohydrate, 0)} <small>E% · {formatNumber(cho, 0)} g</small></span>
                 <div className="meter" aria-hidden="true">
-                  <div className={`fill ${isMeal ? 'neutral' : st}`} style={{ width: pctW(ed.carbohydrate) }} />
+                  <div className={`fill ${isMeal ? '' : st}`} style={{ width: pctW(ed.carbohydrate) }} />
                   {!isMeal && <><div className="mark" style={{ left: `${lo}%` }} /><div className="mark" style={{ left: `${hi}%` }} /></>}
                 </div>
                 <span className="sub">{isMeal ? 'Andel av måltidens energi' : `Rekommendation ${formatNumber(lo, 0)}–${formatNumber(hi, 0)} E%`}</span>
@@ -756,7 +757,7 @@ function CarbView({ scoped, macro, isMeal }: { scoped: Scoped; macro: MacroRefer
                 <span className="val">{formatNumber(freeE, 0)} <small>E% · {formatNumber(freeG, 0)} g</small></span>
                 <div className="meter" aria-hidden="true">
                   {isMeal || freeMax === 0
-                    ? <div className={`fill ${isMeal ? 'neutral' : freeE > 0 ? 'high' : ''}`} style={{ width: pctW(freeE) }} />
+                    ? <div className={`fill ${isMeal ? '' : freeE > 0 ? 'high' : ''}`} style={{ width: pctW(freeE) }} />
                     : <><div className={`fill ${freeSt}`} style={{ width: `${Math.min(freeE / freeMax, 1.5) / 1.5 * 100}%` }} /><div className="mark" style={{ left: `${100 / 1.5}%` }} /></>}
                 </div>
                 {!isMeal && <span className="sub">{freeMax === 0 ? 'Bör undvikas' : `Rekommendation < ${formatNumber(freeMax, 0)} E%`}</span>}
