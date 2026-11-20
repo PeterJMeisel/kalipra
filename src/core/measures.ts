@@ -1,4 +1,5 @@
 import type { Food } from './foods'
+import fineliMeasures from '../data/fineli-measures.json'
 
 /** Ett mått att ange mängd i. factor = antal basenheter (g, eller ml för ml-produkter) per 1 av måttet. */
 export type Measure = { id: string; label: string; factor: number }
@@ -106,23 +107,38 @@ add([...lmv(1914, 1915, 1916), ...fin(905)], drink(100, glas(80)))
 add([...lmv(1918, 1920, 1921, 1923, 1924, 1925, 1926), ...fin(906, 907)], drink(94.8, glas(40)))
 add([...lmv(1919, 1927), ...fin(908, 942)], drink(100, glas(40)))
 
+// --- Övriga Fineli-livsmedel: Finelis egna mått och portioner (foodaddunit.csv, release 20, CC BY 4.0;
+// godkända av Peter 2026-11-20). Gäller bara när SPECS ovan saknar livsmedlet. Gram per enhet.
+type FineliM = { dl?: number; msk?: number; tsk?: number; stS?: number; stM?: number; stL?: number; stP?: number; pS?: number; pM?: number; pL?: number }
+const FINELI = (fineliMeasures as { foods: Record<string, FineliM> }).foods
+const fmtG = (g: number) => `${g.toLocaleString('sv-SE', { maximumFractionDigits: 1 })} g`
+export function fineliSpec(number: number): Spec | undefined {
+  const m = FINELI[String(number)]
+  if (!m) return undefined
+  const portions: NonNullable<Spec['portions']> = []
+  const p = (id: string, label: string, g?: number) => { if (g) portions.push({ id, label: `${label} (${fmtG(g)})`, g }) }
+  p('st-s', 'st liten', m.stS); p('st-m', 'st mellan', m.stM); p('st-l', 'st stor', m.stL); p('st-p', 'st (förpackning)', m.stP)
+  p('port-s', 'portion liten', m.pS); p('port-m', 'portion mellan', m.pM); p('port-l', 'portion stor', m.pL)
+  return { gPerDl: m.dl, msk: m.msk, tsk: m.tsk, portions }
+}
+
 export function measuresFor(food: Food): Measure[] {
   if (food.unit === 'ml') return VOLUME
   const key = foodKey(food)
   const d = DENSITY[key]
   if (d) return [GRAM, ...VOLUME.map(v => ({ ...v, factor: v.factor * d }))]
-  const s = SPECS[key]
+  const s = SPECS[key] ?? (food.source === 'fineli' ? fineliSpec(food.number) : undefined)
   if (!s) return [GRAM]
   const out: Measure[] = [GRAM]
   const gml = s.gPerDl !== undefined ? s.gPerDl / 100 : undefined
   if (gml !== undefined) {
     if (s.allVolumes) out.push(...VOLUME.filter(v => v.id !== 'msk' && v.id !== 'tsk').map(v => ({ ...v, factor: v.factor * gml })))
     else out.push({ id: 'dl', label: 'dl', factor: s.gPerDl! })
-    if (s.msk !== undefined) out.push({ id: 'msk', label: 'msk', factor: s.msk })
-    else if (s.allVolumes) out.push({ id: 'msk', label: 'msk', factor: 15 * gml })
-    if (s.tsk !== undefined) out.push({ id: 'tsk', label: 'tsk', factor: s.tsk })
-    else if (s.allVolumes) out.push({ id: 'tsk', label: 'tsk', factor: 5 * gml })
+    if (s.msk === undefined && s.allVolumes) out.push({ id: 'msk', label: 'msk', factor: 15 * gml })
+    if (s.tsk === undefined && s.allVolumes) out.push({ id: 'tsk', label: 'tsk', factor: 5 * gml })
   }
+  if (s.msk !== undefined) out.push({ id: 'msk', label: 'msk', factor: s.msk })
+  if (s.tsk !== undefined) out.push({ id: 'tsk', label: 'tsk', factor: s.tsk })
   for (const p of s.portions ?? []) out.push({ id: p.id, label: p.label, factor: p.g ?? (p.ml! * (gml ?? 1)) })
   return out
 }

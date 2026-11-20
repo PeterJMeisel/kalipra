@@ -42,4 +42,15 @@ describe('hushållsmått med källa', () => {
   it('sprit räknas med densitet 0,948', () => {
     expect(measureFor(f('lmv', 1926), 'glas40').factor).toBeCloseTo(37.92)
   })
+  it('Fineli-livsmedel får Finelis mått och portioner', () => {
+    const ids = measuresFor(f('fineli', 1277)).map(m => [m.id, m.factor])
+    expect(ids).toEqual([['g', 1], ['dl', 100], ['msk', 15], ['tsk', 5], ['port-s', 150], ['port-m', 230], ['port-l', 320]])
+    expect(measureFor(f('fineli', 1277), 'port-m').label).toBe('portion mellan (230 g)')
+  })
+  it('Kalipras egna mått går före Finelis', () => {
+    expect(measuresFor(f('fineli', 205)).map(m => m.id)).toEqual(['g', 'st-s', 'st-m', 'st-l'])
+  })
+  it('Livsmedelsverkets livsmedel får inte Finelis mått', () => {
+    expect(measuresFor(f('lmv', 1277)).map(m => m.id)).toEqual(['g'])
+  })
 })

@@ -54,6 +54,10 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   porsjonsstørrelser for matvarer (2015, ODS); DTU, Mål, vægt og portionsstørrelser på fødevarer (Ygil 2013);
   Statistikcentralen (FI), Anvisning för beräkning av alkoholportioner (2022). Lokala kopior i
   Kalipra-källdokument (Livsmedelsverket, Fineli, Mattilsynet, DTU, Statistikcentralen). Inte använda: Kalmar, Jönköping, Systembolaget.
+- Övriga Fineli-livsmedel (4 232 st) får Finelis egna mått: dl/msk/tsk, styck liten/mellan/stor, styck enligt
+  förpackning och portion liten/mellan/stor (godkända av Peter 2026-11-20). Data: `src/data/fineli-measures.json`,
+  byggd med `scripts/convert-fineli-measures.mjs` ur foodaddunit.csv i Fineli_Rel20.zip (lokal kopia i
+  Kalipra-källdokument\Fineli). `SPECS` går före. Gäller bara Fineli-livsmedel, inte Livsmedelsverkets.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
@@ -66,5 +70,3 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   beräknade i Kalipra (normal + E-kost = halv volym, samma energi, berikad) och/eller kökets egna kcal/protein.
   Livsmedelsverkets riktlinjer för måltider på sjukhus (2022/2023) anger inga E% eller portionsvärden. Att avgöra:
   vilka rättyper, vilka E%-ramar för E-kost, om frukost/mellanmål ska med.
-- Fineli har egna hushållsmått för ~2 000 livsmedel till (dl/msk/tsk/styck, foodaddunit.csv) – inte inlästa;
-  Finelis portioner (liten/medel/stor) ska inte tas med utan att Peter granskat dem.
