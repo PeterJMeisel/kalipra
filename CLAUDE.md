@@ -52,7 +52,8 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   starkvin 8 cl, sprit/likör 4 cl. Prioritet: Livsmedelsverket först, annars där två nordiska källor stämmer.
   Källor: Livsmedelsverket PM 2024; Fineli Rel20 foodaddunit.csv (THL, CC BY 4.0); Mattilsynet, Mål, vekt og
   porsjonsstørrelser for matvarer (2015, ODS); DTU, Mål, vægt og portionsstørrelser på fødevarer (Ygil 2013);
-  Statistikcentralen (FI), Anvisning för beräkning av alkoholportioner (2022). Inte använda: Kalmar, Jönköping, Systembolaget.
+  Statistikcentralen (FI), Anvisning för beräkning av alkoholportioner (2022). Lokala kopior i
+  Kalipra-källdokument (Livsmedelsverket, Fineli, Mattilsynet, DTU, Statistikcentralen). Inte använda: Kalmar, Jönköping, Systembolaget.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
@@ -61,4 +62,10 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   - Använd inte: Nyckel till Portionsguide (2009) utan tillstånd från Livsmedelsverket (mångfaldigande förbjudet).
 
 ## Öppna punkter
-(Inga just nu.)
+- Standardrätter (normalkost/A-kost och E-kost): Peter vill vänta men komma tillbaka. Förslag 2026-11-20: typrätter
+  beräknade i Kalipra (normal + E-kost = halv volym, samma energi, berikad) och/eller kökets egna kcal/protein.
+  Livsmedelsverkets riktlinjer för måltider på sjukhus (2022/2023) anger inga E% eller portionsvärden. Att avgöra:
+  vilka rättyper, vilka E%-ramar för E-kost, om frukost/mellanmål ska med.
+- Fineli har egna hushållsmått för ~2 000 livsmedel till (dl/msk/tsk/styck, foodaddunit.csv) – inte inlästa;
+  Finelis portioner (liten/medel/stor) ska inte tas med utan att Peter granskat dem.
+- OIV-tabellen (densitet sprit) saknar lokal kopia i Kalipra-källdokument.
