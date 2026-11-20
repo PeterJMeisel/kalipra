@@ -47,7 +47,7 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Hushållsmått per livsmedel (`SPECS` i measures.ts, godkända av Peter 2026-11-20): potatis i styck liten/mellan/stor
   (skalad 35/60/115 g, med skal/färskpotatis 40/70/135 g, bakpotatis 175/200/300 g – DTU), ris okokt/kokt 80 g/dl,
   pasta okokt 50 / kokt 65 g/dl, socker 90 g/dl (msk 13, tsk 5), havregryn 39 g/dl, vetemjöl 56 g/dl, mjölk 99 g/dl,
-  filmjölk 110 g/dl, växtdrycker 97–99 g/dl, övriga drycker 100 g/dl, sprit 40 % 0,948 g/ml (OIV).
+  filmjölk 110 g/dl, växtdrycker 97–99 g/dl, övriga drycker 100 g/dl, sprit 40 % 0,948 g/ml (källa saknas, se Öppna punkter).
   Glas/kopp: glas 25 cl (grundregel), kaffe 15 cl, te 20 cl, espresso 3 cl, öl/cider 33 och 50 cl, vin 12 och 6 cl,
   starkvin 8 cl, sprit/likör 4 cl. Prioritet: Livsmedelsverket först, annars där två nordiska källor stämmer.
   Källor: Livsmedelsverket PM 2024; Fineli Rel20 foodaddunit.csv (THL, CC BY 4.0); Mattilsynet, Mål, vekt og
@@ -68,4 +68,6 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   vilka rättyper, vilka E%-ramar för E-kost, om frukost/mellanmål ska med.
 - Fineli har egna hushållsmått för ~2 000 livsmedel till (dl/msk/tsk/styck, foodaddunit.csv) – inte inlästa;
   Finelis portioner (liten/medel/stor) ska inte tas med utan att Peter granskat dem.
-- OIV-tabellen (densitet sprit) saknar lokal kopia i Kalipra-källdokument.
+- Spritens densitet 0,948 g/ml (40 %) saknar giltig källa: OIV-MA-AS312-02 tabell I täcker bara 0–31 % vol
+  (kontrollerat 2026-11-20). Förslag: räkna fram värdet ur EU-direktiv 76/766/EEG (alkoholtabellernas formel,
+  0–100 %, −20 till 40 °C) eller OIML R22, och spara källan lokalt.
