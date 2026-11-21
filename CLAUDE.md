@@ -83,3 +83,11 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   beräknade i Kalipra (normal + E-kost = halv volym, samma energi, berikad) och/eller kökets egna kcal/protein.
   Livsmedelsverkets riktlinjer för måltider på sjukhus (2022/2023) anger inga E% eller portionsvärden. Att avgöra:
   vilka rättyper, vilka E%-ramar för E-kost, om frukost/mellanmål ska med.
+- Korta beskrivningar i produktbladet för nutritionsprodukterna (beslut 2026-11-21, görs i ny chatt): 1–2 meningar om
+  vad tillverkaren rekommenderar produkten till och vad som är särskilt med den. Tillverkarens egna ord (t.ex.
+  "patienter" om producenten skriver så). Placering: under taggarna (egenskaper), ovanför IDDSI. 228 unika produkter;
+  100 har redan `text.produktinformation`, övriga läses ur scripts/nutrition/{fk,fks,nes,nut}/*.txt. Upplägg: agent
+  med billigare modell skriver förslag, Claude granskar; ingen Excel-granskning för Peter (han har sagt att Claude
+  granskar) – flagga osäkra fall för Peter.
+- Finelis mått för riskgrupperna (bröd, bakverk, kex, korv/chark, rätter, flingor, godis/snacks/glass): Peter har fått
+  Excel-listan (Fineli-matt-riskgrupper.xlsx, 2 197 livsmedel) men inte hunnit granska. Kom tillbaka till detta.
