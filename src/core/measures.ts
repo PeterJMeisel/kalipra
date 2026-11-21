@@ -72,6 +72,19 @@ add([...lmv(804, 814, 818, 2513, 2514, 2515, 2516, 2517, 2518, 2519, 4591, 6782)
 add([...lmv(845, 848, 2220, 2221, 2226, 2227), ...fin(117, 119, 121, 31482, 31675, 31677)], { gPerDl: 50 })
 add([...lmv(846, 852, 2520, 2521, 2522, 3756, 3828), ...fin(123, 186, 187, 188, 1372, 1373, 1374, 30356, 31678, 33101)], { gPerDl: 65 })
 
+// --- Bulgur, couscous och quinoa (Peter 2026-11-21: Mattilsynet och DTU får användas).
+// Mattilsynet, Mål, vekt og porsjonsstørrelser for matvarer (2015), flik Mel, gryn, pasta: bulgur okokt 80 g/dl,
+// ss 13 (vägt i projektet, märkt a – valt framför DTU:s 75/11 som är beräknat); couscous okokt 75 g/dl, ss 11;
+// quinoa okokt 70 g/dl, ss 11; portion kokt bulgur 225 g, couscous 190 g, quinoa 185 g.
+// DTU, Mål, vægt og portionsstørrelser på fødevarer (Ygil 2013), s. 14 och 28: couscous och quinoa okokt 75/70 g/dl,
+// spsk 11, tsk 4 (samma som Mattilsynet); kokt couscous 85 g/dl, kokt quinoa 75 g/dl. Kokt bulgur 61 g/dl: Livsmedelsverket.
+add(lmv(829), { gPerDl: 80, msk: 13 })
+add(lmv(831), { gPerDl: 75, msk: 11, tsk: 4 })
+add(lmv(7025), { gPerDl: 70, msk: 11, tsk: 4 })
+add(lmv(830, 3136, 3564), { portions: [{ id: 'port', label: 'portion (225 g)', g: 225 }] })
+add(lmv(832, 3752), { gPerDl: 85, portions: [{ id: 'port', label: 'portion (190 g)', g: 190 }] })
+add(lmv(3518), { gPerDl: 75, portions: [{ id: 'port', label: 'portion (185 g)', g: 185 }] })
+
 // --- Socker (Mattilsynet 2015: 90 g/dl, msk 13, tsk 5). Havregryn och vetemjöl: Livsmedelsverket PM 2024, tabell 5.
 add([...lmv(1892), ...fin(1)], { gPerDl: 90, msk: 13, tsk: 5 })
 add(lmv(702), { gPerDl: 39, msk: 6 })

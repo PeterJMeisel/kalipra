@@ -65,6 +65,12 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   inlagda i `src/core/lsvMeasures.ts` (154 st, 2026-11-21), med form i namnet där PM:et anger den (t.ex. "dl finriven",
   "st skiva"). Går före Finelis mått för samma enhet; övriga Fineli-/SPECS-mått finns kvar. Inte med: märkesvaror och
   livsmedel utan motsvarighet (kapris, gnocchi, tortelloni, sill i bitar m.fl.).
+- Bulgur, couscous, quinoa (Peter 2026-11-21: Mattilsynet och DTU får användas; källor i kommentar i `SPECS`):
+  bulgur okokt 80 g/dl, msk 13 (Mattilsynet, vägt – valt framför DTU 75/11); couscous okokt 75, msk 11, tsk 4;
+  quinoa okokt 70, msk 11, tsk 4 (båda källorna); kokt couscous 85 och kokt quinoa 75 g/dl (DTU); portioner kokt
+  bulgur 225, couscous 190, quinoa 185 g (Mattilsynet). index.csv finns i mapparna Livsmedelsverket, Mattilsynet, DTU, Fineli.
+- Okokta gryn och torkade baljväxter har "okokt/okokta" i namnet (`src/core/nameFixes.ts`).
+- Sökning: namnet matchas var som helst i ordet; tillverkare och kategori bara från ordets början.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf

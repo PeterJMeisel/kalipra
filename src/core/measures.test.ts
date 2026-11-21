@@ -72,4 +72,9 @@ describe('hushållsmått med källa', () => {
     expect(ids).toContain('dl-pressad')
     expect(ids).toContain('st-m')
   })
+  it('bulgur, couscous och quinoa (Mattilsynet/DTU)', () => {
+    expect(measureFor(f('lmv', 829), 'dl').factor).toBe(80)
+    expect(measureFor(f('lmv', 831), 'msk').factor).toBe(11)
+    expect(measuresFor(f('lmv', 3136)).map(m => m.id)).toEqual(['g', 'tsk', 'msk', 'dl', 'port'])
+  })
 })

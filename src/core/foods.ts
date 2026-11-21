@@ -1,5 +1,6 @@
 import type { NutrientKey, NutrientTotals } from './nutrients'
 import type { DiaryEntry, Meal } from './types'
+import { LMV_NAME_FIX } from './nameFixes'
 
 /**
  * Livsmedelsdatabaser som kan sökas i. Nutritionsprodukterna ligger i databasen 'nutrition' men väljs
@@ -71,11 +72,14 @@ export class FoodDatabase {
   readonly sources: SourceInfo[] = []
   private byKey = new Map<string, Food>()
   private searchKeys: string[] = []
+  /** Tillverkare och kategori: matchas bara från ordets början, så att "ost" inte träffar "kosttillägg". */
+  private metaWords: string[][] = []
 
   constructor(data: FoodData | FoodData[]) {
     for (const d of Array.isArray(data) ? data : [data]) {
       const source: SourceId = d.id ?? 'lmv'
-      d.foods.forEach(([number, name, analysed, values], idx) => {
+      d.foods.forEach(([number, rawName, analysed, values], idx) => {
+        const name = (source === 'lmv' && LMV_NAME_FIX[number]) || rawName
         const prod = d.products?.[idx]
         const per100g: NutrientTotals = {}
         d.keys.forEach((k, i) => {
@@ -86,7 +90,8 @@ export class FoodDatabase {
         const food: Food = { source, group, number, name, analysed: analysed === 1, per100g, unit: prod?.basis === 'ml' ? 'ml' : 'g', ...(prod?.manufacturer ? { manufacturer: prod.manufacturer } : {}) }
         this.foods.push(food)
         this.byKey.set(`${source}:${number}`, food)
-        this.searchKeys.push(searchKey([name, prod?.manufacturer, prod?.category].filter(Boolean).join(' ')))
+        this.searchKeys.push(searchKey(name))
+        this.metaWords.push(searchKey([prod?.manufacturer, prod?.category].filter(Boolean).join(' ')).split(' ').filter(Boolean))
       })
       if (source === 'nutrition') {
         for (const g of ['sond', 'kost'] as const) {
@@ -119,7 +124,8 @@ export class FoodDatabase {
     this.foods.forEach((food, i) => {
       if (allowed && !allowed.has(food.group)) return
       const key = this.searchKeys[i]
-      if (!words.every(w => key.includes(w))) return
+      const meta = this.metaWords[i]
+      if (!words.every(w => key.includes(w) || meta.some(m => m.startsWith(w)))) return
       let score = key.length / 100
       const first = words[0]
       if (key === first || key.startsWith(first + ' ')) score -= 20 // hela ordet först: "lax" → "Lax odlad"

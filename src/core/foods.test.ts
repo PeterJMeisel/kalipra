@@ -25,6 +25,16 @@ describe('livsmedelsdatabasen', () => {
     expect(hits.every(f => f.name.toLowerCase().includes('mjölk'))).toBe(true)
   })
 
+  it('"ost" träffar inte kosttillägg via kategorin, men kategorin går att söka på', () => {
+    const all = new FoodDatabase([data as unknown as FoodData, nutrition as unknown as FoodData])
+    expect(all.search('ost', 400).some(f => f.source === 'nutrition' && !f.name.toLowerCase().includes('ost'))).toBe(false)
+    expect(all.search('kosttillägg').length).toBeGreaterThan(0)
+  })
+
+  it('okokta gryn heter okokt', () => {
+    expect(db.get(831)?.name).toBe('Couscous okokt')
+  })
+
   it('rankar livsmedel som börjar med hela sökordet först', () => {
     expect(db.search('lax')[0].name.toLowerCase().startsWith('lax ')).toBe(true)
   })
