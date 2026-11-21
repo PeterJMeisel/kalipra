@@ -50,7 +50,14 @@ describe('hushållsmått med källa', () => {
   it('Kalipras egna mått går före Finelis', () => {
     expect(measuresFor(f('fineli', 205)).map(m => m.id)).toEqual(['g', 'st-s', 'st-m', 'st-l'])
   })
-  it('Livsmedelsverkets livsmedel får inte Finelis mått', () => {
+  it('Livsmedelsverkets livsmedel utan motsvarighet får inte Finelis mått', () => {
     expect(measuresFor(f('lmv', 1277)).map(m => m.id)).toEqual(['g'])
+  })
+  it('Livsmedelsverkets mannagrynsgröt får Finelis portioner', () => {
+    expect(measureFor(f('lmv', 682), 'port-m').factor).toBe(230)
+  })
+  it('frysvaror får inga styckmått', () => {
+    expect(measuresFor(f('lmv', 323)).some(m => m.id.startsWith('st-'))).toBe(false)
+    expect(measuresFor(f('lmv', 322)).some(m => m.id === 'st-m')).toBe(true)
   })
 })

@@ -1,5 +1,6 @@
 import type { Food } from './foods'
 import fineliMeasures from '../data/fineli-measures.json'
+import { LMV_FINELI } from './lmvFineli'
 
 /** Ett mått att ange mängd i. factor = antal basenheter (g, eller ml för ml-produkter) per 1 av måttet. */
 export type Measure = { id: string; label: string; factor: number }
@@ -112,9 +113,12 @@ add([...lmv(1919, 1927), ...fin(908, 942)], drink(100, glas(40)))
 type FineliM = { dl?: number; msk?: number; tsk?: number; stS?: number; stM?: number; stL?: number; stP?: number; pS?: number; pM?: number; pL?: number }
 const FINELI = (fineliMeasures as { foods: Record<string, FineliM> }).foods
 const fmtG = (g: number) => `${g.toLocaleString('sv-SE', { maximumFractionDigits: 1 })} g`
-export function fineliSpec(number: number): Spec | undefined {
-  const m = FINELI[String(number)]
-  if (!m) return undefined
+export function fineliSpec(number: number, opts: { noSt?: boolean; noPack?: boolean } = {}): Spec | undefined {
+  const f = FINELI[String(number)]
+  if (!f) return undefined
+  const m: FineliM = { ...f }
+  if (opts.noSt) { delete m.stS; delete m.stM; delete m.stL }
+  if (opts.noSt || opts.noPack) delete m.stP
   const portions: NonNullable<Spec['portions']> = []
   const p = (id: string, label: string, g?: number) => { if (g) portions.push({ id, label: `${label} (${fmtG(g)})`, g }) }
   p('st-s', 'st liten', m.stS); p('st-m', 'st mellan', m.stM); p('st-l', 'st stor', m.stL); p('st-p', 'st (förpackning)', m.stP)
@@ -127,7 +131,9 @@ export function measuresFor(food: Food): Measure[] {
   const key = foodKey(food)
   const d = DENSITY[key]
   if (d) return [GRAM, ...VOLUME.map(v => ({ ...v, factor: v.factor * d }))]
-  const s = SPECS[key] ?? (food.source === 'fineli' ? fineliSpec(food.number) : undefined)
+  const viaLmv = food.source === 'lmv' ? LMV_FINELI[food.number] : undefined
+  const s = SPECS[key] ?? (food.source === 'fineli' ? fineliSpec(food.number)
+    : viaLmv ? fineliSpec(viaLmv[0], { noSt: viaLmv[1], noPack: true }) : undefined)
   if (!s) return [GRAM]
   const out: Measure[] = [GRAM]
   const gml = s.gPerDl !== undefined ? s.gPerDl / 100 : undefined

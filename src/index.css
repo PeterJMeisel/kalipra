@@ -35,6 +35,8 @@ h2 { font-size: 20px }
 h3 { font-size: 20px; margin: 28px 0 12px }
 h4 { font-size: 16px; font-family: inherit; font-weight: 700; color: var(--brand); margin: 18px 0 6px }
 button, input, select, textarea { font: inherit; color: inherit }
+/* Utfällda listor: samma färger som panelen, annars blir det ljus text på vit bakgrund i mörkt läge. */
+option, optgroup { background-color: var(--panel); color: var(--ink) }
 button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 16px; min-height: 44px }
 button:hover:not(:disabled) { border-color: var(--brand) }
 button:disabled { opacity: .45; cursor: default }
@@ -740,7 +742,7 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li[aria-selected="true"] .ws-hitsheet { color: var(--brand-ink) }
 .ws-hits li:has(.ws-hitsheet) > button:first-child { padding-bottom: 18px }
 /* Måttmeny: ser ut som enhetstexten, öppnas vid tryck */
-.unit-select { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 1px 2px; cursor: pointer; width: auto }
+.unit-select { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 1px 2px; cursor: pointer; width: 11.5em; max-width: 100%; text-overflow: ellipsis }
 .unit-select:hover, .unit-select:focus { border-color: var(--line); color: var(--ink) }
 .unit-g { font-size: 12px; white-space: nowrap }
 .ws-addrow .unit-select { border-color: var(--line); color: var(--ink); font-size: 14px; padding: 4px 6px }
