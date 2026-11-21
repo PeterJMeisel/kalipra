@@ -57,7 +57,10 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
 - Övriga Fineli-livsmedel (4 232 st) får Finelis egna mått: dl/msk/tsk, styck liten/mellan/stor, styck enligt
   förpackning och portion liten/mellan/stor (godkända av Peter 2026-11-20). Data: `src/data/fineli-measures.json`,
   byggd med `scripts/convert-fineli-measures.mjs` ur foodaddunit.csv i Fineli_Rel20.zip (lokal kopia i
-  Kalipra-källdokument\Fineli). `SPECS` går före. Gäller bara Fineli-livsmedel, inte Livsmedelsverkets.
+  Kalipra-källdokument\Fineli). `SPECS` går före. Livsmedelsverkets livsmedel får samma mått via `src/core/lmvFineli.ts` (216 st, bara
+  säkra grupper: frukt, bär, grönsaker, ägg, mjöl/gryn/kli, gröt/välling, nötter/frön, torkade baljväxter, torkad frukt;
+  samma tillstånd rå/kokt/torkad; frysvaror utan styck; aldrig styck enligt förpackning). Riskgrupper (bröd, bakverk,
+  kex, korv/chark, rätter, flingor, godis/snacks/glass) är inte kopplade – Peter granskar Finelis värden först.
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
