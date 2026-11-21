@@ -60,4 +60,16 @@ describe('hushållsmått med källa', () => {
     expect(measuresFor(f('lmv', 323)).some(m => m.id.startsWith('st-'))).toBe(false)
     expect(measuresFor(f('lmv', 322)).some(m => m.id === 'st-m')).toBe(true)
   })
+  it('Livsmedelsverkets PM 2024 går före Finelis mått', () => {
+    const m = measuresFor(f('lmv', 289)) // morot
+    expect(m.find(x => x.id === 'dl-finriven')?.factor).toBe(41)
+    expect(m.find(x => x.id === 'st-skiva')?.label).toBe('st skiva (2 g)')
+    expect(m.some(x => x.id === 'st-m')).toBe(true) // Finelis hela morötter finns kvar
+    expect(measureFor(f('lmv', 3136), 'dl').factor).toBe(61) // bulgur kokt
+  })
+  it('PM 2024 läggs till utan att ta bort Kalipras egna mått', () => {
+    const ids = measuresFor(f('lmv', 231)).map(m => m.id)
+    expect(ids).toContain('dl-pressad')
+    expect(ids).toContain('st-m')
+  })
 })

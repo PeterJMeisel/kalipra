@@ -1,6 +1,7 @@
 import type { Food } from './foods'
 import fineliMeasures from '../data/fineli-measures.json'
 import { LMV_FINELI } from './lmvFineli'
+import { LSV } from './lsvMeasures'
 
 /** Ett mått att ange mängd i. factor = antal basenheter (g, eller ml för ml-produkter) per 1 av måttet. */
 export type Measure = { id: string; label: string; factor: number }
@@ -134,7 +135,22 @@ export function measuresFor(food: Food): Measure[] {
   const viaLmv = food.source === 'lmv' ? LMV_FINELI[food.number] : undefined
   const s = SPECS[key] ?? (food.source === 'fineli' ? fineliSpec(food.number)
     : viaLmv ? fineliSpec(viaLmv[0], { noSt: viaLmv[1], noPack: true }) : undefined)
+  const lsv = food.source === 'lmv' ? LSV[food.number] : undefined
+  if (lsv) {
+    // Livsmedelsverkets mått först; Finelis mått för samma enhet faller bort.
+    const own = lsv.map(([u, g, form]): Measure => {
+      const id = form ? `${u}-${form}` : u
+      const label = u === 'st' ? `st${form ? ` ${form}` : ''} (${fmtG(g)})` : form ? `${u} ${form}` : u
+      return { id, label, factor: g }
+    })
+    const rest = s ? specMeasures(s).filter(m => m.id !== 'g' && !own.some(o => o.id === m.id)) : []
+    return [GRAM, ...own, ...rest]
+  }
   if (!s) return [GRAM]
+  return specMeasures(s)
+}
+
+function specMeasures(s: Spec): Measure[] {
   const out: Measure[] = [GRAM]
   const gml = s.gPerDl !== undefined ? s.gPerDl / 100 : undefined
   if (gml !== undefined) {

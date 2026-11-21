@@ -61,6 +61,10 @@ bara var till för att prova något) – **fråga Peter innan** du pushar. Bygg 
   säkra grupper: frukt, bär, grönsaker, ägg, mjöl/gryn/kli, gröt/välling, nötter/frön, torkade baljväxter, torkad frukt;
   samma tillstånd rå/kokt/torkad; frysvaror utan styck; aldrig styck enligt förpackning). Riskgrupper (bröd, bakverk,
   kex, korv/chark, rätter, flingor, godis/snacks/glass) är inte kopplade – Peter granskar Finelis värden först.
+- Livsmedelsverket PM 2024, tabell 1–13: alla livsmedel som har en säker motsvarighet i Livsmedelsverkets databas är
+  inlagda i `src/core/lsvMeasures.ts` (154 st, 2026-11-21), med form i namnet där PM:et anger den (t.ex. "dl finriven",
+  "st skiva"). Går före Finelis mått för samma enhet; övriga Fineli-/SPECS-mått finns kvar. Inte med: märkesvaror och
+  livsmedel utan motsvarighet (kapris, gnocchi, tortelloni, sill i bitar m.fl.).
 - Referenser (sparade 2026-11-18; lokal kopia när de börjar användas):
   - Livsmedelsverket, PM 2024 Volymvikter, viktförändringsfaktorer och avfall: https://livsmedelsverket.se/globalassets/publikationsdatabas/pm/2024/pm-2024-volymvikter-viktforandringsfaktorer-och-avfall.pdf (ca 200 livsmedel med vikt per dl/msk/tsk/st)
   - Rapsolja, relativ densitet 20 °C 0,910–0,923 (Organic Makers produktspecifikation): https://organicmakers.se/dokument/rapsolja-produktspec.pdf
