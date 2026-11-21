@@ -742,7 +742,7 @@ tr:hover td.name .ws-sheetlink, td.name .ws-sheetlink:focus-visible { opacity: 1
 .ws-hits li[aria-selected="true"] .ws-hitsheet { color: var(--brand-ink) }
 .ws-hits li:has(.ws-hitsheet) > button:first-child { padding-bottom: 18px }
 /* Måttmeny: ser ut som enhetstexten, öppnas vid tryck */
-.unit-select { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 1px 2px; cursor: pointer; width: 11.5em; max-width: 100%; text-overflow: ellipsis }
+.unit-select { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 1px 2px; cursor: pointer; width: 7em; max-width: 100%; text-overflow: ellipsis }
 .unit-select:hover, .unit-select:focus { border-color: var(--line); color: var(--ink) }
 .unit-g { font-size: 12px; white-space: nowrap }
 .ws-addrow .unit-select { border-color: var(--line); color: var(--ink); font-size: 14px; padding: 4px 6px }
